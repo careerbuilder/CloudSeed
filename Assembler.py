@@ -7,6 +7,7 @@ import json
 from collections import OrderedDict
 
 parts = OrderedDict()
+SCRIPT_LOCATION = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 
 def verify_input(value, obj):
@@ -80,7 +81,7 @@ def prompt(params):
 
 
 def makesub(subpart):
-    partf = open(os.path.abspath('../Parts/' + subpart + '.subpart'))
+    partf = open(os.path.join(SCRIPT_LOCATION, 'Parts', subpart + '.subpart'))
     part = json.load(partf, object_pairs_hook=OrderedDict)
     partf.close()
     subobj = OrderedDict()
@@ -240,7 +241,7 @@ def order_parts(parts_list):
                 for sub in part['Connections']['Substitutes']:
                     deps.append(re.sub(r'^[Ll]ist::', "", sub['Type']))
             for dep in deps:
-                if dep.upper() in (partname.upper() for partname in parts_list):
+                if dep.upper() in [partname.upper() for partname in parts_list]:
                     count += 1
             if count < 1:
                 order.append(part)
@@ -273,6 +274,8 @@ def generate(layers):
     outfile = open('Stacks/' + name + '.stack', 'w')
     json.dump(temp, outfile, indent=2)
     outfile.close()
+    print("Stack File " + name + " Saved!")
+
 
 if __name__ == '__main__':
     generate(sys.argv[1:])
