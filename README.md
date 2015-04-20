@@ -29,14 +29,21 @@ __Under Construction__
 ##Examples
 The simplest example is of course a stack with one part. If I need just 1 VPC, I can run `python Assembler.py VPC`
 Prompts:
-`Stack Name: VPCStack
+
+```
+Stack Name: VPCStack
 Describe this stack: Example
 Parameters for VPC1
         VPCCidr :192.168.0.0
         VPCName :ExampleVPC
-`
+```
+
+
 These parameters produce the following stack:
-`{
+
+
+```
+{
   "Description": "Example Stack",
   "Parameters": {},
   "Mappings": {},
@@ -64,6 +71,6 @@ These parameters produce the following stack:
     }
   }
 }
-`
+```
  
  
