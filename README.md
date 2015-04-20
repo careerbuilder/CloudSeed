@@ -27,7 +27,10 @@ sent to be created, or saved for later. The stack file will be preserved in orde
 __Under Construction__
 
 ##Examples
-The simplest example is of course a stack with one part. If I need just 1 VPC, I can run `python Assembler.py VPC`
+The simplest example is of course a stack with one part. If I need just 1 VPC, I can run 
+
+`python Assembler.py VPC`
+
 Prompts:
 
 ```
