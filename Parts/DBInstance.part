@@ -1,0 +1,104 @@
+{
+    "Description": "Version 1.0.0  Creates an RDS instance",
+    "Type": "DBInstance",
+    "Parameters": {
+        "RDSName": {
+            "Description": "Name of the created RDS Instance",
+            "Type": "String"
+        },
+        "RDSSG":{
+            "Description" : "ID of sg to use for new RDS",
+            "Type": "String"
+        },
+        "SubnetGroup":{
+          "Description" : "name of subnet group to use for new RDS",
+          "Type": "String"
+        }
+        "GBAllocated":{
+          "Description": "GB of allocated storage",
+          "Type": Number,
+          "Default": 1000
+        },
+        "BackupDays":{
+          "Description": "Days to backup",
+          "Type":"Number",
+          "Default: 14
+        },
+        "InstanceSize":{
+          "Description": "Size and type of DBInstance",
+          "Type": "String",
+          "Default": "db.r3.xlarge",
+          "AllowedPattern": "AllowedPattern" : "db.[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
+        },
+        "DBEngine":{
+          "Description":"DBEngine",
+          "Type": "String",
+          "Default": "sqlserver-ee"
+        },
+        "DBVersion":{
+          "Description": "Version of the DBEngine",
+          "Type":"String",
+          "Default": "11.00"
+        },
+        "numIOPS":{
+          "Description": "Must be 10x the GBAllocated",
+          "Type": "Number",
+          "Default": 10000
+        },
+        "licensetype":{
+          "Description": "Model of licensing to use",
+          "Type":"String",
+          "Default": "bring-your-own-license"
+        },
+        "OptionGroup":{
+          "Description":"Name of OptionGroup",
+          "Type":"String",
+          "Default": "mirrored-sqlserver"
+        },
+        "SAUserName":{
+          "Description": "Username of SA user",
+          "Type":"String",
+          "Default": "SiteDBsa"
+        },
+        "Portnum":{
+          "Description":"Port",
+          "Type":"Number",
+          "Default":3633
+        }
+    },
+    "Conditions": {},
+    "Resources": {
+        "DBInstance": {
+            "Type" : "AWS::RDS::DBInstance",
+            "Properties" : {
+                "AllocatedStorage" : {"Ref":"GBAllocated"},
+                "AllowMajorVersionUpgrade" : false,
+                "AutoMinorVersionUpgrade" : false,
+                "BackupRetentionPeriod" : {"Ref":"BackupDays"},
+                "DBInstanceClass" :{"Ref": "InstanceSize"},
+                "DBInstanceIdentifier" : {"Ref": "RDSName"},
+                "DBSubnetGroupName" : {"Ref": "SubnetGroup"},
+                "Engine" : {"Ref": "DBEngine"},
+                "EngineVersion": {"Ref":"DBVersion"},
+                "Iops" : {"Ref":"numIOPS"},
+                "LicenseModel" : {"Ref":"licensetype"},
+                "MasterUsername" : {"Ref":"SAUserName"},
+                "MasterUserPassword" : "changemeNOW",
+                "OptionGroupName": {"Ref":"OptionGroup"},
+                "Port" : {"Ref":"Portnum"},
+                "PubliclyAccessible" : false,
+                "StorageType" : "io1",
+                "VPCSecurityGroups" : [{"Ref": "RDSSG"} ]
+            }
+        }       
+    },
+    "Outputs": {
+      "RDSID":{"Ref":"DBInstance"}
+    },
+    "Connections":{
+      "Substitutes":[
+        {"Type":"SubnetGroup", "Parameter":"SubnetGroup"},
+        {"Type":"SecurityGroup", "Parameter":"RDSSG"}
+      ]
+    }
+}
