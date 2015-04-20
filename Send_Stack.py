@@ -49,18 +49,24 @@ def results(stacks, region):
     cf_conn = boto.cloudformation.connect_to_region(region)
     while len(done) + len(failed) < len(stacks):
         for stack in stacks:
-            if stack not in done and stack not in failed:
-                stack_obj = cf_conn.describe_stacks(stack_name_or_id=stack)[0].stack_status
-                if stack_obj in cf_success:
-                    done.append(stack)
-                if stack_obj in cf_failed:
+            if stack not in failed and stack not in [d['Name'] for d in done]:
+                stack_obj = cf_conn.describe_stacks(stack_name_or_id=stack)[0]
+                status = stack_obj.stack_status
+                if status in cf_success:
+                    done.append({"Name": stack, "Outputs": stack_obj.outputs})
+                if status in cf_failed:
                     failed.append(stack)
         sleep(1)
     print("All Stacks Complete")
-    print("Succeeded: ")
-    print(done)
-    print("Failed: ")
-    print(failed)
+    if len(failed) > 0:
+        print("These stacks failed: ")
+        print(failed)
+        print("Outputs of successful stacks")
+    for success in done:
+        print(success['Name'])
+        for output in success['Outputs']:
+            print('\t' + output.key + ": " + output.value)
+    return done
 
 
 def get_template_text(stackname):
@@ -71,4 +77,5 @@ def get_template_text(stackname):
     return text
 
 if __name__ == '__main__':
-    send(sys.argv[1:])
+    #send(sys.argv[1:])
+    results(sys.argv[1:], 'us-east-1')

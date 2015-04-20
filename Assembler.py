@@ -5,6 +5,7 @@ import re
 import sys
 import json
 from collections import OrderedDict
+from Send_Stack import send
 
 parts = OrderedDict()
 SCRIPT_LOCATION = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -60,7 +61,7 @@ def prompt(params):
     for key in params:
         input_message = key + " "
         if "Default" in params[key]:
-            input_message += "[" + params[key]['Default'] + "]"
+            input_message += "[" + str(params[key]['Default']) + "]"
         input_message += ":"
         accepted = False
         while not accepted:
@@ -182,12 +183,17 @@ def build_objects(part_list, template):
         part = replace_ref(part, mod['Type'], {"Ref": mod['LogicalName']})
         params = part['Parameters']
         if ('Connections' in part) and ('Substitutes' in part['Connections']):
+            substitutions = []
             for sub in part['Connections']['Substitutes']:
                 typestring = re.sub(r'^[Ll]ist::', "", sub['Type'])
                 if typestring in (module['Type'] for module in added):
                     for module in added:
                         if module['Type'] == typestring:
+                            if 'Unique' in sub and sub['Unique']:
+                                if module['LogicalName'] in [subst['Object'] for subst in substitutions]:
+                                    continue
                             part = replace_ref(part, sub['Parameter'], {"Ref": module['LogicalName']})
+                            substitutions.append({"Parent": mod['LogicalName'], "Parameter": sub['Parameter'], "Object": module['LogicalName']})
                             try:
                                 params.pop(sub['Parameter'])
                             except KeyError:
@@ -275,6 +281,16 @@ def generate(layers):
     json.dump(temp, outfile, indent=2)
     outfile.close()
     print("Stack File " + name + " Saved!")
+    answer = ''
+    while answer == 'Y' or answer == 'N':
+        go_on = input("Create stack now? (y/n): ")
+        answer = go_on.upper()[0]
+        if answer == 'Y':
+            send(name)
+        if answer == 'N':
+            exit(0)
+        else:
+            print("Please respond with a 'Y' or an 'N'")
 
 
 if __name__ == '__main__':
