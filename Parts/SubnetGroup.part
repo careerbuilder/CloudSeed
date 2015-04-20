@@ -1,6 +1,6 @@
 {
   "Description" : "Version 1.0.0  Creates a subnet group from 3 subnets.",
-  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Type":"SubnetGroup",
   "Parameters" : {
     "TeamName" : {
       "Description" : "Name of the team to own this group",
@@ -55,9 +55,9 @@
   "Outputs" : {},
   "Connections":{
     "Substitutes":[
-      {"Type":"Subnet", "Parameter":"SubnetOne"},
-      {"Type":"Subnet", "Parameter":"SubnetTwo"},
-      {"Type":"Subnet", "Parameter":"SubnetThree"}
+      {"Type":"Subnet", "Parameter":"SubnetOne", "Unique": true},
+      {"Type":"Subnet", "Parameter":"SubnetTwo", "Unique": true},
+      {"Type":"Subnet", "Parameter":"SubnetThree", "Unique": true}
     ]
   }
 

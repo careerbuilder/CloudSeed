@@ -13,22 +13,22 @@
         "SubnetGroup":{
           "Description" : "name of subnet group to use for new RDS",
           "Type": "String"
-        }
+        },
         "GBAllocated":{
           "Description": "GB of allocated storage",
-          "Type": Number,
+          "Type": "Number",
           "Default": 1000
         },
         "BackupDays":{
           "Description": "Days to backup",
           "Type":"Number",
-          "Default: 14
+          "Default": 14
         },
         "InstanceSize":{
           "Description": "Size and type of DBInstance",
           "Type": "String",
           "Default": "db.r3.xlarge",
-          "AllowedPattern": "AllowedPattern" : "db.[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
+          "AllowedPattern": "db.[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
         },
         "DBEngine":{
           "Description":"DBEngine",
