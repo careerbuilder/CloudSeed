@@ -77,5 +77,5 @@ def get_template_text(stackname):
     return text
 
 if __name__ == '__main__':
-    #send(sys.argv[1:])
-    results(sys.argv[1:], 'us-east-1')
+    send(sys.argv[1:])
+    #results(sys.argv[1:], 'us-east-1')
