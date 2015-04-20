@@ -1,0 +1,35 @@
+{
+  "Type": "IGW",
+  "Description" : "Version 1.0.  Creates an Internet Gateway.",
+  "Parameters" : {
+    "IGWName" : {
+      "Description" : "Name of the new Internet Gateway",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "IGW" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [{
+            "Key" : "Name",
+            "Value" : {"Ref":"IGWName"}
+          }
+        ]
+      }
+    }
+  },
+  "Outputs" : {
+    "IGWID" : {
+      "Description" : "ID of created IGW",
+      "Value" : {
+        "Ref" : "IGW"
+      }
+    }
+  },
+  "Connections":{
+    "References":[
+        {"Type":"IGWAttachment"}
+    ]
+  }
+}

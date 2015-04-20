@@ -1,0 +1,37 @@
+{
+  "Type": "VPC",
+  "Description" : "Version 1.0.  Creates a new VPC.",
+  "Parameters" : {
+    "VPCCidr" : {
+      "Description" : "Desired CIDR of new VPC",
+      "Type" : "String"
+    },
+    "VPCName" : {
+      "Description" : "Name of the new VPC",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "VPC" : {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : {
+          "Ref" : "VPCCidr"
+        },
+        "Tags" : [{
+            "Key" : "Name",
+            "Value" : {"Ref":"VPCName"}
+          }
+        ]
+      }
+    }
+  },
+  "Outputs" : {
+    "VPCID" : {
+      "Description" : "ID of created VPC",
+      "Value" : {
+        "Ref" : "VPC"
+      }
+    }
+  }
+}

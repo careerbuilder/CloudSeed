@@ -1,0 +1,39 @@
+{
+  "Type": "SubnetACLAssociation",
+  "Description" : "Version 1.0.  Associates an ACL with a subnet",
+  "Parameters" : {
+    "ACL" : {
+      "Description" : "ID of ACL",
+      "Type" : "String"
+    },
+    "Subnet" : {
+      "Description" : "ID of Associated Subnet",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "SubnetACLAssociation" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "NetworkAclId" : {
+          "Ref" : "ACL"
+        },
+        "SubnetId" : {
+          "Ref" : "Subnet"
+        }
+      }
+    }
+  },
+  "Connections":{
+    "Substitutes":[
+        {
+            "Parameter": "ACL",
+            "Type":"ACL"
+        },
+        {
+            "Parameter": "Subnet",
+            "Type":"Subnet"
+        }
+    ]
+  }
+}

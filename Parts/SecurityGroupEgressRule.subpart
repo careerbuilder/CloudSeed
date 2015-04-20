@@ -1,0 +1,39 @@
+{
+    "Type": "SecurityGroupEgressRule",
+    "Variables" : {
+        "CidrIp": {
+            "Description": "CIDR for security group Egress",
+            "Type": "String",
+            "Reference": true
+        },
+        "IpProtocol": {
+            "Description": "Egress protocol",
+            "Type": "String",
+            "Default": "tcp",
+            "Reference": true
+        },
+        "FromPort": {
+            "Description": "Start port for security group Egress",
+            "Default": "0",
+            "Type": "Number",
+            "Reference": true
+        },
+        "ToPort": {
+            "Description": "End point for security group Egress",
+            "Type": "Number",
+            "Default": "65535",
+            "Reference": true
+        }         
+    },
+    "Object":{
+        "IpProtocol" : {"Ref": "EgressProtocol"},
+        "FromPort"   : {"Ref": "EgressFromPort"},
+        "ToPort"     : {"Ref": "EgressToPort"},
+        "CidrIp"     : {"Ref": "EgressCidr"}
+    },
+    "Connections":{
+        "Dependencies":[{"Type": "SecurityGroup"}],
+        "References":{},
+        "Substitutes":[]
+    }
+}

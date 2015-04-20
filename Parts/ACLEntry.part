@@ -1,0 +1,54 @@
+{
+  "Type": "ACLEntry",
+  "Description" : "Version 1.0.  Adds Rules to a Network ACL",
+  "Parameters" : {
+    "ACL" : {
+      "Description" : "Base ACL for new Rules",
+      "Type" : "String"
+    },
+    "Cidr":{
+      "Description" : "Cidr Block",
+      "Type" : "String"
+    },
+    "EgressRule":{
+      "Description" : "Egress rule",
+      "Type" : "String",
+      "Default":"false"
+    },
+    "Prot" :{
+      "Description" : "Protocol for rule",
+      "Type" : "String",
+      "Default": "-1"
+    },
+    "Action": {
+      "Description" : "Action for rule",
+      "Type" : "String",
+      "Default": "Allow"
+    },
+    "RuleNum": {
+      "Description" : "Rule Number",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "ACLEntry": {
+        "Type" : "AWS::EC2::NetworkAclEntry",
+        "Properties" : {
+            "CidrBlock" : {"Ref": "Cidr"},
+            "Egress" : {"Ref": "EgressRule"},
+            "Protocol"  : {"Ref": "Prot"},
+            "RuleAction" : {"Ref": "Action"},
+            "RuleNumber" : {"Ref": "RuleNum"},
+            "NetworkAclId": {"Ref": "ACL"}
+        }
+    }
+  },
+  "Connections":{
+    "Substitutes":[            
+      {
+        "Parameter": "ACL",
+        "Type":"ACL"
+      }
+    ]
+  }
+}

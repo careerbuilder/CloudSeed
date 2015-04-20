@@ -1,0 +1,52 @@
+{
+  "Type": "ACL",
+  "Description" : "Version 1.0.  Creates an ACL.",
+  "Parameters" : {
+    "VPC" : {
+      "Description" : "ID of VPC in which the ACL will reside",
+      "Type" : "String"
+    },
+    "ACLName" : {
+      "Description" : "Name of Created ACL",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "ACL" : {
+      "Type" : "AWS::EC2::NetworkAcl",
+      "Properties" : {
+        "VpcId" : {
+          "Ref" : "VPC"
+        },
+        "Tags" : [{
+            "Key" : "Network",
+            "Value" : "Public"
+          }, {
+            "Key" : "Name",
+            "Value" : {"Ref":"ACLName"}
+          }
+        ]
+      }
+    }
+  },
+  "Outputs" : {
+    "ACLID" : {
+      "Description" : "ID of created ACL",
+      "Value" : {
+        "Ref" : "ACL"
+      }
+    }
+  },
+  "Connections":{
+    "References":[
+        {"Type":"List::ACLEntry"},
+        {"Type":"SubnetACLAssociation"}
+    ],
+    "Substitutes":[            
+        {
+            "Parameter": "VPC",
+            "Type":"VPC"
+        }
+    ]
+  }
+}

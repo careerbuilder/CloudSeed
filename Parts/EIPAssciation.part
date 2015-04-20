@@ -1,0 +1,29 @@
+{
+  "Type": "EIPAssociation",
+  "Description" : "Version 1.0.  Associates an EIP.",
+  "Parameters" : {
+    "ElasticIP":{
+        "Description": "ElasticIP. Blank for new",
+        "Type": "String"
+    },
+    "Instance":{
+      "Description": "Instance to associate",
+      "Type": "String"
+    }
+  },
+  "Resources" : {
+    "EIPAssociation":{
+        "Type": "AWS::EC2::EIPAssociation",
+        "Properties": {
+            "EIP": {"Ref":"ElasticIP"},
+            "InstanceId": {"Ref":"Instance"}
+        }
+    }
+  },
+  "Connections":{
+    "Substitutes": [
+      {"Type":"EIP", "Parameter":"ElasticIP"},
+      {"Type":"EC2", "Parameter":"Instance"}
+    ]
+  }
+}

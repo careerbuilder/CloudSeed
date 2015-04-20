@@ -1,0 +1,39 @@
+{
+    "Type": "SecurityGroupIngressRule",
+    "Variables" : {
+        "CidrIp": {
+            "Description": "CIDR for security group Ingress",
+            "Type": "String",
+            "Reference": true
+        },
+        "IpProtocol": {
+            "Description": "Ingress protocol",
+            "Type": "String",
+            "Default": "tcp",
+            "Reference": true
+        },
+        "FromPort": {
+            "Description": "Start port for security group Ingress",
+            "Type": "Number",
+            "Default": "0",
+            "Reference": true
+        },
+        "ToPort": {
+            "Description": "End point for security group Ingress",
+            "Type": "Number",
+            "Default": "65535",
+            "Reference": true
+        }         
+    },
+    "Object":{
+        "IpProtocol" : {"Ref": "IngressProtocol"},
+        "FromPort"   : {"Ref": "IngressFromPort"},
+        "ToPort"     : {"Ref": "IngressToPort"},
+        "CidrIp"     : {"Ref": "IngressCidr"}
+    },
+    "Connections":{
+        "Dependencies":[{"Type": "SecurityGroup"}],
+        "References":{},
+        "Substitutes":[]
+    }
+}

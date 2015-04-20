@@ -1,0 +1,138 @@
+{
+    "Type": "Subnet",
+    "Parameters": {
+        "Region": {
+            "Description": "Name of regional footprint for the VPC",
+            "Type": "String",
+            "AllowedValues": [
+                "USEast",
+                "USEastTest",
+                "Ireland",
+                "Singapore"
+            ],
+            "ConstraintDescription": "Must specify USEast, USEastTest, Ireland, or Singapore."
+        },
+        "TeamName": {
+            "Description": "Name of the team that will have access to the server management within these subnets - must match Team tag value",
+            "Type": "String"
+        },
+        "SubnetName": {
+            "Description": "Name of the public internet-facing subnet for use with new massive elb subnet",
+            "Type": "String",
+            "Default": ""
+        },
+        "Accessibility": {
+            "Description": "Is the subnet Public or Private, ie do any instances need public IP resolution?",
+            "Type": "String",
+            "AllowedValues": [
+                "Private",
+                "Public"
+            ],
+            "ConstraintDescription": "Must specify Public or Private."
+        },
+        "SubnetCIDR": {
+            "Description": "CIDR block for the subnet in the first AZ",
+            "Type": "String"
+        },
+        "VPC": {
+            "Description": "VPC ID",
+            "Type": "String"
+        }
+    },
+    "Mappings": {
+        "AZConfig": {
+            "USEast": {
+                "One": "us-east-1b",
+                "Two": "us-east-1c",
+                "Three": "us-east-1d"
+            },
+            "USEastTest": {
+                "One": "us-east-1b",
+                "Two": "us-east-1c",
+                "Three": "us-east-1d"
+            },
+            "Ireland": {
+                "One": "eu-west-1a",
+                "Two": "eu-west-1c",
+                "Three": "eu-west-1b"
+            },
+            "Singapore": {
+                "One": "ap-southeast-1a",
+                "Two": "ap-southeast-1b"
+            }
+        }
+    },
+    "Conditions": {
+        "IsPrivateSubnet": {
+            "Fn::Equals": [{"Ref": "Accessibility"},"Private"]
+        },
+        "HasSubnetName": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [{"Ref": "SubnetName"},""]
+                }
+            ]
+        }
+    },
+    "Resources": {
+        "Subnet": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "CidrBlock": {
+                    "Ref": "SubnetCIDR"
+                },
+                "AvailabilityZone": {
+                    "Fn::FindInMap": [
+                        "AZConfig",
+                        {
+                            "Ref": "Region"
+                        },
+                        "One"
+                    ]
+                },
+                "VpcId": {"Ref": "VPC"},
+                "Tags": [
+                    {
+                        "Key": "Team",
+                        "Value": {"Ref": "TeamName"}
+                    },
+                    {
+                        "Key": "Name",
+                        "Value":{
+                            "Fn::If": [
+                                "HasSubnetName",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [{"Ref": "SubnetName"},"Subnet"]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [{"Ref": "TeamName"},"Subnet"]
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "Outputs": {
+        "SubnetID": {
+            "Description": "ID of created subnet",
+            "Value": {"Ref": "Subnet"}
+        }
+    },
+    "Connections":{
+        "References":[],
+        "Substitutes":[            
+            {
+                "Parameter": "VPC",
+                "Type":"VPC"
+            }
+        ]
+    }
+}

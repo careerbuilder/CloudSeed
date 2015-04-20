@@ -1,0 +1,52 @@
+{
+    "Type": "SecurityGroup",
+    "Parameters" : {
+        "VPC": {
+            "Description": "VPC ID",
+            "Type": "AWS::EC2::VPC::Id"
+        },
+        "SGName":{
+            "Description": "Name of the created SG",
+            "Type": "String"
+        },
+        "SGDescription":{
+            "Description": "Describe the group",
+            "Type": "String"
+        }
+    },
+    "Resources":{
+        "SecurityGroup":{
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : {"Ref":"SGDescription"},
+                "VpcId": {"Ref" : "VPC"},
+                "Tags": [
+                    {
+                        "Key" : "Name",
+                        "Value" : {"Ref" : "SGName"}
+                    }
+				],
+                "SecurityGroupIngress" : [],
+                "SecurityGroupEgress": []
+            }
+        }
+    },
+    "Outputs":{
+        "SecurityGroupID": {
+            "Description": "ID of created security group",
+            "Value": {"Ref": "SecurityGroup"}
+        }
+    },
+    "Connections":{
+        "SubParts":{
+            "SecurityGroupIngress": {"Type": "List::SecurityGroupIngressRule"},
+            "SecurityGroupEgress": {"Type": "List::SecurityGroupEgressRule"}
+        },
+        "Substitutes":[
+            {
+                "Parameter": "VPC",
+                "Type":"VPC"
+            }
+        ]
+    }
+}

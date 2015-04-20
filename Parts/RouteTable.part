@@ -1,0 +1,49 @@
+{
+  "Type": "RouteTable",
+  "Description" : "Version 1.0.  Creates a RouteTable.",
+  "Parameters" : {
+    "VPC" : {
+      "Description" : "ID of VPC to use",
+      "Type" : "String"
+    },
+    "RouteTableName" : {
+      "Description" : "Name of created Route Table",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "RouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : {
+          "Ref" : "VPC"
+        },
+        "Tags" : [{
+            "Key" : "Name",
+            "Value" : {"Ref":"RouteTableName"}
+          }
+        ]
+      }
+    }
+  },
+  "Outputs" : {
+    "RouteTableID" : {
+      "Description" : "ID of Associated Route",
+      "Value" : {
+        "Ref" : "RouteTable"
+      }
+    }
+  },
+  "Connections":{
+    "References":[
+        {"Type":"List::IGWRoute"},
+        {"Type":"List::SubnetRoute"}
+    ],
+    "Substitutes":[            
+        {
+            "Parameter": "VPC",
+            "Type":"VPC"
+        }
+    ]
+  }
+}

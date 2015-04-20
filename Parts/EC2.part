@@ -1,0 +1,64 @@
+{
+  "Type": "EC2",
+  "Parameters" : {
+    "Subnet" : {
+      "Description" : "ID for the home subnet",
+      "Type" : "String"
+    },
+    "AMI" : {
+      "Description" : "ID of AMI",
+      "Type" : "String"
+    },
+    "Size" : {
+      "Description" : "Size of the Instance",
+      "Type" : "String",
+      "AllowedPattern" : "[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
+    },
+    "InstanceName" : {
+      "Description" : "Name of the created Instance",
+      "Type" : "String"
+    },
+    "KeyName" : {
+      "Description" : "Name of private key",
+      "Type" : "String"
+    },
+    "SecurityGroups":{
+        "Description": "SecurityGroups which govern the Instance",
+        "Type": "CommaDelimitedList",
+        "Default": ""
+    }
+  },
+  "Resources" : {
+    "EC2" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : {"Ref" : "AMI"},
+        "InstanceType" : {"Ref" : "Size"},
+        "KeyName" : {"Ref" : "KeyName"},
+        "SecurityGroupIds" : {"Ref" : "SecurityGroups"},
+        "SubnetId" : {"Ref" : "Subnet"},
+        "Tags" : [{"Key" : "Name","Value" : {"Ref" : "InstanceName"}}]
+      }
+    }
+  },
+  "Outputs" : {
+    "InstanceID" : {
+      "Description" : "ID of created Instance",
+      "Value" : {"Ref" : "EC2"}
+    }
+  },
+  "Connections":{
+    "Dependencies":[],
+    "References":[],
+    "Substitutes":[            
+            {
+                "Parameter": "Subnet",
+                "Type":"Subnet"
+            },
+            {
+                "Parameter": "SecurityGroups",
+                "Type": "List::SecurityGroup"
+            }
+        ]
+  }
+}
