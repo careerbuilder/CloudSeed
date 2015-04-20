@@ -12,6 +12,12 @@
             ],
             "ConstraintDescription": "Must specify USEast, USEastTest, Ireland, or Singapore."
         },
+        "AZ":{
+          "Description": "AvailabilityZone in the provided region"
+          "Type":"String",
+          "Default":"One",
+          "AllowedValues": ["One", "Two", "Three"]
+        }
         "TeamName": {
             "Description": "Name of the team that will have access to the server management within these subnets - must match Team tag value",
             "Type": "String"
