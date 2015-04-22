@@ -68,8 +68,7 @@ def prompt(params):
             value = input("\t" + input_message)
             if len(value) < 1:
                 if "Default" in params[key]:
-                    if "Reference" in params[key]:
-                        options[key] = params[key]['Default']
+                    options[key] = params[key]['Default']
                     accepted = True
                 else:
                     print("No default value specified, please enter a value")
@@ -161,7 +160,7 @@ def changeNames(part, mod):
     if 'Outputs' in part:
         outs = OrderedDict()
         for out in part['Outputs']:
-            outs[out+str(mod['Count'])] = part['Outputs'][out]
+            outs[out + str(mod['Count'])] = part['Outputs'][out]
         part['Outputs'] = outs
 
 
@@ -282,11 +281,11 @@ def generate(layers):
     outfile.close()
     print("Stack File " + name + " Saved!")
     answer = ''
-    while answer == 'Y' or answer == 'N':
+    while answer != 'Y' and answer != 'N':
         go_on = input("Create stack now? (y/n): ")
         answer = go_on.upper()[0]
         if answer == 'Y':
-            send(name)
+            send([name])
         if answer == 'N':
             exit(0)
         else:
