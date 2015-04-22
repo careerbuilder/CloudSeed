@@ -1,0 +1,33 @@
+{
+  "name": "Cloud_Seed",
+  "version": "1.0.0",
+  "description": "A Cloudformation Template generator",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbdr/Cloud_Seed"
+  },
+  "keywords": [
+    "Node",
+    "AWS",
+    "CloudFormation",
+    "Template",
+    "Parts"
+  ],
+  "author": "Adam Yost",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cbdr/Cloud_Seed/issues"
+  },
+  "homepage": "https://github.com/cbdr/Cloud_Seed",
+  "dependencies": {
+    "body-parser": "^1.12.3",
+    "ejs": "^2.3.1",
+    "express": "^4.12.3",
+    "mongodb": "~1.4",
+    "mongoskin": "latest"
+  }
+}
