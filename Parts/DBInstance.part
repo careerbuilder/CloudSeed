@@ -93,7 +93,10 @@
         }       
     },
     "Outputs": {
-      "RDSID":{"Ref":"DBInstance"}
+      "RDSID":{
+        "Description": "ID of created Instance",
+        "Value":{"Ref":"DBInstance"}
+      }
     },
     "Connections":{
       "Substitutes":[
