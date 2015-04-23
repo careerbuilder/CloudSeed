@@ -1,21 +1,25 @@
 var express    = require('express'); 		// call express
-var app        = express(); 			// define our app using express
 var bodyParser = require('body-parser');
+var path       = require('path');
+var app        = express(); 			// define our app using express
+
 
 app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
-//app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'views')));
 app.use(bodyParser.json())
 var port = 3000;
 
 // ROUTES FOR OUR API
 // =============================================================================
-//var login = require('./routes/login.js');
 var parts = require('./routes/parts.js');
 var stacks = require('./routes/stacks.js');
-// app.use(login);
 app.use(parts);
 app.use(stacks);
+
+app.get('/', function(req, res){
+  res.render('index');
+});
 
 //keep this last, as it will return 404
 app.use(function(req, res, next){

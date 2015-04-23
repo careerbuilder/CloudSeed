@@ -17,7 +17,7 @@ router.get('/api/parts', function(req, res){
     if(err){
       throw err;
     }
-    console.log(results);
+    // console.log(results);
     return res.send(results);
   });
 });
@@ -27,7 +27,7 @@ router.get('/api/parts/:type', function(req, res){
     if(err){
       throw err;
     }
-    console.log(results);
+  //  console.log(results);
     return res.send(results);
   });
 });
