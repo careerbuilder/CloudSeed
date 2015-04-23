@@ -1,0 +1,13 @@
+body{
+  padding-top:65px;
+}
+
+.sidebar{
+  width:250px;
+  float:left;
+}
+
+#stage{
+  padding-left:10px;
+  float:left;
+}

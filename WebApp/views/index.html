@@ -4,16 +4,56 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
     <title>CloudSeed</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <!-- Styles -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/material.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/ripples.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/roboto.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- bootstrap scripts-->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script><!-- load jquery -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/bootstrap-material-design/dist/js/material.min.js"></script>
+    <script src="bower_components/bootstrap-material-design/dist/js/ripples.min.js"></script>
+    <!--angular  -->
+    <script src="bower_components/angular/angular.min.js"></script><!-- load angular -->
+    <!-- controllers -->
     <script type="text/javascript" src="app.js"></script>
   </head>
-  <body>
-    <div ng-controller="PartsController">
-      <ul ng-repeat="part in parts">
-        <li>{{part.Type}}</li>
-      </ul>
+  <body ng-controller="PageController" style="padding-top: 70px;">
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <button type="button" class="btn btn-lg navbar-btn navbar-left" ng-click="toggleSide()">
+            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="btn navbar-btn navbar-left" ng-click="tb=1">
+            <span>Test</span>
+        </button>
+      </div>
+    </nav>
+    <div class="container-fluid" id="page" ng-controller="PartsController">
+      <div class="well-material-grey sidebar"  ng-show="showSide">
+        <ul class="nav nav-stacked">
+          <li role="prensentation"><h4>Add a Part</h4></li>
+          <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
+            <button class="btn navbar-btn" ng-click="addPart(part.Type)">{{part.Type}}</button>
+          </li>
+        </ul>
+      </div>
+      <div id="stage">
+        <h1>Hello!</h1>
+        <div ng-repeat="apart in addedParts track by $index">
+          <h3>{{apart.LogicalName}}</h3>
+          <form>
+            <div ng-repeat"(key, value) in apart.Ref.Parameters">
+              <h5>{{key}}</h5>
+              <input type="text" class="form-control" placeholder="{{key}}" aria-describedby="basic-addon1">
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
   </body>

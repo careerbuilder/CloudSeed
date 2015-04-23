@@ -13,7 +13,7 @@ router.get('/api/test', function(req, res){
 });
 
 router.get('/api/parts', function(req, res){
-  db.collection('parts').find({},{"_id":false}).toArray(function(err, results){
+  db.collection('parts').find({Subpart:false},{"_id":false}).toArray(function(err, results){
     if(err){
       throw err;
     }
