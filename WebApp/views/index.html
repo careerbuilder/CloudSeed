@@ -45,13 +45,29 @@
       <div id="stage">
         <h1>Hello!</h1>
         <div ng-repeat="apart in addedParts track by $index">
-          <h3>{{apart.LogicalName}}</h3>
-          <form>
-            <div ng-repeat"(key, value) in apart.Ref.Parameters">
-              <h5>{{key}}</h5>
-              <input type="text" class="form-control" placeholder="{{key}}" aria-describedby="basic-addon1">
-            </div>
-          </form>
+          <h3>
+            <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
+            {{apart.LogicalName}}
+          </h3>
+          <!--
+          <div ng-repeat="(key, value) in apart.Definition.Parameters">
+            <form>
+              <p class="paramTitle"><b>{{key}}</b> - {{value.Description}}</p>
+              <input type="text" class="form-control paraminput" placeholder="{{key}}" ng-hide="value.AllowedValues.length">
+              <div class="dropdown" ng-show="value.AllowedValues.length">
+                <button class="btn btn-default dropdown-toggle" type="button" id="valueddl" data-toggle="dropdown" aria-expanded="true">
+                  AllowedValues
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="presentation" ng-repeat="av in value.AllowedValues">
+                    <a role="menuitem" tabindex="{{$index}}" href="#" >{{av}}</a>
+                  </li>
+                </ul>
+              </div>
+            </form>
+          </div>
+        -->
         </div>
       </div>
     </div>

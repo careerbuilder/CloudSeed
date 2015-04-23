@@ -36,8 +36,20 @@
         }
       }
       newcount = num+1;
-      $scope.addedParts.push({Type: type, Count: newcount, LogicalName:type+""+newcount, Ref:copy});
+      mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Definition:copy}
+      $scope.addedParts.push(mod);
     }
+
+    $scope.removePart=function(name){
+      for(i=0; i<$scope.addedParts.length; i++){
+        if($scope.addedParts[i].LogicalName === name){
+          $scope.addedParts.splice(i, 1);
+        }
+      }
+    }
+
+
+
   });
 
 })();
