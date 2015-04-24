@@ -20,11 +20,13 @@
     $scope.addPart=function(type){
       for(i=0; i<$scope.parts.length; i++){
         part = $scope.parts[i];
-        copy = part.constructor();
-        for (var attr in part) {
-          if (part.hasOwnProperty(attr)) copy[attr] = part[attr];
+        if(part.Type === type){
+          copy = part.constructor();
+          for (var attr in part) {
+            if (part.hasOwnProperty(attr)) copy[attr] = part[attr];
+          }
+          break;
         }
-        break;
       }
       num = 0;
       for(j=0; j<$scope.addedParts.length; j++){
@@ -47,9 +49,7 @@
         }
       }
     }
-
-
-
+    
   });
 
 })();

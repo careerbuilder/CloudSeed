@@ -34,29 +34,32 @@
       </div>
     </nav>
     <div class="container-fluid" id="page" ng-controller="PartsController">
-      <div class="well-material-grey sidebar"  ng-show="showSide">
+      <div class="well-material-grey sidebar well"  ng-show="showSide">
         <ul class="nav nav-stacked">
           <li role="prensentation"><h4>Add a Part</h4></li>
           <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
-            <button class="btn navbar-btn" ng-click="addPart(part.Type)">{{part.Type}}</button>
+            <button class="btn navbar-btn" ng-click="addPart(part.Type)" style="min-width:100%; padding-top:0px; padding-bottom:0px; text-align:left;">{{part.Type}}</button>
           </li>
         </ul>
       </div>
       <div id="stage">
-        <h1>Hello!</h1>
-        <div ng-repeat="apart in addedParts track by $index">
-          <h3>
-            <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
-            {{apart.LogicalName}}
-            <span class="glyphicon glyphicon-triangle-bottom" style="padding-left:5px; font-size:10pt;" ng-click="apart.Collapsed = false" ng-show="apart.Collapsed"></span>
-            <span class="glyphicon glyphicon-triangle-top" style="padding-left:5px; font-size:10pt;" ng-click="apart.Collapsed = true" ng-hide="apart.Collapsed"></span>
-          </h3>
-          <div ng-hide="apart.Collapsed">
-            <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-init="value.ddtext = 'AllowedValues'">
-              <form>
-                <p class="paramTitle"><b>{{key}}</b> - {{value.Description}}</p>
-                <input type="text" class="form-control paraminput" placeholder="{{key}}" ng-hide="value.AllowedValues.length">
-                <div class="dropdown" ng-show="value.AllowedValues.length">
+        <h1>Parts</h1>
+        <div ng-repeat="apart in addedParts track by $index" class="panel panel-default partpanel">
+          <div class="panel-heading" ng-click="apart.Collapsed = !apart.Collapsed">
+              <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
+              <h3 style="display:inline;">{{apart.LogicalName}}</h3>
+              <span class="glyphicon glyphicon-triangle-bottom" style="font-size:10pt; float:right;" ng-show="apart.Collapsed"></span>
+              <span class="glyphicon glyphicon-triangle-top" style="font-size:10pt; float:right;" ng-hide="apart.Collapsed"></span>
+          </div>
+          <div class="panel-body" ng-hide="apart.Collapsed">
+            <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-init="value.ddtext = 'AllowedValues'" class="input-group">
+                <span class="input-group-addon" id="{{key}}-Title" style="min-width:175px; text-align:left;"><b>{{key}}</b></span>
+                <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" ng-hide="value.AllowedValues.length">
+                <select class="selectpicker form-control" title="{{value.Description}}" ng-show="value.AllowedValues.length">
+                  <option ng-repeat="av in value.AllowedValues" ng-click="value.ddtext=av">{{av}}</option>
+                </select>
+                <!--
+                <div class="input-group-btn" ng-show="value.AllowedValues.length">
                   <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                     {{value.ddtext}}
                     <span class="caret"></span>
@@ -67,7 +70,7 @@
                     </li>
                   </ul>
                 </div>
-              </form>
+              -->
             </div>
           </div>
         </div>

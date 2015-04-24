@@ -14,8 +14,9 @@ body{
 #stage{
   padding-left:10px;
   float:left;
-}
+  width:80%;
 
+}
 .paramTitle{
   padding-left: 50px;
 }
