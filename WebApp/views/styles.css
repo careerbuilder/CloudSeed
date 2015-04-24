@@ -2,6 +2,10 @@ body{
   padding-top:65px;
 }
 
+[ng-click], [data-ng-click], [x-ng-click] {
+    cursor: pointer;
+}
+
 .sidebar{
   width:250px;
   float:left;
@@ -17,8 +21,4 @@ body{
 }
 .paramInput{
   padding-left:50px;
-}
-
-[ng-click], [data-ng-click], [x-ng-click] {
-    cursor: pointer;
 }

@@ -48,29 +48,30 @@
           <h3>
             <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
             {{apart.LogicalName}}
+            <span class="glyphicon glyphicon-triangle-bottom" style="padding-left:5px; font-size:10pt;" ng-click="apart.Collapsed = false" ng-show="apart.Collapsed"></span>
+            <span class="glyphicon glyphicon-triangle-top" style="padding-left:5px; font-size:10pt;" ng-click="apart.Collapsed = true" ng-hide="apart.Collapsed"></span>
           </h3>
-          <!--
-          <div ng-repeat="(key, value) in apart.Definition.Parameters">
-            <form>
-              <p class="paramTitle"><b>{{key}}</b> - {{value.Description}}</p>
-              <input type="text" class="form-control paraminput" placeholder="{{key}}" ng-hide="value.AllowedValues.length">
-              <div class="dropdown" ng-show="value.AllowedValues.length">
-                <button class="btn btn-default dropdown-toggle" type="button" id="valueddl" data-toggle="dropdown" aria-expanded="true">
-                  AllowedValues
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li role="presentation" ng-repeat="av in value.AllowedValues">
-                    <a role="menuitem" tabindex="{{$index}}" href="#" >{{av}}</a>
-                  </li>
-                </ul>
-              </div>
-            </form>
+          <div ng-hide="apart.Collapsed">
+            <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-init="value.ddtext = 'AllowedValues'">
+              <form>
+                <p class="paramTitle"><b>{{key}}</b> - {{value.Description}}</p>
+                <input type="text" class="form-control paraminput" placeholder="{{key}}" ng-hide="value.AllowedValues.length">
+                <div class="dropdown" ng-show="value.AllowedValues.length">
+                  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    {{value.ddtext}}
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li role="presentation" ng-repeat="av in value.AllowedValues">
+                      <a role="menuitem" tabindex="{{$index}}" ng-click="value.ddtext=av">{{av}}</a>
+                    </li>
+                  </ul>
+                </div>
+              </form>
+            </div>
           </div>
-        -->
         </div>
       </div>
     </div>
-
   </body>
 </html>

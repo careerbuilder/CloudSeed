@@ -36,7 +36,7 @@
         }
       }
       newcount = num+1;
-      mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Definition:copy}
+      mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: true, Definition:copy}
       $scope.addedParts.push(mod);
     }
 
