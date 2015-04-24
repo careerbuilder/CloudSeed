@@ -17,9 +17,12 @@ body{
   width:80%;
 
 }
-.paramTitle{
-  padding-left: 50px;
-}
-.paramInput{
-  padding-left:50px;
+.partbutton{
+  min-width:100%;
+  min-height:40px;
+  padding-top:0px;
+  padding-bottom:0px;
+  margin-top:0px;
+  margin-bottom:0px;
+  text-align:left;
 }
