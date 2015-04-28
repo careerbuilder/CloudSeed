@@ -53,7 +53,13 @@
           </div>
         -->
           <h1>Parts</h1>
-          <button class="btn btn-lg" ng-show="addedParts.length > 0 && PartsForm.$valid" ng-click="saveTemplate()">Build</button>
+          <button class="btn" ng-click="loadTemplate('GenTestStack')">Load</button>
+          <div class="input-group" ng-show="addedParts.length > 0 && PartsForm.$valid" style="width:20%;">
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="saveTemplate()" type="button">Save</button>
+            </span>
+            <input type="text" class="form-control" ng-model="build.Name">
+          </div>
           <div ng-repeat="apart in addedParts track by $index" class="panel panel-default partpanel">
             <div class="panel-heading" ng-click="apart.Collapsed = !apart.Collapsed">
                 <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>

@@ -244,11 +244,18 @@
       $scope.build.Template = template;
       $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
       console.log(template);
-      if($scope.build.Name && $scope.build.Region){
+      if($scope.build.Name){
         $http.post('http://localhost:3000/api/stacks', $scope.build).success(function(data){
             console.log("saved template!")
         });
       }
+    }
+
+    $scope.loadTemplate=function(name){
+      $http.get('http://localhost:3000/api/stacks/'+name).success(function(data){
+        $scope.build = data[0];
+        $scope.addedParts = data[0]['Parts'];
+      });
     }
 
   });})();

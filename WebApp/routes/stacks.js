@@ -5,7 +5,7 @@ var cf = new aws.CloudFormation({region:'us-east-1'});
 var router = express.Router();
 
 router.get('/api/stacks', function(req, res){
-  db.collection('stacks').find({},{"_id":false}).toArray(function(err, results){
+  db.collection('stacks').find({},{"Name":true}).toArray(function(err, results){
     if(err){
       throw err;
     }
