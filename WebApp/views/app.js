@@ -19,7 +19,7 @@
 
     $scope.addPart=function(type){
       copy = {};
-      for(i=0; i<$scope.parts.length; i++){
+      for(var i=0; i<$scope.parts.length; i++){
         var part = $scope.parts[i];
         if(part.Type === type){
             copy = JSON.parse(JSON.stringify(part));
@@ -50,17 +50,20 @@
     }
 
     $scope.removePart=function(name){
-      for(i=0; i<$scope.addedParts.length; i++){
+      for(var i=0; i<$scope.addedParts.length; i++){
         if($scope.addedParts[i].LogicalName === name){
           $scope.addedParts.splice(i, 1);
         }
       }
       for(j=0; j<$scope.addedParts.length; j++){
         var part = $scope.addedParts[j];
-        for(k=0; k<part.Definition.Connections.Substitutes.length; k++){
-          var sub = part.Definition.Connections.Substitutes[k];
-          if(sub.Reference === name){
-            $scope.setParam(part, sub, 'None');
+        if(part.Definition.Connections){
+          var subs = part.Definition.Connections.Substitutes || [];
+          for(k=0; k<subs.length; k++){
+            var sub = subs[k];
+            if(sub.Reference === name){
+              $scope.setParam(part, sub, 'None');
+            }
           }
         }
       }
@@ -74,7 +77,7 @@
         ct = subtype;
       }
       var subs = [];
-      for(i=0; i<$scope.addedParts.length; i++){
+      for(var i=0; i<$scope.addedParts.length; i++){
         part = $scope.addedParts[i];
         if(part.Type === ct){
           subs.push(part.LogicalName);
@@ -102,7 +105,7 @@
           sub.Reference = [];
         }else{
           var found = false;
-          for(i=0; i<sub.Reference.length; i++){
+          for(var i=0; i<sub.Reference.length; i++){
             if(sub.Reference[i] === name){
               found = true;
               sub.Reference.splice(i,1);
@@ -126,30 +129,40 @@
     }
 
     $scope.replaceRefs = function(apart){
-      var resstring = JSON.stringify($scope.replaceNames(apart.Definition.Resources || {}, apart.Count));
-      var outputstring = JSON.stringify($scope.replaceNames(apart.Definition.Outputs || {}, apart.Count));
-      var condstring = JSON.stringify($scope.replaceNames(apart.Definition.Conditions || {}, apart.Count));
+      var partstring = JSON.stringify(apart.Definition);
+      for(var mapp in apart.Definition.Mappings){
+        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(mapp) +'\s*\}', 'g');
+        partstring = partstring.replace(re, JSON.stringify({Ref:mapp+""+apart.Count}));
+      }
+      for(var cond in apart.Definition.Conditions){
+        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(cond) +'\s*\}', 'g');
+        partstring = partstring.replace(re, JSON.stringify({Ref:cond+""+apart.Count}));
+      }
+      for(var res in apart.Definition.Resources){
+        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(res) +'\s*\}', 'g');
+        partstring = partstring.replace(re, JSON.stringify({Ref:res+""+apart.Count}));
+      }
       for(var param in apart.Definition.Parameters){
         if(!apart.Definition.Parameters[param].Hidden){
-          var re = new RegExp('\{\s*"Ref"\s*:\s*"'+ param +'"\s*\}', 'g');
-          resstring = resstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
-          outputstring = outputstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
-          condstring = condstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
+          var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
+          partstring = partstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
         }
       }
-      var subs = apart.Definition.Connections.Substitutes || [];
-      for(i=0; i<subs.length; i++){
-        sub = subs[i];
-        if(sub.Reference.length > 0 && sub.Reference != 'None'){
-          var re = new RegExp('\{\s*"Ref"\s*:\s*"'+ sub.Parameter +'"\s*\}', 'g');
-          resstring = resstring.replace(re, JSON.stringify({Ref:sub.Reference}));
-          outputstring = outputstring.replace(re, JSON.stringify({Ref:sub.Reference}));
-          condstring = condstring.replace(re, JSON.stringify({Ref:sub.Reference}));
+      if(apart.Definition.Connections){
+        var subs = apart.Definition.Connections.Substitutes || [];
+        for(var i=0; i<subs.length; i++){
+          sub = subs[i];
+          if(sub.Reference.length > 0 && sub.Reference != 'None'){
+            var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
+            partstring = partstring.replace(re, JSON.stringify({Ref:sub.Reference}));
+          }
         }
       }
-      apart.Definition.Resources = JSON.parse(resstring);
-      apart.Definition.Outputs = JSON.parse(outputstring);
-      apart.Definition.Conditions = JSON.parse(condstring);
+      apart.Definition = JSON.parse(partstring);
+      apart.Definition.Mappings = $scope.replaceNames(apart.Definition.Mappings || {}, apart.Count);
+      apart.Definition.Conditions = $scope.replaceNames(apart.Definition.Conditions || {}, apart.Count);
+      apart.Definition.Resources = $scope.replaceNames(apart.Definition.Resources || {}, apart.Count);
+      apart.Definition.Outputs = $scope.replaceNames(apart.Definition.Outputs || {}, apart.Count);
       //apart.Definition.Parameters = {};
     }
 
@@ -165,7 +178,7 @@
       template.Outputs = {};
       template.Conditions = {};
       template.Mappings = {};
-      for(i=0; i<$scope.addedParts.length; i++){
+      for(var i=0; i<$scope.addedParts.length; i++){
         $scope.replaceRefs($scope.addedParts[i]);
         var part = $scope.addedParts[i].Definition;
         for(var mapkey in part.Mappings){

@@ -33,5 +33,6 @@
         "Ref" : "VPC"
       }
     }
-  }
+  },
+  "Connections":{}
 }

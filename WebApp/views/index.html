@@ -38,14 +38,21 @@
         <ul class="nav nav-stacked">
           <li role="prensentation"><h4>Add a Part</h4></li>
           <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
-            <button class="btn navbar-btn partbutton" ng-click="addPart(part.Type)">{{part.Type}}</button>
+
+            <button class="btn navbar-btn partbutton" ng-click="addPart(part.Type)">
+              <span class="glyphicon glyphicon-plus" style="color:green;padding-right:10px;"></span>{{part.Type}}
+            </button>
           </li>
         </ul>
       </div>
       <div id="stage">
-        <h1>Parts</h1>
-        <button class="btn btn-lg" ng-show="addedParts.length > 0 && PartsForm.$valid" ng-click="buildStack()">Build</button>
         <form name="PartsForm" novalidate>
+          <!--
+          <div id="TemplateInfo">
+          </div>
+        -->
+          <h1>Parts</h1>
+          <button class="btn btn-lg" ng-show="addedParts.length > 0 && PartsForm.$valid" ng-click="buildStack()">Build</button>
           <div ng-repeat="apart in addedParts track by $index" class="panel panel-default partpanel">
             <div class="panel-heading" ng-click="apart.Collapsed = !apart.Collapsed">
                 <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
@@ -57,9 +64,9 @@
               <div ng-repeat="(key, value) in apart.Definition.Parameters" class="input-group" ng-hide="value.Hidden">
                   <span class="input-group-addon" id="{{key}}-Title" style="min-width:175px; text-align:left;"><b>{{key}}</b></span>
                   <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title"
-                    ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Default.length && !value.AllowedValues.length">
+                    ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default.length && !value.AllowedValues.length">
                   <select class="selectpicker form-control" title="{{value.Description}}"
-                    ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Default.length && value.AllowedValues.length">
+                    ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default.length && value.AllowedValues.length">
                     <option ng-repeat="av in value.AllowedValues">{{av}}</option>
                   </select>
               </div>
