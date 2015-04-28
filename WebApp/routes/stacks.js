@@ -26,7 +26,7 @@ router.get('/api/stacks/:name', function(req, res){
 });
 
 router.post('/api/stacks', function(req, res){
-  db.collection('stacks').insert(req.body['Stack'], function(err, result){
+  db.collection('stacks').insert(req.body, function(err, result){
     if(err){
       console.log(err);
       return res.send({Success: false, Error:err});
@@ -41,11 +41,11 @@ router.post('/api/stacks', function(req, res){
 router.post('/api/build', function(req, res){
   body = req.body;
   stack = body['Stack'];
-  stackname = stack['Name'];
+  stackname = body['Name'];
   cf.describeStacks({"StackName": stackname}, function(err, data){
     if(err){
       console.log("Creating stack");
-      cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Stack'])}, function(err, data){
+      cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack)}, function(err, data){
         if(err){
           console.log(err);
           return res.send({Success: false, Error:err});
