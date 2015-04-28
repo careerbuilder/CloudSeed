@@ -25,7 +25,7 @@
                         "Key" : "Name",
                         "Value" : {"Ref" : "SGName"}
                     }
-				],
+                ],
                 "SecurityGroupIngress" : [],
                 "SecurityGroupEgress": []
             }
@@ -39,8 +39,24 @@
     },
     "Connections":{
         "SubParts":{
-            "SecurityGroupIngress": {"Type": "List::SecurityGroupIngressRule"},
-            "SecurityGroupEgress": {"Type": "List::SecurityGroupEgressRule"}
+            "Properties|SecurityGroupIngress": {
+              "Type": "List::SecurityGroupIngressRule",
+              "Model": {
+                    "IpProtocol" : {"Type": "String"},
+                    "FromPort"   : {"Type": "Number"},
+                    "ToPort"     : {"Type": "Number"},
+                    "CidrIp"     : {"Type": "String"}
+              }
+            },
+            "Properties|SecurityGroupEgress": {
+              "Type": "List::SecurityGroupEgressRule",
+              "Model": {
+                    "IpProtocol" : {"Type": "String"},
+                    "FromPort"   : {"Type": "Number"},
+                    "ToPort"     : {"Type": "Number"},
+                    "CidrIp"     : {"Type": "String"}
+              }
+            }
         },
         "Substitutes":[
             {

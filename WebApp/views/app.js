@@ -13,6 +13,7 @@
   app.controller('PartsController', function($http, $scope){
     $scope.addedParts = [];
     $scope.parts = [];
+    $scope.build = {};
     $http.get('http://localhost:3000/api/parts').success(function(data){
       $scope.parts = data;
     });
@@ -120,6 +121,27 @@
       part.Definition.Parameters[param].Hidden=(sub.Reference.length > 0 && sub.Reference!='None');
     }
 
+    $scope.addSubPart=function(part,key){
+      var subpart = part.Definition.Connections.SubParts[key];
+      if(!part.subparts){
+        part.subparts = {};
+      }
+      if(!part.subparts[key]){
+        part.subparts[key] = [];
+      }
+      var isList = (subpart.Type.lastIndexOf('List::', 0) === 0);
+      if(isList){
+        part.subparts[key].push(JSON.parse(JSON.stringify(subpart['Model'])));
+      }
+      else{
+        part.subparts[key] = [JSON.parse(JSON.stringify(subpart['Model']))];
+      }
+    }
+
+    $scope.removeSubPart=function(part, key, index){
+      part.subparts[key].splice(index, 1);
+    }
+
     $scope.replaceNames = function(obj, append){
       var newobj = {};
       for(var key in obj){
@@ -163,7 +185,31 @@
       apart.Definition.Conditions = $scope.replaceNames(apart.Definition.Conditions || {}, apart.Count);
       apart.Definition.Resources = $scope.replaceNames(apart.Definition.Resources || {}, apart.Count);
       apart.Definition.Outputs = $scope.replaceNames(apart.Definition.Outputs || {}, apart.Count);
-      //apart.Definition.Parameters = {};
+      if(apart.subparts){
+        for(var subp in apart.subparts){
+          var models = apart.subparts[subp];
+          var path = subp.split('|');
+          var res = apart.Definition.Resources[apart.LogicalName];
+          for(var i=0; i<path.length; i++){
+            res = res[path[i]];
+          }
+          for(j=0; j<models.length; j++){
+            var sm = {};
+            var model = models[j];
+            var empty = false;
+            for(mparam in model){
+              if(!model[mparam].Value){
+                empty = true;
+                break;
+              }
+              sm[mparam] = model[mparam].Value;
+            }
+            if(!empty){
+              res.push(sm);
+            }
+          }
+        }
+      }
     }
 
     $scope.printPart=function(part){
@@ -172,7 +218,7 @@
       console.log(partstring);
     }
 
-    $scope.buildStack=function(){
+    $scope.saveTemplate=function(){
       var template = {};
       template.Resources = {};
       template.Outputs = {};
@@ -194,10 +240,14 @@
           template.Outputs[outkey] = JSON.parse(JSON.stringify(part.Outputs[outkey]));
         }
       }
+      $scope.build.Template = template;
+      $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
       console.log(template);
-      $http.post('http://localhost:3000/api/stacks', {Name: 'TestStack2', Stack: template}).success(function(data){
-          console.log("saved template!")
-      });
+      if($scope.build.Name && $scope.build.Region){
+        $http.post('http://localhost:3000/api/stacks', $scope.build).success(function(data){
+            console.log("saved template!")
+        });
+      }
     }
 
   });})();
