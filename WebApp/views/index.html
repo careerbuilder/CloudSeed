@@ -44,37 +44,44 @@
       </div>
       <div id="stage">
         <h1>Parts</h1>
-        <div ng-repeat="apart in addedParts track by $index" class="panel panel-default partpanel">
-          <div class="panel-heading" ng-click="apart.Collapsed = !apart.Collapsed">
-              <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
-              <h3 style="display:inline;">{{apart.LogicalName}}</h3>
-              <span class="glyphicon glyphicon-triangle-bottom" style="font-size:10pt; float:right;" ng-show="apart.Collapsed"></span>
-              <span class="glyphicon glyphicon-triangle-top" style="font-size:10pt; float:right;" ng-hide="apart.Collapsed"></span>
-          </div>
-          <div class="panel-body" ng-hide="apart.Collapsed">
-            <div ng-repeat="(key, value) in apart.Definition.Parameters" class="input-group" ng-hide="value.Hidden">
-                <span class="input-group-addon" id="{{key}}-Title" style="min-width:175px; text-align:left;"><b>{{key}}</b></span>
-                <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" ng-hide="value.AllowedValues.length">
-                <select class="selectpicker form-control" title="{{value.Description}}" ng-show="value.AllowedValues.length">
-                  <option ng-repeat="av in value.AllowedValues">{{av}}</option>
-                </select>
+        <button class="btn btn-lg" ng-show="addedParts.length > 0 && PartsForm.$valid" ng-click="buildStack()">Build</button>
+        <form name="PartsForm" novalidate>
+          <div ng-repeat="apart in addedParts track by $index" class="panel panel-default partpanel">
+            <div class="panel-heading" ng-click="apart.Collapsed = !apart.Collapsed">
+                <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
+                <h3 style="display:inline;">{{apart.LogicalName}}</h3>
+                <span class="glyphicon glyphicon-triangle-bottom" style="font-size:10pt; float:right;" ng-show="apart.Collapsed"></span>
+                <span class="glyphicon glyphicon-triangle-top" style="font-size:10pt; float:right;" ng-hide="apart.Collapsed"></span>
             </div>
+            <div class="panel-body" ng-hide="apart.Collapsed">
+              <div ng-repeat="(key, value) in apart.Definition.Parameters" class="input-group" ng-hide="value.Hidden">
+                  <span class="input-group-addon" id="{{key}}-Title" style="min-width:175px; text-align:left;"><b>{{key}}</b></span>
+                  <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title"
+                    ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Default.length && !value.AllowedValues.length">
+                  <select class="selectpicker form-control" title="{{value.Description}}"
+                    ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Default.length && value.AllowedValues.length">
+                    <option ng-repeat="av in value.AllowedValues">{{av}}</option>
+                  </select>
+              </div>
 
-            <div class="panel-footer"  ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
-              <h4>Substitutions</h4>
-              <div ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index" class="row">
-                <p style="min-width:175px; text-align:left;"><b>{{sub.Parameter}}</b></p>
-                <div class="dropdown" ng-init="RefInit(sub)">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{sub.Reference}}<span class="caret"></span></button>
-                  <ul class="dropdown-menu dropdown-menu" role="menu">
-                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="RefInit(sub)">None</a></li>
-                    <li role="presentation"><a role="menuitem" ng-repeat="name in getSubs(sub.Type)" ng-click="setParam(apart, sub, name)">{{name}}</a></li>
-                  </ul>
-                </div>
+              <div class="panel-footer"  ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
+                <h4>Substitutions</h4>
+                <table>
+                  <tr ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index">
+                    <td><p style="min-width:175px; text-align:left;"><b>{{sub.Parameter}}</b></p></td>
+                    <td><div class="dropdown" ng-init="RefInit(sub)">
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{sub.Reference}}<span class="caret"></span></button>
+                      <ul class="dropdown-menu dropdown-menu" role="menu">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="setParam(apart, sub, 'None')">None</a></li>
+                        <li role="presentation"><a role="menuitem" ng-repeat="name in getSubs(sub.Type)" ng-click="setParam(apart, sub, name)">{{name}}</a></li>
+                      </ul>
+                    </div></td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </body>

@@ -27,15 +27,24 @@
         }
       }
       var num = 0;
+      var newcount = 1;
+      var others = [];
       for(j=0; j<$scope.addedParts.length; j++){
         other = $scope.addedParts[j];
         if(other.Type === type){
+          others.push(other.Count);
           if(other.Count > num){
             num = other.Count;
           }
         }
       }
-      var newcount = num+1;
+      for(k=1; k<=num+1; k++){
+        if(others.indexOf(k) == -1){
+          newcount = k;
+          break;
+        }
+      }
+
       var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: true, Definition:copy}
       $scope.addedParts.push(mod);
     }
@@ -108,15 +117,74 @@
       part.Definition.Parameters[param].Hidden=(sub.Reference.length > 0 && sub.Reference!='None');
     }
 
-    $scope.toggleParamList=function(part, sub, name){
-      if(!sub.Reference.length){
-        sub.Reference = [];
+    $scope.replaceNames = function(obj, append){
+      var newobj = {};
+      for(var key in obj){
+        newobj[key+""+append] = obj[key];
       }
-      var param = sub.Parameter;
-
-      part.Definition.Parameters[param].Hidden=(sub.Reference.length>0);
+      return newobj;
     }
 
-  });
+    $scope.replaceRefs = function(apart){
+      var resstring = JSON.stringify($scope.replaceNames(apart.Definition.Resources || {}, apart.Count));
+      var outputstring = JSON.stringify($scope.replaceNames(apart.Definition.Outputs || {}, apart.Count));
+      var condstring = JSON.stringify($scope.replaceNames(apart.Definition.Conditions || {}, apart.Count));
+      for(var param in apart.Definition.Parameters){
+        if(!apart.Definition.Parameters[param].Hidden){
+          var re = new RegExp('\{\s*"Ref"\s*:\s*"'+ param +'"\s*\}', 'g');
+          resstring = resstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
+          outputstring = outputstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
+          condstring = condstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
+        }
+      }
+      var subs = apart.Definition.Connections.Substitutes || [];
+      for(i=0; i<subs.length; i++){
+        sub = subs[i];
+        if(sub.Reference.length > 0 && sub.Reference != 'None'){
+          var re = new RegExp('\{\s*"Ref"\s*:\s*"'+ sub.Parameter +'"\s*\}', 'g');
+          resstring = resstring.replace(re, JSON.stringify({Ref:sub.Reference}));
+          outputstring = outputstring.replace(re, JSON.stringify({Ref:sub.Reference}));
+          condstring = condstring.replace(re, JSON.stringify({Ref:sub.Reference}));
+        }
+      }
+      apart.Definition.Resources = JSON.parse(resstring);
+      apart.Definition.Outputs = JSON.parse(outputstring);
+      apart.Definition.Conditions = JSON.parse(condstring);
+      //apart.Definition.Parameters = {};
+    }
 
-})();
+    $scope.printPart=function(part){
+      $scope.replaceRefs(part);
+      var partstring = JSON.stringify(part, null, 2);
+      console.log(partstring);
+    }
+
+    $scope.buildStack=function(){
+      var template = {};
+      template.Resources = {};
+      template.Outputs = {};
+      template.Conditions = {};
+      template.Mappings = {};
+      for(i=0; i<$scope.addedParts.length; i++){
+        $scope.replaceRefs($scope.addedParts[i]);
+        var part = $scope.addedParts[i].Definition;
+        for(var mapkey in part.Mappings){
+          template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
+        }
+        for(var condkey in part.Conditions){
+          template.Conditions[condkey] = JSON.parse(JSON.stringify(part.Conditions[condkey]));
+        }
+        for(var reskey in part.Resources){
+          template.Resources[reskey] = JSON.parse(JSON.stringify(part.Resources[reskey]));
+        }
+        for(var outkey in part.Outputs){
+          template.Outputs[outkey] = JSON.parse(JSON.stringify(part.Outputs[outkey]));
+        }
+      }
+      console.log(template);
+      $http.post('http://localhost:3000/api/stacks', {Name: 'TestStack2', Stack: template}).success(function(data){
+          console.log("saved template!")
+      });
+    }
+
+  });})();
