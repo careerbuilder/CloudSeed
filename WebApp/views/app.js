@@ -19,14 +19,6 @@
     });
 
     $scope.addPart=function(type){
-      copy = {};
-      for(var i=0; i<$scope.parts.length; i++){
-        var part = $scope.parts[i];
-        if(part.Type === type){
-            copy = JSON.parse(JSON.stringify(part));
-            break;
-        }
-      }
       var num = 0;
       var newcount = 1;
       var others = [];
@@ -45,8 +37,33 @@
           break;
         }
       }
-
-      var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: true, Definition:copy}
+      copy = {};
+      for(var i=0; i<$scope.parts.length; i++){
+        var part = $scope.parts[i];
+        if(part.Type === type){
+            copy = JSON.parse(JSON.stringify(part));
+            break;
+        }
+      }
+      var partstring = JSON.stringify(copy);
+      for(var mapp in copy.Mappings){
+        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(mapp) +'\s*\}', 'g');
+        partstring = partstring.replace(re, JSON.stringify({Ref:mapp+""+newcount}));
+      }
+      for(var cond in copy.Conditions){
+        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(cond) +'\s*\}', 'g');
+        partstring = partstring.replace(re, JSON.stringify({Ref:cond+""+newcount}));
+      }
+      for(var res in copy.Resources){
+        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(res) +'\s*\}', 'g');
+        partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
+      }
+      copy = JSON.parse(partstring);
+      copy.Mappings = $scope.replaceNames(copy.Mappings || {}, newcount);
+      copy.Conditions = $scope.replaceNames(copy.Conditions || {}, newcount);
+      copy.Resources = $scope.replaceNames(copy.Resources || {}, newcount);
+      copy.Outputs = $scope.replaceNames(copy.Outputs || {}, newcount);
+      var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy}
       $scope.addedParts.push(mod);
     }
 
@@ -152,18 +169,6 @@
 
     $scope.replaceRefs = function(apart){
       var partstring = JSON.stringify(apart.Definition);
-      for(var mapp in apart.Definition.Mappings){
-        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(mapp) +'\s*\}', 'g');
-        partstring = partstring.replace(re, JSON.stringify({Ref:mapp+""+apart.Count}));
-      }
-      for(var cond in apart.Definition.Conditions){
-        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(cond) +'\s*\}', 'g');
-        partstring = partstring.replace(re, JSON.stringify({Ref:cond+""+apart.Count}));
-      }
-      for(var res in apart.Definition.Resources){
-        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(res) +'\s*\}', 'g');
-        partstring = partstring.replace(re, JSON.stringify({Ref:res+""+apart.Count}));
-      }
       for(var param in apart.Definition.Parameters){
         if(!apart.Definition.Parameters[param].Hidden){
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
@@ -181,10 +186,6 @@
         }
       }
       apart.Definition = JSON.parse(partstring);
-      apart.Definition.Mappings = $scope.replaceNames(apart.Definition.Mappings || {}, apart.Count);
-      apart.Definition.Conditions = $scope.replaceNames(apart.Definition.Conditions || {}, apart.Count);
-      apart.Definition.Resources = $scope.replaceNames(apart.Definition.Resources || {}, apart.Count);
-      apart.Definition.Outputs = $scope.replaceNames(apart.Definition.Outputs || {}, apart.Count);
       if(apart.subparts){
         for(var subp in apart.subparts){
           var models = apart.subparts[subp];
