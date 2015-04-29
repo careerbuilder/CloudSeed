@@ -3,7 +3,6 @@
 
   app.controller('PageController', function($http, $scope){
     $scope.showSide = false;
-
     $scope.toggleSide = function(){
       $scope.showSide = !$scope.showSide;
     };

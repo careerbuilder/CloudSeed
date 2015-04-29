@@ -69,9 +69,9 @@
                   <h4>Parameters</h4>
                   <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
                     <ng-form name="parametersForm">
-                      <div class="input-group" ng-class="{'has-error': parametersForm.$invalid && (parametersForm.txtvalue.$dirty || parametersForm.selectvalue.$dirty)}">
+                      <div class="input-group form-group" ng-class="{'has-error': parametersForm.$invalid && (parametersForm.txtvalue.$dirty || parametersForm.selectvalue.$dirty)}">
                         <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{key}}</b></span>
-                        <input type="text" class="form-control floating-label" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
+                        <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                           parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
                           ng-required="!value.Hidden && !value.Default.length && !value.AllowedValues.length">
                         <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
