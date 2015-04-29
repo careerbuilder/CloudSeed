@@ -27,7 +27,7 @@
   <body ng-controller="PartsController" style="padding-top: 70px;">
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
-        <span class="navbar-brand" style="color:#000;"><b>CloudSeed</b></span>
+        <a class="navbar-brand" style="color:#000; padding:0px;" href="#"><img src="CloudseedLogosmaller.png" alt="logo"></img></a>
         <button class="btn navbar-btn" ng-click="loadTemplate('GenTestStack')">Load</button>
         <p class="navbar-text navbar-right" style="color:#000; padding-right:10px;">Signed in as <a href="#" class="navbar-link">TestUser</a></p>
       </div>
@@ -35,7 +35,7 @@
     <div class="container-fluid" id="page">
       <div class="well-material-grey sidebar well">
         <ul class="nav nav-stacked">
-          <li role="prensentation"><h4>Add a Part</h4></li>
+          <li role="presentation"><h4>Add a Part</h4></li>
           <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
             <button class="btn navbar-btn partbutton" ng-click="addPart(part.Type)">
               <span class="glyphicon glyphicon-plus" style="color:green;padding-right:10px;"></span>{{part.Type}}
