@@ -57,8 +57,7 @@
         },
         "SAUserName":{
           "Description": "Username of SA user",
-          "Type":"String",
-          "Default": "SiteDBsa"
+          "Type":"String"
         },
         "Portnum":{
           "Description":"Port",

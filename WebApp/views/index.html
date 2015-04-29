@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/material.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/ripples.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/roboto.min.css">
+
     <link rel="stylesheet" href="styles.css">
 
     <!-- bootstrap scripts-->
@@ -17,29 +18,25 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/bootstrap-material-design/dist/js/material.min.js"></script>
     <script src="bower_components/bootstrap-material-design/dist/js/ripples.min.js"></script>
+
     <!--angular  -->
     <script src="bower_components/angular/angular.min.js"></script><!-- load angular -->
     <!-- controllers -->
     <script type="text/javascript" src="app.js"></script>
   </head>
-  <body ng-controller="PageController" style="padding-top: 70px;">
+  <body ng-controller="PartsController" style="padding-top: 70px;">
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
-        <button type="button" class="btn btn-lg navbar-btn" ng-click="toggleSide()">
-            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-        </button>
-        <button type="button" class="btn btn-lg navbar-btn" ng-click="tb=1" >
-            <span><b>CloudSeed</b></span>
-        </button>
+        <span class="navbar-brand" style="color:#000;"><b>CloudSeed</b></span>
+        <button class="btn navbar-btn" ng-click="loadTemplate('GenTestStack')">Load</button>
         <p class="navbar-text navbar-right" style="color:#000; padding-right:10px;">Signed in as <a href="#" class="navbar-link">TestUser</a></p>
       </div>
     </nav>
-    <div class="container-fluid" id="page" ng-controller="PartsController">
-      <div class="well-material-grey sidebar well"  ng-show="showSide">
+    <div class="container-fluid" id="page">
+      <div class="well-material-grey sidebar well">
         <ul class="nav nav-stacked">
           <li role="prensentation"><h4>Add a Part</h4></li>
           <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
-
             <button class="btn navbar-btn partbutton" ng-click="addPart(part.Type)">
               <span class="glyphicon glyphicon-plus" style="color:green;padding-right:10px;"></span>{{part.Type}}
             </button>
@@ -47,13 +44,12 @@
         </ul>
       </div>
       <div id="stage">
-        <form name="PartsForm" novalidate>
-          <!--
-          <div id="TemplateInfo">
-          </div>
-        -->
-          <h1>Parts</h1>
-          <button class="btn" ng-click="loadTemplate('GenTestStack')">Load</button>
+        <div class="jumbotron jumbotron-material-grey" ng-show="addedParts.length < 1" >
+          <h1>Welocme to CloudSeed!</h1>
+          <p>Building a cloudformation stack is now as easy as clicking buttons. Start now by adding your first part from the sidebar, or load an existing stack!</p>
+        </div>
+        <form name="PartsForm" class="simple-form" novalidate>
+          <h1 ng-show="addedParts.length > 0 ">Parts</h1>
           <div class="input-group" ng-show="addedParts.length > 0 && PartsForm.$valid" style="width:20%;">
             <span class="input-group-btn">
               <button class="btn btn-default" ng-click="saveTemplate()" type="button">Save</button>
@@ -71,14 +67,19 @@
               <ul class="list-group">
                 <li class="list-group-item">
                   <h4>Parameters</h4>
-                  <div ng-repeat="(key, value) in apart.Definition.Parameters" class="input-group" ng-hide="value.Hidden">
-                      <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{key}}</b></span>
-                      <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title"
-                        ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default.length && !value.AllowedValues.length">
-                      <select class="selectpicker form-control" title="{{value.Description}}"
-                        ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default.length && value.AllowedValues.length">
-                        <option ng-repeat="av in value.AllowedValues">{{av}}</option>
-                      </select>
+                  <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
+                    <ng-form name="parametersForm">
+                      <div class="input-group" ng-class="{'has-error': parametersForm.$invalid && (parametersForm.txtvalue.$dirty || parametersForm.selectvalue.$dirty)}">
+                        <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{key}}</b></span>
+                        <input type="text" class="form-control floating-label" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
+                          parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
+                          ng-required="!value.Hidden && !value.Default.length && !value.AllowedValues.length">
+                        <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
+                          ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default.length && value.AllowedValues.length">
+                          <option ng-repeat="av in value.AllowedValues">{{av}}</option>
+                        </select>
+                      </div>
+                    </ng-form>
                   </div>
                 </li>
                 <li class="list-group-item" ng-show="apart.Definition.Connections.SubParts">
@@ -114,7 +115,11 @@
                       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{sub.Reference}}<span class="caret"></span></button>
                       <ul class="dropdown-menu dropdown-menu" role="menu">
                         <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="setParam(apart, sub, 'None')">None</a></li>
-                        <li role="presentation"><a role="menuitem" ng-repeat="name in getSubs(sub.Type)" ng-click="setParam(apart, sub, name)">{{name}}</a></li>
+                        <li role="presentation" ng-repeat="name in getSubs(sub.Type)" tabindex="{{$index}}" ng-class="{'ddl-active': (typeof(sub.Reference)===typeof([]) && sub.Reference.indexOf(name)>-1)}">
+                          <a role="menuitem" ng-click="setParam(apart, sub, name)">
+                            {{name}}
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </div>

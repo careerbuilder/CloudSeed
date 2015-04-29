@@ -63,6 +63,11 @@
       copy.Conditions = $scope.replaceNames(copy.Conditions || {}, newcount);
       copy.Resources = $scope.replaceNames(copy.Resources || {}, newcount);
       copy.Outputs = $scope.replaceNames(copy.Outputs || {}, newcount);
+      for(var par in copy.Parameters){
+        if(copy.Parameters[par].Default){
+          copy.Parameters[par].Value = copy.Parameters[par].Default;
+        }
+      }
       var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy}
       $scope.addedParts.push(mod);
     }
@@ -213,12 +218,6 @@
       }
     }
 
-    $scope.printPart=function(part){
-      $scope.replaceRefs(part);
-      var partstring = JSON.stringify(part, null, 2);
-      console.log(partstring);
-    }
-
     $scope.saveTemplate=function(){
       var template = {};
       template.Resources = {};
@@ -258,4 +257,42 @@
       });
     }
 
-  });})();
+  });
+
+  app.directive('parameter', function(){
+    return {
+      require: 'ngModel',
+      link: function(scope, elm, attrs, ctrl) {
+        var info = JSON.parse(attrs.validationModel);
+        //console.log(JSON.stringify(info,null,2));
+        ctrl.$validators.parameter = function(modelValue, viewValue) {
+          var ok = true;
+          if(ctrl.$isEmpty(viewValue)) {
+            if(!attrs.required){
+              return true;
+            }
+            return false;
+          }
+          if(info.AllowedValues){
+            var avs = info.AllowedValues;
+            var found = false;
+            for(var i=0; i<avs.length; i++){
+              if(JSON.parse(JSON.stringify(viewValue))===avs[i]){
+                found = true;
+                break;
+              }
+            }
+            ok = found;
+          }
+          if(info.AllowedPattern){
+            var re = new RegExp('^'+info.AllowedPattern+'$', 'g');
+            ok = (re.test(JSON.parse(JSON.stringify(viewValue))));
+          }
+          //more tests
+          return ok;
+        };
+      }
+    };
+  });
+
+  })();

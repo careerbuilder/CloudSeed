@@ -26,7 +26,7 @@ router.get('/api/stacks/:name', function(req, res){
 });
 
 router.post('/api/stacks', function(req, res){
-  db.collection('stacks').insert(req.body, function(err, result){
+  db.collection('stacks').update({Name:req.body['Name']}, req.body, {upsert:true}, function(err, result){
     if(err){
       console.log(err);
       return res.send({Success: false, Error:err});
