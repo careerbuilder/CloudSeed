@@ -108,6 +108,20 @@
       return subs;
     }
 
+    $scope.canAddSubPart=function(part, name, index){
+      if(index != part.subparts[name].length-1){
+        return false;
+      }
+      var complete = true;
+      for(var param in part.subparts[name][index]){
+        if(!part.subparts[name][index][param].Value || part.subparts[name][index][param].Value.length <1){
+          complete = false;
+          break;
+        }
+      }
+      return complete;
+    }
+
     $scope.RefInit=function(sub){
       if(sub.Type.lastIndexOf('List::', 0) === 0){
         sub.Reference = [];
