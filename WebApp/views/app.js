@@ -232,31 +232,30 @@
     }
 
     $scope.saveTemplate=function(){
-      var template = {};
-      template.Resources = {};
-      template.Outputs = {};
-      template.Conditions = {};
-      template.Mappings = {};
-      for(var i=0; i<$scope.addedParts.length; i++){
-        $scope.replaceRefs($scope.addedParts[i]);
-        var part = $scope.addedParts[i].Definition;
-        for(var mapkey in part.Mappings){
-          template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
-        }
-        for(var condkey in part.Conditions){
-          template.Conditions[condkey] = JSON.parse(JSON.stringify(part.Conditions[condkey]));
-        }
-        for(var reskey in part.Resources){
-          template.Resources[reskey] = JSON.parse(JSON.stringify(part.Resources[reskey]));
-        }
-        for(var outkey in part.Outputs){
-          template.Outputs[outkey] = JSON.parse(JSON.stringify(part.Outputs[outkey]));
-        }
-      }
-      $scope.build.Template = template;
-      $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-      console.log(template);
       if($scope.build.Name){
+        var template = {};
+        template.Resources = {};
+        template.Outputs = {};
+        template.Conditions = {};
+        template.Mappings = {};
+        for(var i=0; i<$scope.addedParts.length; i++){
+          $scope.replaceRefs($scope.addedParts[i]);
+          var part = $scope.addedParts[i].Definition;
+          for(var mapkey in part.Mappings){
+            template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
+          }
+          for(var condkey in part.Conditions){
+            template.Conditions[condkey] = JSON.parse(JSON.stringify(part.Conditions[condkey]));
+          }
+          for(var reskey in part.Resources){
+            template.Resources[reskey] = JSON.parse(JSON.stringify(part.Resources[reskey]));
+          }
+          for(var outkey in part.Outputs){
+            template.Outputs[outkey] = JSON.parse(JSON.stringify(part.Outputs[outkey]));
+          }
+        }
+        $scope.build.Template = template;
+        $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
         $http.post('http://localhost:3000/api/stacks', $scope.build).success(function(data){
             console.log("saved template!")
         });
