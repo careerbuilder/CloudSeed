@@ -2,11 +2,6 @@
   var app = angular.module('cloudseed', []);
 
   app.controller('PageController', function($http, $scope){
-    $scope.showSide = false;
-    $scope.toggleSide = function(){
-      $scope.showSide = !$scope.showSide;
-    };
-
   });
 
   app.controller('PartsController', function($http, $scope){
@@ -278,6 +273,8 @@
         }
         $scope.build.Template = template;
         $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
+        var spaceTrim = new RegExp('\s+', 'g');
+        $scope.build.Name = $scope.build.Name.replace(spaceTrim, "");
         $http.post('http://52.6.247.162:3000/api/stacks', $scope.build).success(function(data){
             console.log("saved template!")
         });
