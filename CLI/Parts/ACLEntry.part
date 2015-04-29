@@ -20,6 +20,16 @@
       "Type" : "String",
       "Default": "-1"
     },
+    "PortFrom":{
+      "Description": "Bottom port included in this rule",
+      "Type": "Number",
+      "Default": "-1"
+    },
+    "PortTo":{
+      "Description": "Top port included in this rule",
+      "Type": "Number",
+      "Default": 65535
+    },
     "Action": {
       "Description" : "Action for rule",
       "Type" : "String",
@@ -37,6 +47,10 @@
             "CidrBlock" : {"Ref": "Cidr"},
             "Egress" : {"Ref": "EgressRule"},
             "Protocol"  : {"Ref": "Prot"},
+            "PortRange":{
+              "From": {"Ref": "PortFrom"},
+              "To": {"Ref": "PortTo"}
+            },
             "RuleAction" : {"Ref": "Action"},
             "RuleNumber" : {"Ref": "RuleNum"},
             "NetworkAclId": {"Ref": "ACL"}

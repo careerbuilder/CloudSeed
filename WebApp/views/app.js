@@ -264,6 +264,7 @@
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
         var info = JSON.parse(attrs.validationModel);
+        var intre = new RegExp('\d+', 'g');
         //console.log(JSON.stringify(info,null,2));
         ctrl.$validators.parameter = function(modelValue, viewValue) {
           var ok = true;
@@ -273,23 +274,49 @@
             }
             return false;
           }
+          var typedvalue = JSON.parse(JSON.stringify(viewValue));
           if(info.AllowedValues){
             var avs = info.AllowedValues;
             var found = false;
             for(var i=0; i<avs.length; i++){
-              if(JSON.parse(JSON.stringify(viewValue))===avs[i]){
+              if(typedvalue===avs[i]){
                 found = true;
                 break;
               }
             }
-            ok = found;
+            ok &= found;
           }
           if(info.AllowedPattern){
             var re = new RegExp('^'+info.AllowedPattern+'$', 'g');
-            ok = (re.test(JSON.parse(JSON.stringify(viewValue))));
+            ok = (re.test(typedvalue));
           }
-          //more tests
-          return ok;
+          //types
+          if(info.Type === "Number"){
+            var intval = parseInt(typedvalue);
+            ok &= (intval != null && intval != undefined);
+            if(info.MaxValue){
+              ok &= (intval <= parseInt(info.MaxValue));
+            }
+            if(info.MinValue){
+              ok &= (intval >= parseInt(info.MinValue));
+            }
+          }
+          if(info.Type === "String"){
+            ok &= (typeof(typedvalue)===typeof(""));
+            if(info.MaxLength){
+              ok &= (typedvalue.length <= JSON.parse(info.MaxLength));
+            }
+            if(info.MinLength){
+              ok &= (typedvalue.length >= JSON.parse(info.MinLength));
+            }
+          }
+          /*
+          if(info.Type.indexOf("List")>-1){
+            ok &= (typeof(typedvalue)===typeof([]));
+          }
+          */
+
+          return (ok == 1);
         };
       }
     };
