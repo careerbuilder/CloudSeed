@@ -39,13 +39,13 @@ router.post('/api/stacks', function(req, res){
 });
 
 router.post('/api/build', function(req, res){
-  body = req.body;
-  stack = body['Stack'];
-  stackname = body['Name'];
+  var body = req.body;
+  var template = body['Template'];
+  var stackname = body['Name'];
   cf.describeStacks({"StackName": stackname}, function(err, data){
     if(err){
       console.log("Creating stack");
-      cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack)}, function(err, data){
+      cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(template)}, function(err, data){
         if(err){
           console.log(err);
           return res.send({Success: false, Error:err});
@@ -54,7 +54,7 @@ router.post('/api/build', function(req, res){
       });
     }
     else{
-      cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Stack']), "UsePreviousTemplate":false}, function(err, data){
+      cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template']), "UsePreviousTemplate":false}, function(err, data){
         if(err){
           console.log(err);
           return res.send({Success: false, Error:err});
@@ -66,19 +66,20 @@ router.post('/api/build', function(req, res){
 });
 
 router.post('/api/build/:name', function(req, res){
-  region = req.body['region'];
-  aws.config.update({'region': region});
+  //region = req.body['region'];
+  //aws.config.update({'region': region});
   db.collection('stacks').find({"Name":req.params.name},{"_id":false}).toArray(function(err, results){
     if(err){
       console.log(err);
       return res.send({Success: false, Error:err});
     }
     stack = results[0];
+    console.log(stack);
     stackname = stack['Name'];
     cf.describeStacks({"StackName": stackname}, function(err, data){
       if(err){
         console.log("Creating stack");
-        cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Stack'])}, function(err, data){
+        cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2)}, function(err, data){
           if(err){
             console.log(err);
             return res.send({Success: false, Error:err});
@@ -87,7 +88,7 @@ router.post('/api/build/:name', function(req, res){
         });
       }
       else{
-        cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Stack']), "UsePreviousTemplate":false}, function(err, data){
+        cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2), "UsePreviousTemplate":false}, function(err, data){
           if(err){
             console.log(err);
             return res.send({Success: false, Error:err});

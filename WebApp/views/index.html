@@ -27,8 +27,37 @@
   <body ng-controller="PartsController" style="padding-top: 70px;">
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" style="color:#000; padding:0px;" href="#"><img src="CloudseedLogosmaller.png" alt="logo"></img></a>
-        <button class="btn navbar-btn" ng-click="loadTemplate('GenTestStack')">Load</button>
+        <div class="navbar-header" style="margin-right:25px;">
+          <a class="navbar-brand" style="color:#000; padding:0px;" href="#"><img src="CloudseedLogosmaller.png" alt="logo"></img></a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="dropdown" style="color:#000;">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              Load
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li role="presentation" ng-repeat="stack in stacks" ng-click="loadTemplate(stack.Name)">
+                <a role="menuitem" tabindex="{{$index}}" href="#">
+                  {{stack.Name}}
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="dropdown" style="color:#000;">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              Build
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li role="presentation" ng-repeat="stack in stacks" ng-click="buildTemplate(stack.Name)">
+                <a role="menuitem" tabindex="{{$index}}" href="#">
+                  {{stack.Name}}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
         <p class="navbar-text navbar-right" style="color:#000; padding-right:10px;">Signed in as <a href="#" class="navbar-link">TestUser</a></p>
       </div>
     </nav>

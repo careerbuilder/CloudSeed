@@ -10,11 +10,16 @@
   });
 
   app.controller('PartsController', function($http, $scope){
+    $.material.init();
     $scope.addedParts = [];
     $scope.parts = [];
+    $scope.stacks = [];
     $scope.build = {};
     $http.get('http://localhost:3000/api/parts').success(function(data){
       $scope.parts = data;
+    });
+    $http.get('http://localhost:3000/api/stacks').success(function(data){
+      $scope.stacks = data;
     });
 
     $scope.addPart=function(type){
@@ -89,6 +94,23 @@
           }
         }
       }
+      if($scope.addedParts.length === 0){
+        $scope.build = {};
+      }
+    }
+
+    var ModalWindow;
+
+    $scope.clickLoad=function(){
+      ModalWindow = $modal.open({
+        templateUrl: 'loadwindow.html',
+        controller: 'PartsController',
+        resolve:{
+          items: function(){
+            return $scope.stacks;
+          }
+        }
+      })
     }
 
     $scope.getSubs=function(subtype){
@@ -266,6 +288,12 @@
       $http.get('http://localhost:3000/api/stacks/'+name).success(function(data){
         $scope.build = data[0];
         $scope.addedParts = data[0]['Parts'];
+      });
+    }
+
+    $scope.buildTemplate=function(stackname){
+      $http.post('http://localhost:3000/api/build/'+stackname, {}).success(function(data){
+        console.log(data);
       });
     }
 
