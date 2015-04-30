@@ -196,6 +196,7 @@
       part.subparts[key].splice(index, 1);
     }
 
+
     $scope.replaceNames = function(obj, append){
       var newobj = {};
       for(var key in obj){
