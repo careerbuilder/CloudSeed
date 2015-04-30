@@ -97,11 +97,11 @@
                   <h4>Parameters</h4>
                   <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
                     <ng-form name="parametersForm">
-                      <div class="input-group form-group" ng-class="{'has-error': parametersForm.$invalid && (parametersForm.txtvalue.$dirty || parametersForm.selectvalue.$dirty)}">
+                      <div class="input-group form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid && parametersForm.txtvalue.$dirty) || (parametersForm.selectvalue.$invalid && parametersForm.selectvalue.$dirty)}">
                         <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{key}}</b></span>
                         <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                           parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
-                          ng-required="!value.Hidden && !value.Default && !value.AllowedValues">
+                          ng-required="checkRequiredParam(value)">
                         <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
                           ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default && value.AllowedValues">
                           <option ng-repeat="av in value.AllowedValues">{{av}}</option>

@@ -202,6 +202,10 @@
       return required;
     }
 
+    $scope.checkRequiredParam=function(value){
+      return(!value.Hidden && !value.Default);
+    }
+
     $scope.replaceNames = function(obj, append){
       var newobj = {};
       for(var key in obj){
