@@ -101,9 +101,9 @@
                         <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{key}}</b></span>
                         <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                           parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
-                          ng-required="!value.Hidden && !value.Default.length && !value.AllowedValues.length">
+                          ng-required="!value.Hidden && !value.Default && !value.AllowedValues">
                         <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
-                          ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default.length && value.AllowedValues.length">
+                          ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default && value.AllowedValues">
                           <option ng-repeat="av in value.AllowedValues">{{av}}</option>
                         </select>
                       </div>
