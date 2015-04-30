@@ -23,6 +23,7 @@
     <script src="bower_components/angular/angular.min.js"></script><!-- load angular -->
     <!-- controllers -->
     <script type="text/javascript" src="app.js"></script>
+    <link rel='shortcut icon' href='favicon.ico' type='image/x-icon'/>
   </head>
   <body ng-controller="PartsController" style="padding-top: 70px;">
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -136,7 +137,7 @@
                   </div>
                 </li>
               </ul>
-              <div ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
+              <div class="panel-footer" ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
                 <h4>Substitutions</h4>
                 <div class="input-group" ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index">
                   <span class="input-group-addon" style="min-width:200px; text-align:left;"><b>{{sub.Parameter}}</b></span>
