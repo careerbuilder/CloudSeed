@@ -13,13 +13,11 @@
     $http.get('http://52.6.247.162:3000/api/parts').success(function(data){
       $scope.parts = data;
     });
-    $scope.refreshStacks();
+    $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
+      $scope.stacks = data;
+    });
 
-    $scope.refreshStacks=function(){
-      $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
-        $scope.stacks = data;
-      });
-    }
+
 
     $scope.addPart=function(type){
       var num = 0;
@@ -250,6 +248,12 @@
           }
         }
       }
+    }
+
+    $scope.refreshStacks=function(){
+      $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
+        $scope.stacks = data;
+      });
     }
 
     $scope.saveTemplate=function(){
