@@ -1,0 +1,38 @@
+{
+  "Type": "SubnetRTAssociation",
+  "Description" : "Version 1.0.  associates a Route Table with a specific subnet",
+  "Parameters" : {
+    "Subnet" : {
+      "Description" : "ID of the subnet to associate",
+      "Type" : "String"
+    },
+    "RouteTable" : {
+      "Description" : "ID of the Route Table to associate",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "SubnetRTAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : {
+          "Ref" : "Subnet"
+        },
+        "RouteTableId": {"Ref":"RouteTable"}
+      }
+    }
+  },
+  "Outputs" : {},
+  "Connections":{
+    "Substitutes":[            
+        {
+            "Parameter": "Subnet",
+            "Type":"Subnet"
+        },
+        {
+            "Parameter": "RouteTable",
+            "Type":"RouteTable"
+        }
+    ]
+  }
+}
