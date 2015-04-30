@@ -197,7 +197,7 @@
     }
 
     $scope.checkRequired=function(part, key, index){
-      console.log("key: " + key +", index" +index);
+      //console.log("key: " + key +", index" +index);
       var required = (index != part.subparts[key].length-1);
       return required;
     }
