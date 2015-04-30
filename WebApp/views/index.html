@@ -116,7 +116,7 @@
                 <li class="list-group-item" ng-show="apart.Definition.Connections.SubParts">
                   <h4>SubParts</h4>
                   <div ng-repeat="(key, value) in apart.Definition.Connections.SubParts" style="margin-left:25px;">
-                    <span><b>{{value.Type.replace("List::","")}}<b><span>
+                    <span><b>{{value.Type.replace("List::","")}}</b></span>
                       <table class="table table-bordered table-striped" style="border-collapse:separate;" ng-init="addSubPart(apart, key)">
                         <tr>
                           <th ng-repeat="(param,details) in value.Model">{{param}}</th>
@@ -124,7 +124,7 @@
                         </tr>
                         <tr ng-repeat="subp in apart.subparts[key] track by $index">
                           <td ng-repeat="(param,details) in value.Model">
-                            <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="$index != apart.subparts[key].length-1">
+                            <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="checkRequired(apart, key, $index)">
                           </td>
                           <td ng-show="value.Type.lastIndexOf('List::', 0) === 0" style="width:90px;">
                             <button ng-click="addSubPart(apart, key)" ng-show="canAddSubPart(apart, key, $index)">
