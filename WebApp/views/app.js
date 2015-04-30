@@ -196,6 +196,11 @@
       part.subparts[key].splice(index, 1);
     }
 
+    $scope.checkRequired=function(part, key, index){
+      console.log("key: " + key +", index" +index);
+      var required = (index != part.subparts[key].length-1);
+      return required;
+    }
 
     $scope.replaceNames = function(obj, append){
       var newobj = {};
