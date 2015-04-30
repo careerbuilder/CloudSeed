@@ -135,24 +135,24 @@
                     </table>
                   </div>
                 </li>
-                <li class="list-group-item" ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
-                  <h4>Substitutions</h4>
-                  <div class="input-group" ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index">
-                    <span class="input-group-addon" style="min-width:200px; text-align:left;"><b>{{sub.Parameter}}</b></span>
-                    <div class="dropdown" ng-init="RefInit(sub)">
-                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{sub.Reference}}<span class="caret"></span></button>
-                      <ul class="dropdown-menu dropdown-menu" role="menu">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="setParam(apart, sub, 'None')">None</a></li>
-                        <li role="presentation" ng-repeat="name in getSubs(sub.Type)" tabindex="{{$index}}" ng-class="{'ddl-active': (typeof(sub.Reference)===typeof([]) && sub.Reference.indexOf(name)>-1)}">
-                          <a role="menuitem" ng-click="setParam(apart, sub, name)">
-                            {{name}}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
               </ul>
+              <div class="panel-footer" ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
+                <h4>Substitutions</h4>
+                <div class="input-group" ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index">
+                  <span class="input-group-addon" style="min-width:200px; text-align:left;"><b>{{sub.Parameter}}</b></span>
+                  <div class="dropdown" ng-init="RefInit(sub)">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{sub.Reference}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu" role="menu">
+                      <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="setParam(apart, sub, 'None')">None</a></li>
+                      <li role="presentation" ng-repeat="name in getSubs(sub.Type)" tabindex="{{$index}}" ng-class="{'ddl-active': (typeof(sub.Reference)===typeof([]) && sub.Reference.indexOf(name)>-1)}">
+                        <a role="menuitem" ng-click="setParam(apart, sub, name)">
+                          {{name}}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </form>
