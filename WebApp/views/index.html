@@ -136,7 +136,7 @@
                   </div>
                 </li>
               </ul>
-              <div class="panel-footer" ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
+              <div ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
                 <h4>Substitutions</h4>
                 <div class="input-group" ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index">
                   <span class="input-group-addon" style="min-width:200px; text-align:left;"><b>{{sub.Parameter}}</b></span>
