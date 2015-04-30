@@ -58,7 +58,7 @@
             </ul>
           </li>
         </ul>
-        <!--<p class="navbar-text navbar-right" style="color:#000; padding-right:10px;">Signed in as <a href="#" class="navbar-link">TestUser</a></p>-->
+        <p class="navbar-text navbar-right" style="color:#000; padding-right:10px; display:inline; float:right;">Signed in as <a href="#" class="navbar-link">TestUser</a></p>
       </div>
     </nav>
     <div class="container-fluid" id="page">
@@ -72,14 +72,14 @@
           </li>
         </ul>
       </div>
-      <div id="stage">
+      <div id="stage" style="display:inline; float:left; width:50%; min-width:500px;">
         <div class="jumbotron jumbotron-material-grey" ng-show="addedParts.length < 1" >
           <h1>Welcome to CloudSeed!</h1>
           <p>Building a cloudformation stack is now as easy as clicking buttons. Start now by adding your first part from the sidebar, or load an existing stack!</p>
         </div>
         <form name="PartsForm" class="simple-form" novalidate>
-          <div class="input-group form-group"  style="width:20%; padding-top:15px;" ng-class="{'has-error': PartsForm.stackName.$invalid}" ng-show="addedParts.length > 0">
-            <input type="text" class="form-control input-lg" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" required>
+          <div class="input-group form-group"  style="width:20%; min-width:300px; padding-top:15px;" ng-class="{'has-error': PartsForm.stackName.$invalid}" ng-show="addedParts.length > 0">
+            <input type="text" class="form-control input-lg" style="min-width:100px;" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" required>
             <span class="input-group-btn">
               <button class="btn btn-default" ng-disabled="addedParts.length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
             </span>
