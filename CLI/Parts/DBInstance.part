@@ -14,6 +14,11 @@
           "Description" : "name of subnet group to use for new RDS",
           "Type": "String"
         },
+        "SnapshotID":{
+          "Description": "ID of snapshot to use (if any)",
+          "Type": "String",
+          "Default": ""
+        },
         "GBAllocated":{
           "Description": "GB of allocated storage",
           "Type": "Number",
