@@ -7,7 +7,13 @@ body{
 }
 
 .sidebar{
-  width:250px;
+  min-width:250px;
+  float:left;
+  display:inline;
+}
+
+.navelement{
+  display: inline;
   float:left;
 }
 
@@ -34,5 +40,3 @@ body{
 .ddl-active:hover{
   background-color:#59b75c;
 }
-
-.ddl-active a:hover{}
