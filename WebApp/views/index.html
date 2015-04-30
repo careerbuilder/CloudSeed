@@ -114,26 +114,25 @@
                   <h4>SubParts</h4>
                   <div ng-repeat="(key, value) in apart.Definition.Connections.SubParts" style="margin-left:25px;">
                     <span><b>{{value.Type.replace("List::","")}}</b></span>
-                      <table class="table table-bordered table-striped" style="border-collapse:separate;" ng-init="addSubPart(apart, key)">
-                        <tr>
-                          <th ng-repeat="(param,details) in value.Model">{{param}}</th>
-                          <th></th>
-                        </tr>
-                        <tr ng-repeat="subp in apart.subparts[key] track by $index">
-                          <td ng-repeat="(param,details) in value.Model">
-                            <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="checkRequired(apart, key, $parent.$index)">
-                          </td>
-                          <td ng-show="value.Type.lastIndexOf('List::', 0) === 0" style="width:90px;">
-                            <button ng-click="addSubPart(apart, key)" ng-show="canAddSubPart(apart, key, $index)">
-                              <span class="glyphicon glyphicon-plus" style="color:green;"></span>
-                            </button>
-                            <button ng-click="removeSubPart(apart, key, $index)" ng-hide="$index === apart.subparts[key].length-1">
-                              <span class="glyphicon glyphicon-remove" style="color:red;"></span>
-                            </button>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
+                    <table class="table table-bordered table-striped" style="border-collapse:separate;" ng-init="addSubPart(apart, key)">
+                      <tr>
+                        <th ng-repeat="(param,details) in value.Model">{{param}}</th>
+                        <th></th>
+                      </tr>
+                      <tr ng-repeat="subp in apart.subparts[key] track by $index">
+                        <td ng-repeat="(param,details) in value.Model">
+                          <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="checkRequired(apart, key, $parent.$index)">
+                        </td>
+                        <td ng-show="value.Type.lastIndexOf('List::', 0) === 0" style="width:90px;">
+                          <button ng-click="addSubPart(apart, key)" ng-show="canAddSubPart(apart, key, $index)">
+                            <span class="glyphicon glyphicon-plus" style="color:green;"></span>
+                          </button>
+                          <button ng-click="removeSubPart(apart, key, $index)" ng-hide="$index === apart.subparts[key].length-1">
+                            <span class="glyphicon glyphicon-remove" style="color:red;"></span>
+                          </button>
+                        </td>
+                      </tr>
+                    </table>
                   </div>
                 </li>
                 <li class="list-group-item" ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
