@@ -209,6 +209,16 @@
       return(req);
     }
 
+    $scope.visibleParams=function(part){
+      var num = 0;
+      for(var i=0; i< part.Definition.Parameters.length; i++){
+        if(!part.Definition.Parameters[i].Hidden){
+          num++;
+        }
+      }
+      return num;
+    }
+
     $scope.replaceNames = function(obj, append){
       var newobj = {};
       for(var key in obj){

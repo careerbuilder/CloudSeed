@@ -93,7 +93,7 @@
             </div>
             <div class="panel-body" ng-hide="apart.Collapsed">
               <ul class="list-group">
-                <li class="list-group-item">
+                <li class="list-group-item" ng-show="visibleParams(apart) > 0">
                   <h4>Parameters</h4>
                   <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
                     <ng-form name="parametersForm">
