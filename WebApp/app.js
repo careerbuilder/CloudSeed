@@ -1,6 +1,7 @@
 var express    = require('express'); 		// call express
 var bodyParser = require('body-parser');
 var path       = require('path');
+var favicon    = require('serve-favicon');
 var app        = express(); 			// define our app using express
 
 
@@ -8,10 +9,14 @@ app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'views')));
 app.use(bodyParser.json())
+app.use(favicon(__dirname + '/favicon.ico'));
+
 var port = 3000;
 
 // ROUTES FOR OUR API
 // =============================================================================
+
+
 var parts = require('./routes/parts.js');
 var stacks = require('./routes/stacks.js');
 app.use(parts);

@@ -29,6 +29,7 @@
     "ejs": "^2.3.1",
     "express": "^4.12.3",
     "mongodb": "~1.4",
-    "mongoskin": "latest"
+    "mongoskin": "latest",
+    "serve-favicon": "^2.2.0"
   }
 }

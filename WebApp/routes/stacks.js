@@ -9,7 +9,7 @@ router.get('/api/stacks', function(req, res){
     if(err){
       throw err;
     }
-    console.log(results);
+   // console.log(results);
     return res.send(results);
   });
 });
@@ -20,7 +20,7 @@ router.get('/api/stacks/:name', function(req, res){
       console.log(err);
       return res.send({Success: false, Error:err});
     }
-    console.log(results);
+  //  console.log(results);
     return res.send(results);
   });
 });
