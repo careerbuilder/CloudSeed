@@ -203,7 +203,10 @@
     }
 
     $scope.checkRequiredParam=function(value){
-      return(!value.Hidden && !value.Default);
+      //console.log(value);
+      var req = !value.Hidden && (value.Default === null || value.Default === undefined);
+      //console.log(req);
+      return(req);
     }
 
     $scope.replaceNames = function(obj, append){
