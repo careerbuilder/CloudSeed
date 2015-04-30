@@ -13,9 +13,13 @@
     $http.get('http://52.6.247.162:3000/api/parts').success(function(data){
       $scope.parts = data;
     });
-    $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
-      $scope.stacks = data;
-    });
+    $scope.refreshStacks();
+
+    $scope.refreshStacks=function(){
+      $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
+        $scope.stacks = data;
+      });
+    }
 
     $scope.addPart=function(type){
       var num = 0;
@@ -93,7 +97,7 @@
         $scope.build = {};
       }
     }
-
+/*
     var ModalWindow;
 
     $scope.clickLoad=function(){
@@ -107,7 +111,7 @@
         }
       })
     }
-
+*/
     $scope.getSubs=function(subtype){
       if(subtype.lastIndexOf('List::',0) === 0){
         ct = subtype.replace('List::', '');
@@ -276,7 +280,8 @@
         var spaceTrim = new RegExp('\s+', 'g');
         $scope.build.Name = $scope.build.Name.replace(spaceTrim, "");
         $http.post('http://52.6.247.162:3000/api/stacks', $scope.build).success(function(data){
-            console.log("saved template!")
+            console.log("saved template!");
+            $scope.refreshStacks();
         });
       }
     }
@@ -301,7 +306,6 @@
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
         var info = JSON.parse(attrs.validationModel);
-        var intre = new RegExp('\d+', 'g');
         //console.log(JSON.stringify(info,null,2));
         ctrl.$validators.parameter = function(modelValue, viewValue) {
           var ok = true;
@@ -347,12 +351,6 @@
               ok &= (typedvalue.length >= JSON.parse(info.MinLength));
             }
           }
-          /*
-          if(info.Type.indexOf("List")>-1){
-            ok &= (typeof(typedvalue)===typeof([]));
-          }
-          */
-
           return (ok == 1);
         };
       }
