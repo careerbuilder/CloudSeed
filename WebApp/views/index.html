@@ -124,8 +124,7 @@
                       </tr>
                       <tr ng-repeat="subp in apart.subparts[key] track by $index">
                         <td ng-repeat="(param,details) in value.Model">
-                          <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="checkRequired(apart, key, $parent.$index)"
-                          parameter validation-model="{{details}}" placeholder="{{details.Default || details.Description}}">
+                          <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="checkRequired(apart, key, $parent.$index)">
                         </td>
                         <td ng-show="value.Type.lastIndexOf('List::', 0) === 0" style="width:90px;">
                           <button ng-click="addSubPart(apart, key)" ng-show="canAddSubPart(apart, key, $index)">
