@@ -111,20 +111,6 @@
       return subs;
     }
 
-    $scope.canAddSubPart=function(part, name, index){
-      if(index != part.subparts[name].length-1){
-        return false;
-      }
-      var complete = true;
-      for(var param in part.subparts[name][index]){
-        if(!part.subparts[name][index][param].Value || part.subparts[name][index][param].Value.length <1){
-          complete = false;
-          break;
-        }
-      }
-      return complete;
-    }
-
     $scope.RefInit=function(sub){
       if(sub.Type.lastIndexOf('List::', 0) === 0){
         sub.Reference = [];
@@ -159,6 +145,20 @@
       part.Definition.Parameters[param].Hidden=(sub.Reference.length > 0 && sub.Reference!='None');
     }
 
+    $scope.canAddSubPart=function(part, name, index){
+      if(index != part.subparts[name].length-1){
+        return false;
+      }
+      var complete = true;
+      for(var param in part.subparts[name][index]){
+        if(!part.subparts[name][index][param].Value || part.subparts[name][index][param].Value.length <1){
+          complete = false;
+          break;
+        }
+      }
+      return complete;
+    }
+
     $scope.addSubPart=function(part,key){
       var subpart = part.Definition.Connections.SubParts[key];
       if(!part.subparts){
@@ -167,12 +167,14 @@
       if(!part.subparts[key]){
         part.subparts[key] = [];
       }
-      var isList = (subpart.Type.lastIndexOf('List::', 0) === 0);
-      if(isList){
-        part.subparts[key].push(JSON.parse(JSON.stringify(subpart['Model'])));
-      }
-      else{
-        part.subparts[key] = [JSON.parse(JSON.stringify(subpart['Model']))];
+      if($scope.canAddSubPart(part, key, part.subparts[key].length-1)){
+        var isList = (subpart.Type.lastIndexOf('List::', 0) === 0);
+        if(isList){
+          part.subparts[key].push(JSON.parse(JSON.stringify(subpart['Model'])));
+        }
+        else{
+          part.subparts[key] = [JSON.parse(JSON.stringify(subpart['Model']))];
+        }
       }
     }
 
