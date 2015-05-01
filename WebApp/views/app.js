@@ -17,8 +17,6 @@
       $scope.stacks = data;
     });
 
-
-
     $scope.addPart=function(type){
       var num = 0;
       var newcount = 1;
@@ -95,21 +93,7 @@
         $scope.build = {};
       }
     }
-/*
-    var ModalWindow;
 
-    $scope.clickLoad=function(){
-      ModalWindow = $modal.open({
-        templateUrl: 'loadwindow.html',
-        controller: 'PartsController',
-        resolve:{
-          items: function(){
-            return $scope.stacks;
-          }
-        }
-      })
-    }
-*/
     $scope.getSubs=function(subtype){
       if(subtype.lastIndexOf('List::',0) === 0){
         ct = subtype.replace('List::', '');
@@ -211,8 +195,8 @@
 
     $scope.visibleParams=function(part){
       var num = 0;
-      for(var param in part.Definition.Parameters){
-        if(!part.Definition.Parameters[param].Hidden){
+      for(var i=0; i< part.Definition.Parameters.length; i++){
+        if(!part.Definition.Parameters[i].Hidden){
           num++;
         }
       }
