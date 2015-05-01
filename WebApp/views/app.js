@@ -195,8 +195,8 @@
 
     $scope.visibleParams=function(part){
       var num = 0;
-      for(var i=0; i< part.Definition.Parameters.length; i++){
-        if(!part.Definition.Parameters[i].Hidden){
+      for(var param in part.Definition.Parameters){
+        if(!part.Definition.Parameters[param].Hidden){
           num++;
         }
       }
