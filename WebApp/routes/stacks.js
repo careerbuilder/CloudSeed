@@ -37,7 +37,8 @@ router.post('/api/stacks', function(req, res){
     }
     else{
       console.log("Added stack");
-      fs.writeFile("/home/ubuntu/Cloud_Seed/CLI/Stacks/"+name+".stack", JSON.stringify(template), function(error) {
+      var stackspath = process.env['STACKS_REPO']+"/"
+      fs.writeFile(stackspath + name+".stack", JSON.stringify(template), function(error) {
         if(error) {
             return console.log(error);
         }
