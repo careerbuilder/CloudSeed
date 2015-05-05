@@ -1,6 +1,7 @@
 var express = require('express');
 var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
 var aws = require('aws-sdk');
+var fs = require('fs');
 var cf = new aws.CloudFormation({region:'us-east-1'});
 var router = express.Router();
 
@@ -26,6 +27,9 @@ router.get('/api/stacks/:name', function(req, res){
 });
 
 router.post('/api/stacks', function(req, res){
+  var body = req.body;
+  var name = body['Name'].trim();
+  var template = body['Template'];
   db.collection('stacks').update({Name:req.body['Name']}, req.body, {upsert:true}, function(err, result){
     if(err){
       console.log(err);
@@ -33,6 +37,13 @@ router.post('/api/stacks', function(req, res){
     }
     else{
       console.log("Added stack");
+      fs.writeFile("~/Cloud_Seed/CLI/Stacks/"+name+".stack", JSON.stringify(template), function(error) {
+        if(error) {
+            return console.log(error);
+        }
+        console.log("The file was saved!");
+        //git commit and push
+      });
       return res.send({Success: true, Message: "Added Successfully"})
     }
   });
