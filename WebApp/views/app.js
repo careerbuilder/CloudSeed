@@ -60,8 +60,8 @@
         partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
       }
       copy = JSON.parse(partstring);
-      copy.Mappings = $scope.replaceNames(copy.Mappings || {}, newcount);
-      copy.Conditions = $scope.replaceNames(copy.Conditions || {}, newcount);
+      //copy.Mappings = $scope.replaceNames(copy.Mappings || {}, newcount);
+      //copy.Conditions = $scope.replaceNames(copy.Conditions || {}, newcount);
       copy.Resources = $scope.replaceNames(copy.Resources || {}, newcount);
       copy.Outputs = $scope.replaceNames(copy.Outputs || {}, newcount);
       for(var par in copy.Parameters){
@@ -264,7 +264,7 @@
     }
 
     $scope.refreshStacks=function(){
-      $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
+      $http.get('http://52.6.247:3000/api/stacks').success(function(data){
         $scope.stacks = data;
       });
     }
@@ -294,8 +294,7 @@
         }
         $scope.build.Template = template;
         $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-        var spaceTrim = new RegExp('\s+', 'g');
-        $scope.build.Name = $scope.build.Name.replace(spaceTrim, "");
+        $scope.build.Name = $scope.build.Name;
         $http.post('http://52.6.247.162:3000/api/stacks', $scope.build).success(function(data){
             console.log("saved template!");
             $scope.refreshStacks();
