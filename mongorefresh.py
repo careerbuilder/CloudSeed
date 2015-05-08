@@ -1,15 +1,17 @@
 from collections import OrderedDict
 from pymongo import MongoClient
 import json
+import sys
 import os
 import re
+
 
 client = MongoClient('localhost', 27017)
 db = client.cloudseed
 parts = db.parts
 stacks = db.stacks
 
-for root, dirs, files in os.walk(os.path.join('CLI','Parts')):
+for root, dirs, files in os.walk(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])),'Parts')):
     for file in files:
         f = open(os.path.abspath(os.path.join(root, file)))
         obj = json.load(f, object_pairs_hook=OrderedDict)

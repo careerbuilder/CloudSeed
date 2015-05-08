@@ -7,7 +7,7 @@ var app        = express(); 			// define our app using express
 
 app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'client')));
 app.use(bodyParser.json())
 app.use(favicon(__dirname + '/favicon.ico'));
 
