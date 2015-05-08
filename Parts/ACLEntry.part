@@ -23,12 +23,12 @@
     "PortFrom":{
       "Description": "Bottom port included in this rule",
       "Type": "Number",
-      "Default": "-1"
+      "Default": "0"
     },
     "PortTo":{
       "Description": "Top port included in this rule",
       "Type": "Number",
-      "Default": 65535
+      "Default": "65535"
     },
     "Action": {
       "Description" : "Action for rule",
