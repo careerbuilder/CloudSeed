@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mongodb cloudseed mongoinit.js
+mongo cloudseed mongoinit.js
 echo "collections created"
 python mongorefresh.py
 
