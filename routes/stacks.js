@@ -44,9 +44,7 @@ router.post('/api/stacks', function(req, res){
             return res.send({Code: 399, Message: "Error on fileWrite", Error: error})
         }
         console.log("The file was saved!");
-        //git add
-        //git commit
-        //git push
+        //trigger git commit
         return res.send({Code: 400, Message: "Added Successfully"});
       });
     }
