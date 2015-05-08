@@ -33,19 +33,22 @@ router.post('/api/stacks', function(req, res){
   db.collection('stacks').update({Name:req.body['Name']}, req.body, {upsert:true}, function(err, result){
     if(err){
       console.log(err);
-      return res.send({Success: false, Error:err});
+      return res.send({Code: -1, Error:err});
     }
     else{
       console.log("Added stack");
-      var stackspath = process.env['STACKS_REPO']+"/"
-      fs.writeFile(stackspath + name+".stack", JSON.stringify(template), function(error) {
+      var stackspath = process.env['STACKS_REPO'] + "/" + name +".stack"
+      fs.writeFile(stackspath, JSON.stringify(template), function(error) {
         if(error) {
-            return console.log(error);
+            console.log(error);
+            return res.send({Code: 399, Message: "Error on fileWrite", Error: error})
         }
         console.log("The file was saved!");
-        //git commit and push
+        //git add
+        //git commit
+        //git push
+        return res.send({Code: 400, Message: "Added Successfully"});
       });
-      return res.send({Success: true, Message: "Added Successfully"})
     }
   });
 });
