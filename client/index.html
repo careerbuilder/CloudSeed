@@ -101,7 +101,7 @@
                   <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
                     <ng-form name="parametersForm">
                       <div class="input-group form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid && parametersForm.txtvalue.$dirty) || (parametersForm.selectvalue.$invalid && parametersForm.selectvalue.$dirty)}">
-                        <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{key}}</b></span>
+                        <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{requiredName(key, value)}}</b></span>
                         <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                           parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
                           ng-required="checkRequiredParam(value)">

@@ -73,6 +73,15 @@
       $scope.addedParts.push(mod);
     }
 
+    $scope.requiredName=function(param, value){
+      if($scope.checkRequiredParam(value)){
+        return param+" *";
+      }
+      else{
+        return param;
+      }
+    }
+
     $scope.removePart=function(name){
       for(var i=0; i<$scope.addedParts.length; i++){
         if($scope.addedParts[i].LogicalName === name){
