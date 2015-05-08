@@ -45,13 +45,15 @@
         }
       }
       var partstring = JSON.stringify(copy);
+/*
       for(var mapp in copy.Mappings){
         var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(mapp) +'\s*\}', 'g');
         partstring = partstring.replace(re, JSON.stringify({Ref:mapp+""+newcount}));
       }
+*/
       for(var cond in copy.Conditions){
-        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(cond) +'\s*\}', 'g');
-        partstring = partstring.replace(re, JSON.stringify({Ref:cond+""+newcount}));
+        var re = new RegExp('"'+cond+'"', 'g');
+        partstring = partstring.replace(re, '"'+cond+''+newcount+'"');
       }
       for(var res in copy.Resources){
         var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(res) +'\s*\}', 'g');
@@ -112,11 +114,13 @@
     }
 
     $scope.RefInit=function(sub){
-      if(sub.Type.lastIndexOf('List::', 0) === 0){
-        sub.Reference = [];
-      }
-      else{
-        sub.Reference = 'None';
+      if(!sub.Reference){
+        if(sub.Type.lastIndexOf('List::', 0) === 0){
+          sub.Reference = [];
+        }
+        else{
+          sub.Reference = 'None';
+        }
       }
     }
 
