@@ -1,79 +1,25 @@
 #Cloud_Seed
 _def: The process of controlled atmospheric interruptions in order to stimulate cloud formation_
 
-##Requirements
- - AWS user with full cloud formation permissions
- - AWS cli
- - python 2+
- - boto for python (`pip install boto`)
- 
- _A note about python3: The boto v2 library required by this code has a conflict with python 3. In order to fix this issue a small code change must be made to the boto library._
- 
+Cloudseed is a substitute control plane. Instead of making untraceable changes to stacks directly through the amazon API, Cloudseed uses the Cloudformation API to submit stack templates. These templates can be checked in to change tracking, and any changes are recorded and reversable.
 
-##Instructions
+##Cloudformation
+Previously, in order to create a stack through Cloudformation, several generic templates would be used. One template may create a VPC, another could create 2 subnets, and a third would create an EC2 instance along with some appropriate security groups. Each time a stack needed one or more of these, a new file with the relevant parameters for each template would be created. This lead to problems finding where changes needed to be made in order to add functionality.
 
-Once all tools are installed, run `aws configure` in a terminal. This will prompt for the user credentials of the required aws user. This user will also be the signatory of all Cloudtrail logs, so name it appropriately. 
+##CloudSeed is better
+Instead, why not have one file per stack, and add/remove/edit that file in order to alter the stack? That would fix the searching, allow for easy change tracking, and reduce the labor needed to add or remove component of the stack. Without Cloudseed, this would be accomplished through tedious file editing, with much code duplication. Copy and paste would be a regular event, and human error would become a huge problem. In my experience, buttons are far easier.
 
-###Command Line
+##How to
+Cloudseed is an __internally deployed solution__. This means that there is no single location for Cloudseed (this may change), but instead a single location for each group using it. You are responsible for deploying the instance you will use.
 
-`python Assembler.py [part ..]`
+###1. Deploy the instance - 
+Clone, fork, or download the code for Cloudseed, and send it to a server. This server will need access to AWS (either via internet or being in the AWS cloud) and need open inbound access on the express port (default 3000) to a range accessible by your team as well as a valid mongo server. Navigate to the Cloudseed folder, run mongoinit.sh, and start node with `nohup node app.js &`.
 
-This will order the parts by dependencies, then prompt for any necessary information. Be aware that if you are making a part which other parts request in parameters, the created part will automatically be referenced instead.
-Once all necessary information is provided, the script will generate a `.stack` file in the stacks folder. This stack contains all provided data in a format readable by Amazon CloudFormation. At this point, the data can be 
-sent to be created, or saved for later. The stack file will be preserved in order to allow for change tracking and easier distribution of configurations.
+###2. Add users -
+Visit the IP or domain name of your deployed instance and add a user for yourself. This will require a name, Email, and AWS credentials.
 
-###GUI
+###3. Begin building your stack! -
+Click the buttons corresponding to the components you need. They will be added on the right, and clicking their name will open a panel to add parameters. Once all required parameters (including stack name at the top!) are filled, the stack can be saved.
 
-__Under Construction__
-
-##Examples
-The simplest example is of course a stack with one part. If I need just 1 VPC, I can run 
-
-`python Assembler.py VPC`
-
-Prompts:
-
-```
-Stack Name: VPCStack
-Describe this stack: Example
-Parameters for VPC1
-        VPCCidr :192.168.0.0
-        VPCName :ExampleVPC
-```
-
-
-These parameters produce the following stack:
-
-
-```
-{
-  "Description": "Example Stack",
-  "Parameters": {},
-  "Mappings": {},
-  "Conditions": {},
-  "Resources": {
-    "VPC1": {
-      "Type": "AWS::EC2::VPC",
-      "Properties": {
-        "CidrBlock": "192.168.0.0/16",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "ExampleVPC"
-          }
-        ]
-      }
-    }
-  },
-  "Outputs": {
-    "VPCID1": {
-      "Description": "ID of created VPC",
-      "Value": {
-        "Ref": "VPC1"
-      }
-    }
-  }
-}
-```
- 
- 
+###4. Send the stack to AWS -
+All saved stacks are visible under the "Build" menu on the navbar. Clicking one will send the template to Cloudformation for immediate construction using your user keys.
