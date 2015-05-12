@@ -1,10 +1,10 @@
 (function(){
-  var app = angular.module('cloudseed', []);
+  var app = angular.module('cloudseed', ['ngAnimate', 'toastr']);
 
-  app.controller('PageController', function($http, $scope){
+  app.controller('PageController', function($http, $scope, toastr){
   });
 
-  app.controller('PartsController', function($http, $scope){
+  app.controller('PartsController', function($http, $scope, toastr){
     $.material.init();
     $scope.addedParts = [];
     $scope.parts = [];
@@ -306,7 +306,15 @@
         $scope.build.Name = $scope.build.Name;
         $http.post('http://localhost:3000/api/stacks', $scope.build).success(function(data){
             console.log(data);
-            //console.log("saved template!");
+            if(data['Code'] === 400){
+              toastr.success('Stack Saved', 'Your stack was saved successfully!');
+            }
+            else if(data['Code'] === 399){
+              toastr.warning('Stack Saved with Errors', data['Message']);
+            }
+            else{
+              toastr.error(data['Message'], data['Error']||"");
+            }
             $scope.refreshStacks();
         });
       }
