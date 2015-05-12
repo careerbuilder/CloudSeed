@@ -304,8 +304,9 @@
         $scope.build.Template = template;
         $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
         $scope.build.Name = $scope.build.Name;
-        $http.post('http://52.6.247.162:3000/api/stacks', $scope.build).success(function(data){
-            console.log("saved template!");
+        $http.post('http://localhost:3000/api/stacks', $scope.build).success(function(data){
+            console.log(data);
+            //console.log("saved template!");
             $scope.refreshStacks();
         });
       }

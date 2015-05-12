@@ -37,11 +37,15 @@ router.post('/api/stacks', function(req, res){
     }
     else{
       console.log("Added stack");
-      var stackspath = process.env['STACKS_REPO'] + "/" + name +".stack"
-      fs.writeFile(stackspath, JSON.stringify(template), function(error) {
+      //process.env['STACKS_REPO']
+      //"D:\\repos\\Cloudseed_Stacks"
+      var stackspath = "D:\\repos\\Cloudseed_Stacks" + "/" + name +".stack"
+      console.log(stackspath);
+      var file = fs.openSync(stackspath, 'w');
+      fs.write(file, JSON.stringify(template), function(error) {
         if(error) {
             console.log(error);
-            return res.send({Code: 399, Message: "Error on fileWrite", Error: error})
+            return res.send({Code: 399, Message: "Error on file write", Error: error})
         }
         console.log("The file was saved!");
         //trigger git commit
