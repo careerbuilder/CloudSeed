@@ -93,6 +93,12 @@
       return valid;
     }
 
+    $scope.logOut=function(){
+      $scope.user={};
+      $scope.auth={};
+      $cookies.remove('c_s66d');
+    }
+
     $scope.addPart=function(type){
       var num = 0;
       var newcount = 1;

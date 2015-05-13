@@ -67,6 +67,7 @@
           </li>
         </ul>
         <p class="navbar-text navbar-right" style="color:#000; padding-right:10px;" ng-show="loggedin()">Signed in as <a href="#" class="navbar-link">{{user.email}}</a></p>
+        <button class="btn btn-lg navbar-btn" type="button" ng-click="logOut()">Log Out</button>
       </div>
     </nav>
     <div class="container-fluid" id="page">
@@ -118,7 +119,7 @@
             </form>
           </div>
         </div>
-        <form name="PartsForm" class="simple-form" novalidate>
+        <form name="PartsForm" class="simple-form" ng-if="loggedin()" novalidate>
           <div ng-show="addedParts.length > 0" style="padding-top:15px;">
             <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}">
               <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Stack Name *</b></span>
