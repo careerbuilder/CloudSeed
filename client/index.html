@@ -114,16 +114,24 @@
                     ng-model="auth.secretkey" pattern="[A-Za-z0-9+\-\\/]{40}" ng-required="register=='Register'"/>
                 </div>
               </div>
+              <button id="submituser" type="button" class="btn btn-lg" ng-click="UserInfoBtn_click()" ng-disabled="loginform.$invalid">{{register}}</button>
             </form>
-            <button id="submituser" type="button" class="btn btn-lg" ng-click="UserInfoBtn_click()" ng-disabled="loginform.$invalid">{{register}}</button>
           </div>
         </div>
         <form name="PartsForm" class="simple-form" novalidate>
-          <div class="input-group form-group"  style="width:20%; padding-top:15px;" ng-class="{'has-error': PartsForm.stackName.$invalid}" ng-show="addedParts.length > 0">
-            <input type="text" class="form-control input-lg" style="min-width:150px;" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9]+'" required>
-            <span class="input-group-btn">
-              <button class="btn btn-default" ng-disabled="addedParts.length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
-            </span>
+          <div ng-show="addedParts.length > 0" style="padding-top:15px;">
+            <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}">
+              <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Stack Name *</b></span>
+              <input type="text" class="form-control input-lg" style="min-width:150px; width:20%;"
+                ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9]+'" required />
+            </div>
+            <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackRegion.$invalid && PartsForm.stackRegion.$dirty}">
+              <span class="input-group-addon" id="stackregionlabel" style="text-align:left; min-width:100px;"><b>Region *</b></span>
+              <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.region" required>
+                <option ng-repeat="r in getRegions()">{{r}}</option>
+              </select>
+            </div>
+            <button class="btn btn-default" ng-disabled="addedParts.length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
           </div>
           <div ng-repeat="apart in addedParts track by $index" class="panel panel-default partpanel">
             <div class="panel-heading" ng-click="apart.Collapsed = !apart.Collapsed">

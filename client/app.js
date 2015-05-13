@@ -5,13 +5,7 @@
   app.controller('PartsController', function($http, $scope, $cookies, toastr){
     $.material.init();
     $scope.register = "Log in";
-    $scope.auth = {
-      email: "",
-      password: "",
-      password2: "",
-      accesskey: "",
-      secretkey: ""
-    };
+    $scope.auth = {};
     $scope.user = {};
     $scope.addedParts = [];
     $scope.parts = [];
