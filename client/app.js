@@ -2,7 +2,7 @@
   var app = angular.module('cloudseed', ['ngAnimate', 'ngCookies', 'toastr']);
 
 
-  app.controller('PartsController', function($http, $scope, $cookies, toastr){
+  app.controller('PartsController', function($http, $scope, $cookies, $cookieStore, toastr){
     $.material.init();
     $scope.register = "Log in";
     $scope.notRegister= "Register";
@@ -96,7 +96,7 @@
     $scope.logOut=function(){
       $scope.user={};
       $scope.auth={};
-      $cookies.c_s66d = undefined;
+      $cookieStore.remove('c_s66d');
     }
 
     $scope.addPart=function(type){
