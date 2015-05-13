@@ -17,9 +17,10 @@ var port = 3000;
 // ROUTES FOR OUR API
 // =============================================================================
 
-
+var auth = require('./routes/auth.js');
 var parts = require('./routes/parts.js');
 var stacks = require('./routes/stacks.js');
+app.use(auth);
 app.use(parts);
 app.use(stacks);
 

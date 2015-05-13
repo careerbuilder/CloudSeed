@@ -24,6 +24,7 @@
     <!--angular  -->
     <script src="bower_components/angular/angular.min.js"></script><!-- load angular -->
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
     <!-- controllers -->
     <script type="text/javascript" src="app.js"></script>
@@ -38,7 +39,7 @@
           <a class="navbar-brand navelement" style="color:#000; padding:0px;" href="#"><img src="CloudseedLogosmaller.png" alt="logo"></img></a>
         </div>
         <ul class="nav navbar-nav navelement">
-          <li class="dropdown navelement" style="color:#000;">
+          <li class="dropdown navelement" style="color:#000;" ng-if="loggedin()">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
               Load
               <span class="caret"></span>
@@ -51,7 +52,7 @@
               </li>
             </ul>
           </li>
-          <li class="dropdown navelement" style="color:#000;">
+          <li class="dropdown navelement" style="color:#000;" ng-if="loggedin()">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
               Build
               <span class="caret"></span>
@@ -65,11 +66,11 @@
             </ul>
           </li>
         </ul>
-        <!--<p class="navbar-text navbar-right" style="color:#000; padding-right:10px;">Signed in as <a href="#" class="navbar-link">TestUser</a></p>-->
+        <p class="navbar-text navbar-right" style="color:#000; padding-right:10px;" ng-show="loggedin()">Signed in as <a href="#" class="navbar-link">{{user.email}}</a></p>
       </div>
     </nav>
     <div class="container-fluid" id="page">
-      <div class="well-material-grey sidebar well">
+      <div class="well-material-grey sidebar well" ng-if="loggedin()">
         <ul class="nav nav-stacked">
           <li role="presentation"><h4>Add a Part</h4></li>
           <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
@@ -80,9 +81,42 @@
         </ul>
       </div>
       <div id="stage" style="width:70%; float:left; display:inline;">
-        <div class="jumbotron jumbotron-material-grey" ng-show="addedParts.length < 1" >
+        <div class="jumbotron jumbotron-material-grey" style="text-align:center;" ng-show="addedParts.length < 1" >
           <h1>Welcome to CloudSeed!</h1>
-          <p>Building a cloudformation stack is now as easy as clicking buttons. Start now by adding your first part from the sidebar, or load an existing stack!</p>
+          <p>Building a cloudformation stack is now as easy as clicking buttons.</p>
+          <p ng-show="loggedin()">Start now by adding your first part from the sidebar, or load an existing stack!</p>
+          <div id="signupin" ng-hide="loggedin()" style="width: 30%; margin-left:auto; margin-right:auto;">
+            <p>Register/Log in to get started!</p>
+            <label class="checkbox">{{register}}</label><input type="checkbox" ng-model="register" ng-false-value="'Log in'" ng-true-value="'Register'" />
+            <form class="simple-form" name="loginform" novalidate>
+              <div class="input-group form-group" ng-class="{'has-error': (loginform.email.$invalid && loginform.email.$dirty)}">
+                <span class="input-group-addon" id="Email Address" style="text-align:left; min-width:150px;"><b>Email Address</b></span>
+                <input type="email" class="form-control" placeholder="Email" name="email" ng-model="auth.email" required />
+              </div>
+              <div class="input-group form-group" ng-class="{'has-error': (loginform.password.$invalid && loginform.password.$dirty)}">
+                <span class="input-group-addon" id="Password" style="text-align:left; min-width:150px;"><b>Password</b></span>
+                <input type="password" class="form-control" placeholder="Password" name="Password" ng-model="auth.password" required />
+              </div>
+              <div id="register" ng-if="register=='Register'">
+                <div class="input-group form-group" ng-class="{'has-error': (loginform.Password2.$invalid && loginform.Password2.$dirty)}">
+                  <span class="input-group-addon" id="confirmpassword" style="text-align:left; min-width:150px;"><b>Confirm Password</b></span>
+                  <input type="password" class="form-control" placeholder="Password again" name="Password2"
+                    ng-model="auth.password2" compare-to="auth.password" ng-required="register=='Register'"/>
+                </div>
+                <div class="input-group form-group" ng-class="{'has-error': (loginform.awskey.$invalid && loginform.awskey.$dirty)}">
+                  <span class="input-group-addon" id="awskeylabel" style="text-align:left; min-width:150px;"><b>AWS Access Key</b></span>
+                  <input type="text" class="form-control" placeholder="ie XXXXXXXXXXXXXXXX" name="awskey"
+                    ng-model="auth.accesskey" pattern="[A-Z0-9]{20}" ng-required="register=='Register'"/>
+                </div>
+                <div class="input-group form-group" ng-class="{'has-error': (loginform.awsskey.$invalid && loginform.awsskey.$dirty)}">
+                  <span class="input-group-addon" id="awskeylabel" style="text-align:left; min-width:150px;"><b>AWS Secret Key</b></span>
+                  <input type="text" class="form-control" placeholder="ie XX5xXYx0XxxX0XX0X-XxXxx088xxXxXXXxxXx9x" name="awsskey"
+                    ng-model="auth.secretkey" pattern="[A-Za-z0-9+\-\\/]{40}" ng-required="register=='Register'"/>
+                </div>
+              </div>
+            </form>
+            <button id="submituser" type="button" class="btn btn-lg" ng-click="UserInfoBtn_click()" ng-disabled="loginform.$invalid">{{register}}</button>
+          </div>
         </div>
         <form name="PartsForm" class="simple-form" novalidate>
           <div class="input-group form-group"  style="width:20%; padding-top:15px;" ng-class="{'has-error': PartsForm.stackName.$invalid}" ng-show="addedParts.length > 0">

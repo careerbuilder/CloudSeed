@@ -1,11 +1,18 @@
 (function(){
-  var app = angular.module('cloudseed', ['ngAnimate', 'toastr']);
+  var app = angular.module('cloudseed', ['ngAnimate', 'ngCookies', 'toastr']);
 
-  app.controller('PageController', function($http, $scope, toastr){
-  });
 
-  app.controller('PartsController', function($http, $scope, toastr){
+  app.controller('PartsController', function($http, $scope, $cookies, toastr){
     $.material.init();
+    $scope.register = "Log in";
+    $scope.auth = {
+      email: "",
+      password: "",
+      password2: "",
+      accesskey: "",
+      secretkey: ""
+    };
+    $scope.user = {};
     $scope.addedParts = [];
     $scope.parts = [];
     $scope.stacks = [];
@@ -16,6 +23,62 @@
     $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
       $scope.stacks = data;
     });
+
+    $scope.UserInfoBtn_click=function(){
+      var err = "";
+      if($scope.register === 'Log in'){
+        $http.post('http://localhost:3000/api/login', $scope.auth).success(function(data, status){
+          if(status != 200){
+            err = "Endpoint cannot be reached";
+          }
+          else{
+            if(data.Success){
+              $scope.user = data.user;
+              $cookies.c_s66d = data.user._id;
+              toastr.success("Welcome to Cloudseed!");
+            }
+            else{
+              err = data.Error;
+              toastr.error(err);
+            }
+          }
+        }).
+        error(function(data, status, headers, config) {
+          console.log(data);
+          toastr.error('Check back soon!', 'Endpoint cannot be reached');
+        });
+      }
+      else if($scope.register === 'Register'){
+        $http.post('http://localhost:3000/api/register', $scope.auth).success(function(data, status){
+          if(status != 200){
+            err = "Endpoint cannot be reached";
+            toastr.warning(err, "This is awkward...");
+          }
+          else{
+            if(data.Success){
+              $cookies.c_s66d = data.user._id;
+              $scope.user = data.user;
+              toastr.success("Welcome to Cloudseed!");
+            }
+            else{
+              toastr.error(data.Error);
+            }
+          }
+        }).
+        error(function(data, status, headers, config) {
+          console.log(data);
+          toastr.error('Check back soon!', 'Endpoint cannot be reached');
+        });
+      }
+      else{
+        console.log('Nice try...');
+      }
+    }
+
+    $scope.loggedin=function(){
+      var valid = $cookies.c_s66d;
+      return valid;
+    }
 
     $scope.addPart=function(type){
       var num = 0;
@@ -333,6 +396,20 @@
       });
     }
 
+  });
+
+  app.directive("compareTo", function() {
+    return {
+        require: "ngModel",
+        scope: {
+            otherModelValue: "=compareTo"
+        },
+        link: function(scope, element, attributes, ctrl) {
+            ctrl.$validators.compareTo = function(modelValue) {
+                return modelValue === scope.otherModelValue;
+            };
+        }
+    };
   });
 
   app.directive('parameter', function(){
