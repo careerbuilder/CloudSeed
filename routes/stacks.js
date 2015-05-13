@@ -10,7 +10,7 @@ if(!stacksrepo){
 }
 
 router.post('/api/regions/', function(req, res){
-  var ec2 = new aws.EC2({accessKeyId: body['accesskey'], secretAccessKey: body['secretkey'], region: 'us-east-1'});
+  var ec2 = new aws.EC2({accessKeyId: req.body['accesskey'], secretAccessKey: req.body['secretkey'], region: 'us-east-1'});
   ec2.describeRegions({}, function(err, data){
     if(err){
       console.log(err);
