@@ -96,7 +96,7 @@
     $scope.logOut=function(){
       $scope.user={};
       $scope.auth={};
-      $cookies.remove('c_s66d');
+      $cookies.c_s66d = undefined;
     }
 
     $scope.addPart=function(type){
