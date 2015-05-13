@@ -31,6 +31,7 @@ router.post('/api/stacks', function(req, res){
   var body = req.body;
   var name = body['Name'].trim();
   var template = body['Template'];
+  var stacksrepo = process.env['STACKS_REPO'];
   db.collection('stacks').update({Name:req.body['Name']}, req.body, {upsert:true}, function(err, result){
     if(err){
       console.log(err);
@@ -40,7 +41,7 @@ router.post('/api/stacks', function(req, res){
       console.log("Added stack");
       //process.env['STACKS_REPO']
       //"D:\\repos\\Cloudseed_Stacks"
-      var stackspath = process.env['STACKS_REPO'] + "/" + name +".stack"
+      var stackspath = stacksrepo + "/" + name +".stack"
       console.log(stackspath);
       var file = fs.openSync(stackspath, 'w');
       fs.write(file, JSON.stringify(template), function(error) {
