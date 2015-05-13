@@ -2,7 +2,6 @@ var express = require('express');
 var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
 var aws = require('aws-sdk');
 var fs = require('fs');
-var cf = new aws.CloudFormation();
 var router = express.Router();
 
 var stacksrepo = process.env['STACKS_REPO'];
@@ -43,8 +42,6 @@ router.post('/api/stacks', function(req, res){
     }
     else{
       console.log("Added stack");
-      //process.env['STACKS_REPO']
-      //"D:\\repos\\Cloudseed_Stacks"
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
         console.log(stackspath);
@@ -103,7 +100,7 @@ router.post('/api/build/:name', function(req, res){
     }
     stack = results[0];
     console.log(stack);
-    aws.config.update({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
+    var cf = new aws.CloudFormation({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
     stackname = stack['Name'];
     cf.describeStacks({"StackName": stackname}, function(err, data){
       if(err){
