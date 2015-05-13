@@ -24,7 +24,7 @@
         $scope.user = data.user;
         $http.post('http://52.6.247.162:3000/api/regions/', {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey}).success(function(data){
           if(data.Success){
-            $scope.regions = data;
+            $scope.regions = data.Regions;
           }
         });
       });
