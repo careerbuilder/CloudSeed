@@ -16,7 +16,6 @@ router.post('/api/regions/', function(req, res){
       console.log(err);
       return res.send({Success:false, Error: err});
     }
-    console.log(data);
     var regions = []
     for(var i=0; i<data.Regions.length; i++){
       regions.push(data.Regions[i].RegionName);
