@@ -128,8 +128,7 @@
             <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackRegion.$invalid && PartsForm.stackRegion.$dirty}">
               <span class="input-group-addon" id="stackregionlabel" style="text-align:left; min-width:100px;"><b>Region *</b></span>
               <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.Region" required>
-                <option>us-east-1</option>
-                <option ng-repeat="r in getRegions()">{{r}}</option>
+                <option ng-repeat="r in regions">{{r}}</option>
               </select>
             </div>
             <button class="btn btn-default" ng-disabled="addedParts.length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>

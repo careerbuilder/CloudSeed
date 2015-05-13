@@ -8,6 +8,7 @@
     $scope.notRegister= "Register";
     $scope.auth = {};
     $scope.user = {};
+    $scope.regions = [];
     $scope.addedParts = [];
     $scope.parts = [];
     $scope.stacks = [];
@@ -23,6 +24,11 @@
         $scope.user = data.user;
       });
     }
+    $http.get('http://52.6.247.162:3000/api/regions/').success(function(data){
+      if(data.Success){
+        $scope.regions = data;
+      }
+    });
 
     $scope.toggleSignup=function(){
       var temp = $scope.register;
@@ -399,7 +405,10 @@
     $scope.buildTemplate=function(stackname){
       var auth = {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey};
       $http.post('http://52.6.247.162:3000/api/build/' + stackname, auth).success(function(data){
-        console.log(data);
+        toastr.success("Template Built!");
+      }).
+      error(function(err){
+        toastr.error(err, "Something went wrong...");
       });
     }
 

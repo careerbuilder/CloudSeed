@@ -9,6 +9,18 @@ if(!stacksrepo){
   console.log("Stacks_Repo not configured");
 }
 
+router.get('/api/regions/', function(req, res){
+  var ec2 = new AWS.EC2();
+  ec2.describeRegions({}, function(err, data){
+    if(err){
+      console.log(err);
+      return res.send({Success:false, Error: err});
+    }
+    console.log(data);
+    return res.send({Success: true, Regions: data});
+  });
+});
+
 router.get('/api/stacks', function(req, res){
   db.collection('stacks').find({},{"Name":true}).toArray(function(err, results){
     if(err){
