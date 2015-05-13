@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/material.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/ripples.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap-material-design/dist/css/roboto.min.css">
-    <link rel="stylesheet" href="bower_components/angular-toastr/dist/angular-toastr.css" />
+    <link rel="stylesheet" href="bower_components/angular-toastr/dist/angular-toastr.css">
 
 
     <link rel="stylesheet" href="styles.css">
@@ -87,7 +87,6 @@
           <p ng-show="loggedin()">Start now by adding your first part from the sidebar, or load an existing stack!</p>
           <div id="signupin" ng-hide="loggedin()" style="width: 30%; margin-left:auto; margin-right:auto;">
             <p>Register/Log in to get started!</p>
-            <label class="checkbox">{{register}}</label><input type="checkbox" ng-model="register" ng-false-value="'Log in'" ng-true-value="'Register'" />
             <form class="simple-form" name="loginform" novalidate>
               <div class="input-group form-group" ng-class="{'has-error': (loginform.email.$invalid && loginform.email.$dirty)}">
                 <span class="input-group-addon" id="Email Address" style="text-align:left; min-width:150px;"><b>Email Address</b></span>
@@ -114,7 +113,8 @@
                     ng-model="auth.secretkey" pattern="[A-Za-z0-9+\-\\/]{40}" ng-required="register=='Register'"/>
                 </div>
               </div>
-              <button id="submituser" type="button" class="btn btn-lg" ng-click="UserInfoBtn_click()" ng-disabled="loginform.$invalid">{{register}}</button>
+              <button id="submituser" type="button"  style="display: inline; margin-right:50px;" class="btn btn-lg" ng-click="UserInfoBtn_click()" ng-disabled="loginform.$invalid">{{register}}</button>
+              <button class="btn" type="button" style="display:inline;" ng-click="toggleSignup()">{{notRegister + " Instead?"}}</button>
             </form>
           </div>
         </div>

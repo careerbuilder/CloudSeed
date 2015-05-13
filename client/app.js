@@ -5,6 +5,7 @@
   app.controller('PartsController', function($http, $scope, $cookies, toastr){
     $.material.init();
     $scope.register = "Log in";
+    $scope.notRegister= "Register";
     $scope.auth = {};
     $scope.user = {};
     $scope.addedParts = [];
@@ -17,6 +18,17 @@
     $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
       $scope.stacks = data;
     });
+    if($cookies.c_s66d){
+      $http.get('http://localhost:3000/api/user/'+$cookies.c_s66d).success(function(data){
+        $scope.user = data.user;
+      });
+    }
+
+    $scope.toggleSignup=function(){
+      var temp = $scope.register;
+      $scope.register = $scope.notRegister;
+      $scope.notRegister = temp;
+    }
 
     $scope.UserInfoBtn_click=function(){
       var err = "";

@@ -1,6 +1,7 @@
 var express = require('express');
 var crypto = require('crypto');
-var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
+var mongo = require('mongoskin');
+var db = mongo.db('mongodb://localhost:27017/cloudseed');
 var router = express.Router();
 
 function rand(rlen){
@@ -10,6 +11,19 @@ function rand(rlen){
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
 }
+
+router.get('/api/user/:userid', function(req,res){
+  var id = req.params.userid;
+  var oid = mongo.helper.toObjectID(id)
+  db.collection('users').find({_id: oid}, {email:1, accesskey:1, secretkey:1, _id:1}).toArray(function(err, results){
+    if(err){
+      console.log(err);
+      return res.send({Success: false, Error:err});
+    }
+    var userinfo = results[0];
+    return res.send({Success: true, user: userinfo});
+  });
+});
 
 router.post('/api/login', function(req, res){
   var b = req.body;
