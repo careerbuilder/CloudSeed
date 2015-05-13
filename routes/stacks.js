@@ -17,7 +17,11 @@ router.post('/api/regions/', function(req, res){
       return res.send({Success:false, Error: err});
     }
     console.log(data);
-    return res.send({Success: true, Regions: data});
+    var regions = []
+    for(var i=0; i<data.Regions.length; i++){
+      regions.push(data.Regions[i].RegionName);
+    }
+    return res.send({Success: true, Regions: regions});
   });
 });
 
