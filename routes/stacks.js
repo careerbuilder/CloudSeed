@@ -8,7 +8,8 @@ var router = express.Router();
 router.get('/api/stacks', function(req, res){
   db.collection('stacks').find({},{"Name":true}).toArray(function(err, results){
     if(err){
-      throw err;
+      console.log(err);
+      return res.send({Success: false, Error: err});
     }
    // console.log(results);
     return res.send(results);
@@ -39,7 +40,7 @@ router.post('/api/stacks', function(req, res){
       console.log("Added stack");
       //process.env['STACKS_REPO']
       //"D:\\repos\\Cloudseed_Stacks"
-      var stackspath = "D:\\repos\\Cloudseed_Stacks" + "/" + name +".stack"
+      var stackspath = process.env['STACKS_REPO'] + "/" + name +".stack"
       console.log(stackspath);
       var file = fs.openSync(stackspath, 'w');
       fs.write(file, JSON.stringify(template), function(error) {
