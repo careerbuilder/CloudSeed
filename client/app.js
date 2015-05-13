@@ -19,7 +19,7 @@
       $scope.stacks = data;
     });
     if($cookies.c_s66d){
-      $http.get('http://localhost:3000/api/user/'+$cookies.c_s66d).success(function(data){
+      $http.get('http://52.6.247.162:3000/api/user/'+$cookies.c_s66d).success(function(data){
         $scope.user = data.user;
       });
     }
@@ -33,7 +33,7 @@
     $scope.UserInfoBtn_click=function(){
       var err = "";
       if($scope.register === 'Log in'){
-        $http.post('http://localhost:3000/api/login', $scope.auth).success(function(data, status){
+        $http.post('http://52.6.247.162:3000/api/login', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
           }
@@ -55,7 +55,7 @@
         });
       }
       else if($scope.register === 'Register'){
-        $http.post('http://localhost:3000/api/register', $scope.auth).success(function(data, status){
+        $http.post('http://52.6.247.162:3000/api/register', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
             toastr.warning(err, "This is awkward...");
@@ -372,8 +372,8 @@
         }
         $scope.build.Template = template;
         $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-        $scope.build.Name = $scope.build.Name;
-        $http.post('http://localhost:3000/api/stacks', $scope.build).success(function(data){
+        //$scope.build.Name = $scope.build.Name;
+        $http.post('http://52.6.247.162:3000/api/stacks', $scope.build).success(function(data){
             console.log(data);
             if(data['Code'] === 400){
               toastr.success('Stack Saved', 'Your stack was saved successfully!');
@@ -397,7 +397,9 @@
     }
 
     $scope.buildTemplate=function(stackname){
-      $http.post('http://52.6.247.162:3000/api/build/'+stackname, {}).success(function(data){
+      $scope.loadTemplate(stackname);
+      $scope.build.auth = {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey};
+      $http.post('http://52.6.247.162:3000/api/build/', $scope.build).success(function(data){
         console.log(data);
       });
     }

@@ -2,7 +2,7 @@ var express = require('express');
 var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
 var aws = require('aws-sdk');
 var fs = require('fs');
-var cf = new aws.CloudFormation({region:'us-east-1'});
+var cf = new aws.CloudFormation();
 var router = express.Router();
 
 router.get('/api/stacks', function(req, res){
@@ -59,6 +59,7 @@ router.post('/api/build', function(req, res){
   var body = req.body;
   var template = body['Template'];
   var stackname = body['Name'];
+  aws.config.update({accessKeyId: body['auth']['accesskey'], secretAccessKey: body['auth']['secretkey'], region: body['Region']});
   cf.describeStacks({"StackName": stackname}, function(err, data){
     if(err){
       console.log("Creating stack");
@@ -83,8 +84,6 @@ router.post('/api/build', function(req, res){
 });
 
 router.post('/api/build/:name', function(req, res){
-  //region = req.body['region'];
-  //aws.config.update({'region': region});
   db.collection('stacks').find({"Name":req.params.name},{"_id":false}).toArray(function(err, results){
     if(err){
       console.log(err);
