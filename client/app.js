@@ -397,9 +397,8 @@
     }
 
     $scope.buildTemplate=function(stackname){
-      $scope.loadTemplate(stackname);
-      $scope.build.auth = {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey};
-      $http.post('http://52.6.247.162:3000/api/build/', $scope.build).success(function(data){
+      var auth = {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey};
+      $http.post('http://52.6.247.162:3000/api/build/' + stackname, auth).success(function(data){
         console.log(data);
       });
     }
