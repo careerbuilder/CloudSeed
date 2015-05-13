@@ -10,7 +10,7 @@ if(!stacksrepo){
 }
 
 router.get('/api/regions/', function(req, res){
-  var ec2 = new AWS.EC2();
+  var ec2 = new aws.EC2();
   ec2.describeRegions({}, function(err, data){
     if(err){
       console.log(err);
