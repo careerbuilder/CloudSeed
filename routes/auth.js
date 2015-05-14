@@ -1,4 +1,8 @@
 var express = require('express');
+var uuid = require('node-uuid');
+var nodemailer = require('nodemailer');
+var sesTransport = require('nodemailer-ses-transport');
+var transporter = nodemailer.createTransport(sesTransport())
 var crypto = require('crypto');
 var mongo = require('mongoskin');
 var db = mongo.db('mongodb://localhost:27017/cloudseed');
@@ -55,7 +59,8 @@ router.post('/api/register', function(req, res){
   var salt = rand(10);
   shasum.update(salt + b.password);
   var passhash = shasum.digest('hex');
-  db.collection('users').insert({email: b.email.toLowerCase(), password: passhash, salt: salt, accesskey: b.accesskey, secretkey: b.secretkey}, function(err, results){
+  var emailconfirm = uuid.v4();
+  db.collection('users').insert({email: b.email.toLowerCase(), password: passhash, salt: salt, accesskey: b.accesskey, secretkey: b.secretkey, active:false, confirm:emailconfirm}, function(err, results){
     if(err){
       if(err.err.indexOf('duplicate') >= 0){
         return res.send({Success: false, Error: "User with that email already exists!"})
@@ -63,7 +68,27 @@ router.post('/api/register', function(req, res){
       return res.send({Success: false, Error: err});
     } else{
       var record = results[0];
-      return res.send({Success: true, user: {email: record.email, accesskey: record.accesskey, secretkey: record.secretkey, _id: record._id}});
+      transporter.sendMail({
+        from: 'cloudseed@careerbuilder.com',
+        to: record.email,
+        subject: 'Please confirm your CloudSeed account',
+        text: 'Your account is created, but cannot be accessed until you confirm your email by visiting this site: http://52.6.247.162:3000/api/confirm/'+emailconfirm,
+        html: '<h1>Welcome to Cloudseed!</h1><p>An account has been created for this email, but will not be active until the email is confirmed. If this was not you, please ignore this email.
+        Otherwise, activate the account here <a href="http://52.6.247.162:3000/api/confirm/'+emailconfirm+'">http://52.6.247.162:3000/api/confirm/'+emailconfirm+'</a></p>'
+      });
+      return res.send({Success: true, user: {email: record.email});
+    }
+  });
+});
+
+router.get('/api/confirm/:userconfirm', function(req,res){
+  var signature = req.params.userconfirm;
+  db.collection.update({confirm:signature}, {$set:{active:true}}, function(err, data){
+      console.log(err);
+      return res.send({Success:false; Error: err});
+    }
+    else{
+      return res.render('index');
     }
   });
 });
