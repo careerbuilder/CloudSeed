@@ -311,11 +311,10 @@
     }
 
     $scope.replaceRefs = function(apart){
-      console.log(apart);
       var partstring = JSON.stringify(apart.Definition);
       for(var param in apart.Definition.Parameters){
-        console.log(param);
         if(!apart.Definition.Parameters[param].Hidden){
+          console.log(param +": " + apart.Definition.Parameters[param]);
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
           partstring = partstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
         }
