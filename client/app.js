@@ -315,6 +315,7 @@
       for(var param in apart.Definition.Parameters){
         if(!apart.Definition.Parameters[param].Hidden){
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
+
           partstring = partstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
         }
       }
@@ -329,7 +330,6 @@
         }
       }
       apart.Definition = JSON.parse(partstring);
-      console.log(apart.Definition);
       if(apart.subparts){
         for(var subp in apart.subparts){
           var models = apart.subparts[subp];
@@ -409,8 +409,8 @@
 
     $scope.loadTemplate=function(name){
       $http.get('http://52.6.247.162:3000/api/stacks/'+name).success(function(data){
-        $scope.build = data[0];
-        $scope.addedParts = data[0]['Parts'];
+        $scope.build = JSON.parse(JSON.stringify(data[0]));
+        $scope.addedParts = JSON.parse(JSON.stringify(data[0]['Parts']));
       });
     }
 
