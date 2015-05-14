@@ -357,7 +357,7 @@
     }
 
     $scope.refreshStacks=function(){
-      $http.get('http://52.6.247.142:3000/api/stacks').success(function(data){
+      $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
         $scope.stacks = data;
       });
     }
