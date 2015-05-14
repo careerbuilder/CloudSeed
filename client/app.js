@@ -370,10 +370,11 @@
         template.Outputs = {};
         template.Conditions = {};
         template.Mappings = {};
-        for(var i=0; i<$scope.addedParts.length; i++){
-          $scope.replaceRefs($scope.addedParts[i]);
-          console.log($scope.addedParts[i].Definition);
-          var part = $scope.addedParts[i].Definition;
+        $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
+        for(var i=0; i<$scope.build.Parts.length; i++){
+          $scope.replaceRefs($scope.build.Parts[i]);
+          console.log($scope.build.Parts[i].Definition);
+          var part = $scope.build.Parts[i].Definition;
           for(var mapkey in part.Mappings){
             template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
           }
@@ -388,7 +389,6 @@
           }
         }
         $scope.build.Template = template;
-        $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
         //$scope.build.Name = $scope.build.Name;
         $http.post('http://52.6.247.162:3000/api/stacks', $scope.build).success(function(data){
             console.log(data);
