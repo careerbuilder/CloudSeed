@@ -59,20 +59,9 @@ router.post('/api/stacks', function(req, res){
       console.log("Added stack");
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
-        console.log(stackspath);
+        //console.log(stackspath);
         fs.writeFileSync(stackspath, JSON.stringify(template));
-        return res.send({Code: 400, Message: "Stack Saved!"})
-/*
-        fs.writeSync(file, JSON.stringify(template), function(error) {
-          if(error) {
-              console.log(error);
-              return res.send({Code: 399, Message: "Error on file write", Error: error})
-          }
-          console.log("The file was saved!");
-          //trigger git commit
-          return res.send({Code: 400, Message: "Added Successfully"});
-        });
-*/
+        return res.send({Code: 400, Message: "Stack Saved!"});
       }
       else{
         return res.send({Code: 388, Message: "No Stack Repo configured"})
