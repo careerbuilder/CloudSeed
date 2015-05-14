@@ -370,10 +370,10 @@
         template.Outputs = {};
         template.Conditions = {};
         template.Mappings = {};
-        $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-        for(var i=0; i<$scope.addedParts.length; i++){
-          $scope.replaceRefs($scope.addedParts[i]);
-          var part = $scope.addedParts[i].Definition;
+        var pieces = JSON.parse(JSON.stringify($scope.addedParts));
+        for(var i=0; i<pieces.length; i++){
+          $scope.replaceRefs(pieces[i]);
+          var part = $scope.pieces.Definition;
           for(var mapkey in part.Mappings){
             template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
           }
@@ -388,6 +388,7 @@
           }
         }
         $scope.build.Template = template;
+        $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
         //$scope.build.Name = $scope.build.Name;
         $http.post('http://localhost:3000/api/stacks', $scope.build).success(function(data){
             if(data['Code'] === 400){
@@ -399,7 +400,6 @@
             else{
               toastr.error(data['Message'], data['Error']||"");
             }
-            $scope.addedParts =JSON.parse(JSON.stringify($scope.build.Parts));
             $scope.refreshStacks();
         });
       }
