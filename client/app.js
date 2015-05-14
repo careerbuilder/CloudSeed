@@ -373,7 +373,7 @@
         var pieces = JSON.parse(JSON.stringify($scope.addedParts));
         for(var i=0; i<pieces.length; i++){
           $scope.replaceRefs(pieces[i]);
-          var part = $scope.pieces.Definition;
+          var part = pieces[i].Definition;
           for(var mapkey in part.Mappings){
             template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
           }
