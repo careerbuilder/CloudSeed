@@ -59,7 +59,6 @@ router.post('/api/stacks', function(req, res){
       console.log("Added stack");
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
-        //console.log(stackspath);
         fs.writeFileSync(stackspath, JSON.stringify(template));
         return res.send({Code: 400, Message: "Stack Saved!"});
       }

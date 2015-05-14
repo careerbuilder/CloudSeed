@@ -126,6 +126,10 @@
               <input type="text" class="form-control input-lg" style="min-width:150px; width:20%;"
                 ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9]+'" required />
             </div>
+            <div class="input-group form-group">
+              <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Description</b></span>
+              <input type="text" class="form-control input-lg" style="min-width:150px; width:20%;" ng-model="build.Template.Description" placeholder="" name="stackDescription"/>
+            </div>
             <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackRegion.$invalid && PartsForm.stackRegion.$dirty}">
               <span class="input-group-addon" id="stackregionlabel" style="text-align:left; min-width:100px;"><b>Region *</b></span>
               <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.Region" required>
