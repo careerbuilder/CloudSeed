@@ -30,7 +30,6 @@
       });
     }
 
-
     $scope.toggleSignup=function(){
       var temp = $scope.register;
       $scope.register = $scope.notRegister;
@@ -74,14 +73,7 @@
           }
           else{
             if(data.Success){
-              $cookies.c_s66d = data.user._id;
-              $scope.user = data.user;
-              $http.post('http://52.6.247.162:3000/api/regions/', {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey}).success(function(data){
-                if(data.Success){
-                  $scope.regions = data.Regions;
-                }
-              });
-              toastr.success("Welcome to Cloudseed!");
+              toastr.success("Welcome to Cloudseed!", "Confirmation Email Sent!");
             }
             else{
               toastr.error(data.Error);
@@ -373,6 +365,7 @@
     $scope.saveTemplate=function(){
       if($scope.build.Name){
         var template = {};
+        template.Description = $scope.build.Template.Description;
         template.Resources = {};
         template.Outputs = {};
         template.Conditions = {};
