@@ -105,7 +105,6 @@ router.post('/api/build/:name', function(req, res){
       return res.send({Success: false, Error:err});
     }
     stack = results[0];
-    console.log(stack);
     var cf = new aws.CloudFormation({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
     stackname = stack['Name'];
     cf.describeStacks({"StackName": stackname}, function(err, data){

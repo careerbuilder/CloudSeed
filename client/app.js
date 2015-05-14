@@ -415,7 +415,12 @@
     $scope.buildTemplate=function(stackname){
       var auth = {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey};
       $http.post('http://52.6.247.162:3000/api/build/' + stackname, auth).success(function(data){
-        toastr.success("Template Built!");
+        if(data.Success){
+          toastr.success("Template Built!");
+        }
+        else{
+          toastr.error(data.Error, "Something went wrong...");
+        }
       }).
       error(function(err){
         toastr.error(err, "Something went wrong...");
