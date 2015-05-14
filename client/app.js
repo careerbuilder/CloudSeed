@@ -329,6 +329,7 @@
         }
       }
       apart.Definition = JSON.parse(partstring);
+      console.log(apart.Definition);
       if(apart.subparts){
         for(var subp in apart.subparts){
           var models = apart.subparts[subp];
