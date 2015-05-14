@@ -69,8 +69,8 @@ router.post('/api/register', function(req, res){
     } else{
       var record = results[0];
       var plaintext = 'Your account is created, but cannot be accessed until you confirm your email by visiting this site: http://52.6.247.162:3000/api/confirm/'+emailconfirm;
-      var html = '<h1>Welcome to Cloudseed!</h1><p>An account has been created for this email, but will not be active until the email is confirmed. If this was not you, please ignore this email.
-      Otherwise, activate the account here <a href="http://52.6.247.162:3000/api/confirm/'+emailconfirm+'">http://52.6.247.162:3000/api/confirm/'+emailconfirm+'</a></p>'
+      var html = "<h1>Welcome to Cloudseed!</h1><p>An account has been created for this email, but will not be active until the email is confirmed. If this was not you, please ignore this email.
+      Otherwise, activate the account here <a href='http://52.6.247.162:3000/api/confirm/"+emailconfirm+"'>http://52.6.247.162:3000/api/confirm/"+emailconfirm+"</a></p>";
       transporter.sendMail({
         from: 'cloudseed@careerbuilder.com',
         to: record.email,
