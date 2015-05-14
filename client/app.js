@@ -314,8 +314,8 @@
       var partstring = JSON.stringify(apart.Definition);
       for(var param in apart.Definition.Parameters){
         if(!apart.Definition.Parameters[param].Hidden){
+          console.log(param);
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
-
           partstring = partstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
         }
       }
