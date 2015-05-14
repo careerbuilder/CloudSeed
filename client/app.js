@@ -48,6 +48,11 @@
             if(data.Success){
               $scope.user = data.user;
               $cookies.c_s66d = data.user._id;
+              $http.post('http://52.6.247.162:3000/api/regions/', {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey}).success(function(data){
+                if(data.Success){
+                  $scope.regions = data.Regions;
+                }
+              });
               toastr.success("Welcome to Cloudseed!");
             }
             else{
@@ -71,6 +76,11 @@
             if(data.Success){
               $cookies.c_s66d = data.user._id;
               $scope.user = data.user;
+              $http.post('http://52.6.247.162:3000/api/regions/', {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey}).success(function(data){
+                if(data.Success){
+                  $scope.regions = data.Regions;
+                }
+              });
               toastr.success("Welcome to Cloudseed!");
             }
             else{
