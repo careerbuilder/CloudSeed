@@ -60,8 +60,10 @@ router.post('/api/stacks', function(req, res){
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
         console.log(stackspath);
-        var file = fs.openSync(stackspath, 'w');
-        fs.write(file, JSON.stringify(template), function(error) {
+        fs.writeFileSync(stackspath, JSON.stringify(template));
+        return res.send({Code: 400, Message: "Stack Saved!"})
+/*
+        fs.writeSync(file, JSON.stringify(template), function(error) {
           if(error) {
               console.log(error);
               return res.send({Code: 399, Message: "Error on file write", Error: error})
@@ -70,6 +72,7 @@ router.post('/api/stacks', function(req, res){
           //trigger git commit
           return res.send({Code: 400, Message: "Added Successfully"});
         });
+*/
       }
       else{
         return res.send({Code: 388, Message: "No Stack Repo configured"})
