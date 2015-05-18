@@ -91,7 +91,7 @@ router.post('/api/register', function(req, res){
 
 router.get('/api/confirm/:userconfirm', function(req,res){
   var signature = req.params.userconfirm;
-  db.users.update({confirm:signature}, {$set:{active:true}}, function(err, data){
+  db.collection('users').update({confirm:signature}, {$set:{active:true}}, function(err, data){
     if(err){
       console.log(err);
       return res.send({Success:false, Error: err});
