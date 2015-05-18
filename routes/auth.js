@@ -97,7 +97,7 @@ router.get('/api/confirm/:userconfirm', function(req,res){
       return res.send({Success:false, Error: err});
     }
     else{
-      return res.render('index');
+      return res.render('<h1>Email confirmed!</h1><p>Return to CloudSeed and log in!</p>');
     }
   });
 });
