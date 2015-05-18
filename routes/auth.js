@@ -32,7 +32,7 @@ router.get('/api/user/:userid', function(req,res){
 router.post('/api/login', function(req, res){
   var b = req.body;
   var shasum = crypto.createHash('sha256');
-  db.collection('users').find({email: b.email.toLowerCase()}).toArray(function(err, results){
+  db.collection('users').find({email: b.email.toLowerCase(), active:true}).toArray(function(err, results){
     if(err){
       console.log(err);
       return res.send({Success: false, Error: err});
@@ -76,8 +76,15 @@ router.post('/api/register', function(req, res){
         subject: 'Please confirm your CloudSeed account',
         text: plaintext,
         html: html
+      }, function(err, info){
+        if(err){
+          console.log(err);
+          return res.send({Success:false, Error: err});
+        }
+        else{
+          return res.send({Success: true, user: {email: record.email}, Info: info});
+        }
       });
-      return res.send({Success: true, user: {email: record.email}});
     }
   });
 });
