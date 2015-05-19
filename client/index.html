@@ -95,7 +95,7 @@
               </div>
               <div class="input-group form-group" ng-class="{'has-error': (loginform.password.$invalid && loginform.password.$dirty)}">
                 <span class="input-group-addon" id="Password" style="text-align:left; min-width:150px;"><b>Password</b></span>
-                <input type="password" class="form-control" placeholder="Password" name="Password" ng-model="auth.password" required />
+                <input type="password" class="form-control" placeholder="Password" name="Password" ng-pattern="/\S{8,}/i" ng-model="auth.password" required />
               </div>
               <div id="register" ng-if="register=='Register'">
                 <div class="input-group form-group" ng-class="{'has-error': (loginform.Password2.$invalid && loginform.Password2.$dirty)}">
