@@ -53,7 +53,7 @@
         "licensetype":{
           "Description": "Model of licensing to use",
           "Type":"String",
-          "Default": "bring-your-own-license"
+          "Default": "license-included"
         },
         "OptionGroup":{
           "Description":"Name of OptionGroup",
