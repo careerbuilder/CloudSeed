@@ -8,7 +8,7 @@ router.get('/api/awsvalues/:awstype', function(req, res){
   var region = req.query.region;
   var ec2 = new aws.EC2({region:region});
   if(ptype==='AWS::EC2::AvailabilityZone::Name'){
-    ec2.describeAvailabilityZones(params, function(err, data) {
+    ec2.describeAvailabilityZones({}, function(err, data) {
       if (err){
         console.log(err, err.stack);
         return res.send({Success: false, Error: err, Values:[]});
@@ -23,7 +23,7 @@ router.get('/api/awsvalues/:awstype', function(req, res){
     });
   }
   else if(ptype==='AWS::EC2::Instance::Id'){
-    ec2.describeInstances(params, function(err, data) {
+    ec2.describeInstances({}, function(err, data) {
       if (err){
         console.log(err, err.stack);
         return res.send({Success: false, Error: err, Values:[]});
