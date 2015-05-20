@@ -19,7 +19,7 @@
     $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
       $scope.stacks = data;
     });
-    $http.get('http://localhost:3000/api/regions').success(function(data){
+    $http.get('http://52.6.247.162:3000/api/regions').success(function(data){
       $scope.regions = data.Regions;
     });
     if($cookies.c_s66d){
