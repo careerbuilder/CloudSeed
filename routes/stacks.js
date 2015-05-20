@@ -2,7 +2,7 @@ var express = require('express');
 var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
 var aws = require('aws-sdk');
 var fs = require('fs');
-var ec2 = new aws.EC2();
+var ec2 = new aws.EC2({region:"us-east-1"});
 var router = express.Router();
 
 var stacksrepo = process.env['STACKS_REPO'];
