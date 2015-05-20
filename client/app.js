@@ -153,6 +153,17 @@
         if(copy.Parameters[par].Default){
           copy.Parameters[par].Value = copy.Parameters[par].Default;
         }
+        if(copy.Parameters[par].Type.indexOf('AWS::') >= 0){
+          if(copy.Parameters[par].Type.indexOf('List::')  >= 0){
+            console.log("Sorry, lists of AWS objects are coming soon!");
+          }
+          else{
+            $http.get('http://52.6.247.162:3000/api/awsvalues/'+copy.Parameters[par].Type.trim() +'?region='+$scope.build.Region).success(function(data){
+              copy.Parameters[par].AllowedValues = data.Values;
+            });
+
+          }
+        }
       }
       var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy}
       $scope.addedParts.push(mod);
