@@ -1,6 +1,7 @@
 var express = require('express');
 var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
 var aws = require('aws-sdk');
+var exec = require('child_process').exec;
 var fs = require('fs');
 var ec2 = new aws.EC2({region:"us-east-1"});
 var router = express.Router();
@@ -47,7 +48,8 @@ router.get('/api/stacks/:name', function(req, res){
 });
 
 router.post('/api/stacks', function(req, res){
-  var body = req.body;
+  var body = req.body.build;
+  var email = req.body.user;
   var name = body['Name'].trim();
   var template = body['Template'];
   db.collection('stacks').update({Name:req.body['Name']}, req.body, {upsert:true}, function(err, result){
@@ -60,7 +62,10 @@ router.post('/api/stacks', function(req, res){
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
         fs.writeFileSync(stackspath, JSON.stringify(template));
-        return res.send({Code: 400, Message: "Stack Saved!"});
+        var child = exec('git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
+        child.on('close', function(code) {
+          return res.send({Code: 400, Message: "Stack Saved!"});
+        });
       }
       else{
         return res.send({Code: 388, Message: "No Stack Repo configured"})
