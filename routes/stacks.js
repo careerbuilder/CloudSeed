@@ -69,6 +69,10 @@ router.post('/api/stacks', function(req, res){
   });
 });
 
+/**
+* This method introduced vulnerabilities, by allowing invalid templates to be sent off for building.
+* The replacement method requires a Save, which validates templates.
+*
 router.post('/api/build', function(req, res){
   var body = req.body;
   var template = body['Template'];
@@ -96,6 +100,7 @@ router.post('/api/build', function(req, res){
     }
   });
 });
+*/
 
 router.post('/api/build/:name', function(req, res){
   var auth = req.body;

@@ -124,7 +124,7 @@
             <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}">
               <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Stack Name *</b></span>
               <input type="text" class="form-control input-lg" style="min-width:150px; width:20%;"
-                ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9]+'" required />
+                ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" required />
             </div>
             <div class="input-group form-group">
               <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Description</b></span>
