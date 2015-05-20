@@ -7,8 +7,8 @@
             "Type": "String"
         },
         "RDSSG":{
-            "Description" : "ID of sg to use for new RDS",
-            "Type": "String"
+            "Description" : "IDs of security groups to use for new RDS",
+            "Type": "CommaDelimitedList"
         },
         "SubnetGroup":{
           "Description" : "name of subnet group to use for new RDS",
@@ -38,12 +38,11 @@
         "DBEngine":{
           "Description":"DBEngine",
           "Type": "String",
-          "Default": "sqlserver-ee"
+          "AllowedValues": ["MySQL", "oracle-se1", "oracle-se", "oracle-ee", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web", "postgres"]
         },
         "DBVersion":{
           "Description": "Version of the DBEngine",
-          "Type":"String",
-          "Default": "11.00"
+          "Type":"String"
         },
         "numIOPS":{
           "Description": "Must be 10x the GBAllocated",
@@ -57,8 +56,7 @@
         },
         "OptionGroup":{
           "Description":"Name of OptionGroup",
-          "Type":"String",
-          "Default": "mirrored-sqlserver"
+          "Type":"String"
         },
         "SAUserName":{
           "Description": "Username of SA user",
@@ -92,7 +90,7 @@
                 "Port" : {"Ref":"Portnum"},
                 "PubliclyAccessible" : false,
                 "StorageType" : "io1",
-                "VPCSecurityGroups" : [{"Ref": "RDSSG"} ]
+                "VPCSecurityGroups" : {"Ref": "RDSSG"}
             }
         }       
     },
@@ -105,7 +103,7 @@
     "Connections":{
       "Substitutes":[
         {"Type":"SubnetGroup", "Parameter":"SubnetGroup"},
-        {"Type":"SecurityGroup", "Parameter":"RDSSG"}
+        {"Type":"List::SecurityGroup", "Parameter":"RDSSG"}
       ]
     }
 }
