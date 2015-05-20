@@ -9,8 +9,8 @@ if(!stacksrepo){
   console.log("Stacks_Repo not configured");
 }
 
-router.post('/api/regions/', function(req, res){
-  var ec2 = new aws.EC2({accessKeyId: req.body['accesskey'], secretAccessKey: req.body['secretkey'], region: 'us-east-1'});
+router.get('/api/regions/', function(req, res){
+  var ec2 = new aws.EC2();
   ec2.describeRegions({}, function(err, data){
     if(err){
       console.log(err);
