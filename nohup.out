@@ -1,0 +1,287 @@
+Magic happens on port 3000
+Magic happens on port 3000
+Added stack
+Added stack
+Magic happens on port 3000
+Magic happens on port 3000
+{ [ConfigError: Missing region in config]
+  message: 'Missing region in config',
+  code: 'ConfigError',
+  time: Wed May 20 2015 15:50:40 GMT+0000 (UTC) }
+Magic happens on port 3000
+Added stack
+Added stack
+Magic happens on port 3000
+ReferenceError: params is not defined
+    at router.get.db.collection.find.Subpart (/home/ubuntu/Cloud_Seed/routes/parts.js:26:27)
+    at Layer.handle [as handle_request] (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/layer.js:82:5)
+    at next (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/route.js:110:13)
+    at Route.dispatch (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/route.js:91:3)
+    at Layer.handle [as handle_request] (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/layer.js:82:5)
+    at /home/ubuntu/Cloud_Seed/node_modules/express/lib/router/index.js:267:22
+    at param (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/index.js:340:14)
+    at param (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/index.js:356:14)
+    at Function.proto.process_params (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/index.js:400:3)
+    at next (/home/ubuntu/Cloud_Seed/node_modules/express/lib/router/index.js:261:10)
+Magic happens on port 3000
+Magic happens on port 3000
+
+/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:32
+          throw err;
+                ^
+TypeError: Cannot read property 'Reservations' of undefined
+    at Response.<anonymous> (/home/ubuntu/Cloud_Seed/routes/parts.js:33:35)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:350:18)
+    at Request.callListeners (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:100:18)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:77:10)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:604:14)
+    at Request.transition (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:21:12)
+    at AcceptorStateMachine.runTo (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:14:12)
+    at /home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:26:10
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:22:9)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:606:12)
+Magic happens on port 3000
+
+/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:32
+          throw err;
+                ^
+TypeError: Cannot read property 'Reservations' of undefined
+    at Response.<anonymous> (/home/ubuntu/Cloud_Seed/routes/parts.js:33:35)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:350:18)
+    at Request.callListeners (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:100:18)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:77:10)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:604:14)
+    at Request.transition (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:21:12)
+    at AcceptorStateMachine.runTo (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:14:12)
+    at /home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:26:10
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:22:9)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:606:12)
+Magic happens on port 3000
+
+/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:32
+          throw err;
+                ^
+TypeError: Cannot read property 'Reservations' of undefined
+    at Response.<anonymous> (/home/ubuntu/Cloud_Seed/routes/parts.js:33:35)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:350:18)
+    at Request.callListeners (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:100:18)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:77:10)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:604:14)
+    at Request.transition (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:21:12)
+    at AcceptorStateMachine.runTo (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:14:12)
+    at /home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:26:10
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:22:9)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:606:12)
+Magic happens on port 3000
+Magic happens on port 3000
+undefined
+
+/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:32
+          throw err;
+                ^
+TypeError: Cannot read property 'Reservations' of undefined
+    at Response.<anonymous> (/home/ubuntu/Cloud_Seed/routes/parts.js:35:35)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:350:18)
+    at Request.callListeners (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:100:18)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:77:10)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:604:14)
+    at Request.transition (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:21:12)
+    at AcceptorStateMachine.runTo (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:14:12)
+    at /home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:26:10
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:22:9)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:606:12)
+Magic happens on port 3000
+{ Reservations: 
+   [ { ReservationId: 'r-5fc344be',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-bb784650',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-fe99191f',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-9ac9f764',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-013b4eff',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-4c017eb2',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-242759da',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-564e73bd',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-675fda96',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-475f8fb6',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-b9cb9d47',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-bc93e556',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-44ec58a8',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-94c88d6a',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-77caf489',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-5b8d16b1',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-68de5989',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-96e8ad68',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-bc43ef50',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-4ca639a6',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-013442eb',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-9df2406c',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-26f1a8d8',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-e9704d02',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-65544a9b',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-ade2b553',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-f61cdf07',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-310f7ccf',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-312488dd',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-d9935028',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-32689bc3',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-eff18f11',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-53c7aab9',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-68704e83',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-181f78f4',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-816b566a',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-45516fae',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-eb792415',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-b0c24551',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-19fbade7',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-80fd7d61',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-d4ff7f35',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] },
+     { ReservationId: 'r-dd643923',
+       OwnerId: '316642223718',
+       Groups: [],
+       Instances: [Object] } ] }
+undefined
+
+/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:32
+          throw err;
+                ^
+TypeError: Cannot read property 'Reservations' of undefined
+    at Response.<anonymous> (/home/ubuntu/Cloud_Seed/routes/parts.js:36:35)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:350:18)
+    at Request.callListeners (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:100:18)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/sequential_executor.js:77:10)
+    at Request.emit (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:604:14)
+    at Request.transition (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:21:12)
+    at AcceptorStateMachine.runTo (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:14:12)
+    at /home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/state_machine.js:26:10
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:22:9)
+    at Request.<anonymous> (/home/ubuntu/Cloud_Seed/node_modules/aws-sdk/lib/request.js:606:12)
+Magic happens on port 3000
+Magic happens on port 3000
+Magic happens on port 3000
+Magic happens on port 3000
+Added stack
