@@ -29,7 +29,22 @@ router.get('/api/awsvalues/:awstype', function(req, res){
         return res.send({Success: false, Error: err, Values:[]});
       }
       else{
-        return res.send({Success:true, Values:data});
+        var rval = [];
+        var reserves = data.Values.Reservations
+        for(var i=0; i< reserves.length; i++){
+          var instances =reserves[i].Instances;
+          for(var j=0; j<instances.length; j++){
+            var tags = instances[j].Tags
+            var name = ""
+            for(var k=0; k<tags.length; k++){
+              if(tags[k].Key === 'Name'){
+                name = tags[k].Value;
+              }
+            }
+            rval.push({Value: instances[j].InstanceId, Name: name})
+          }
+        }
+        return res.send({Success:true, Values:rval});
       }
     });
   }
