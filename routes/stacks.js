@@ -115,7 +115,7 @@ router.post('/api/build/:name', function(req, res){
             console.log(err);
             return res.send({Success: false, Error:err});
           }
-          return res.send(data);
+          return res.send({Success: true, Data: data});
         });
       }
       else{
@@ -124,7 +124,7 @@ router.post('/api/build/:name', function(req, res){
             console.log(err);
             return res.send({Success: false, Error:err});
           }
-          return res.send(data);
+          return res.send({Success: true, Data: data});
         });
       }
     });

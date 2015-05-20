@@ -394,7 +394,7 @@
             if(data['Code'] === 400){
               toastr.success('Stack Saved', 'Your stack was saved successfully!');
             }
-            else if(data['Code'] === 399){
+            else if(data['Code'] === 388){
               toastr.warning('Stack Saved with Errors', data['Message']);
             }
             else{
