@@ -19,14 +19,12 @@
     $http.get('http://52.6.247.162:3000/api/stacks').success(function(data){
       $scope.stacks = data;
     });
+    $http.get('http://localhost:3000/api/regions').success(function(data){
+      $scope.regions = data.Regions;
+    });
     if($cookies.c_s66d){
       $http.get('http://52.6.247.162:3000/api/user/'+$cookies.c_s66d).success(function(data){
         $scope.user = data.user;
-        $http.post('http://52.6.247.162:3000/api/regions/', {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey}).success(function(data){
-          if(data.Success){
-            $scope.regions = data.Regions;
-          }
-        });
       });
     }
 
@@ -74,6 +72,9 @@
           else{
             if(data.Success){
               toastr.success("Welcome to Cloudseed!", "Confirmation Email Sent!");
+              $scope.register = 'Log in';
+              $scope.notRegister = 'Register';
+              $scope.auth = {};
             }
             else{
               toastr.error(data.Error);
@@ -314,8 +315,12 @@
       var partstring = JSON.stringify(apart.Definition);
       for(var param in apart.Definition.Parameters){
         if(!apart.Definition.Parameters[param].Hidden){
+          var paramValue = apart.Definition.Parameters[param].Value;
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
-          partstring = partstring.replace(re, JSON.stringify(apart.Definition.Parameters[param].Value));
+          if(apart.Definition.Parameters[param].Type === 'CommaDelimitedList'){
+            paramValue = paramValue.split(/\s*,\s*/g);
+          }
+          partstring = partstring.replace(re, JSON.stringify(paramValue));
         }
       }
       if(apart.Definition.Connections){
