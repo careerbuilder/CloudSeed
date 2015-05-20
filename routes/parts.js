@@ -48,8 +48,8 @@ router.get('/api/awsvalues/:awstype', function(req, res){
       }
     });
   }
-  else if(ptype==='AWS::EC2::Image::Id'){}
-  else if(ptype==='AWS::EC2::KeyPair::KeyName'){}
+  else if(ptype==='AWS::EC2::Image::Id'){return res.send({Success:true, Values:[]})}
+  else if(ptype==='AWS::EC2::KeyPair::KeyName'){return res.send({Success:true, Values:[]})}
   else if(ptype==='AWS::EC2::SecurityGroup::GroupName' || ptype==='AWS::EC2::SecurityGroup::Id'){
     ec2.describeSecurityGroups(params, function(err, data) {
       if (err){
@@ -65,10 +65,10 @@ router.get('/api/awsvalues/:awstype', function(req, res){
       }
     });
   }
-  else if(ptype==='AWS::EC2::Subnet::Id'){}
-  else if(ptype==='AWS::EC2::Volume::Id'){}
-  else if(ptype==='AWS::EC2::VPC::Id'){}
-  else{return res.send([])}
+  else if(ptype==='AWS::EC2::Subnet::Id'){return res.send({Success:true, Values:[]})}
+  else if(ptype==='AWS::EC2::Volume::Id'){return res.send({Success:true, Values:[]})}
+  else if(ptype==='AWS::EC2::VPC::Id'){return res.send({Success:true, Values:[]})}
+  else{return res.send({Success:true, Values:[]})}
 });
 
 router.get('/api/parts', function(req, res){
