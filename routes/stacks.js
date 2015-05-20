@@ -2,6 +2,7 @@ var express = require('express');
 var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
 var aws = require('aws-sdk');
 var fs = require('fs');
+var ec2 = new aws.EC2();
 var router = express.Router();
 
 var stacksrepo = process.env['STACKS_REPO'];
@@ -9,8 +10,7 @@ if(!stacksrepo){
   console.log("Stacks_Repo not configured");
 }
 
-router.get('/api/regions/', function(req, res){
-  var ec2 = new aws.EC2();
+router.get('/api/regions', function(req, res){
   ec2.describeRegions({}, function(err, data){
     if(err){
       console.log(err);
