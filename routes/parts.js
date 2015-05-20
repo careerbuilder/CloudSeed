@@ -30,9 +30,7 @@ router.get('/api/awsvalues/:awstype', function(req, res){
       }
       else{
         var rval = [];
-        var vals = data.Values;
-        console.log(vals);
-        var reserves = data.Values.Reservations;
+        var reserves = data.Reservations;
         for(var i=0; i<reserves.length; i++){
           var instances =reserves[i].Instances;
           for(var j=0; j<instances.length; j++){
