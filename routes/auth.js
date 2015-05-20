@@ -82,7 +82,7 @@ router.post('/api/register', function(req, res){
           return res.send({Success:false, Error: err});
         }
         else{
-          return res.send({Success: true, user: {email: record.email}, Info: info});
+          return res.send({Success: true});
         }
       });
     }
