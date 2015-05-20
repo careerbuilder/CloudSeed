@@ -159,7 +159,7 @@
           }
           else{
             $http.get('http://52.6.247.162:3000/api/awsvalues/'+copy.Parameters[par].Type.trim() +'?region='+$scope.build.Region).success(function(data){
-              copy.Parameters[par].AllowedValues = data.Values;
+              //copy.Parameters[par].AllowedValues = data.Values;
             });
 
           }
