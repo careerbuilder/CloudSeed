@@ -67,10 +67,10 @@ router.post('/api/stacks', function(req, res){
           }
           else{
             var child = exec('cd ' + stacksrepo + ' && git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
-            child.on('stdout', function(data){
+            child.stdout.on('data', function(data){
               console.log(data);
             });
-            child.on('stderr', function(data){
+            child.stderr.on('data', function(data){
               console.log(data);
             });
             child.on('close', function(code) {
