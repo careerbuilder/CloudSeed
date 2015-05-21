@@ -58,7 +58,6 @@ router.post('/api/stacks', function(req, res){
       return res.send({Code: -1, Error:err});
     }
     else{
-      console.log("Added stack");
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
         fs.writeFileSync(stackspath, JSON.stringify(template));
@@ -70,10 +69,12 @@ router.post('/api/stacks', function(req, res){
           console.log(data);
         });
         child.on('close', function(code) {
+          console.log("Added stack");
           return res.send({Code: 400, Message: "Stack Saved!"});
         });
       }
       else{
+        console.log("Added stack without git hook");
         return res.send({Code: 388, Message: "No Stack Repo configured"})
       }
     }
