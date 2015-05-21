@@ -48,11 +48,11 @@ router.get('/api/stacks/:name', function(req, res){
 });
 
 router.post('/api/stacks', function(req, res){
-  var body = req.body.build;
+  var build = req.body.build;
   var email = req.body.user;
-  var name = body['Name'].trim();
-  var template = body['Template'];
-  db.collection('stacks').update({Name:req.body['Name']}, req.body, {upsert:true}, function(err, result){
+  var name = build['Name'].trim();
+  var template = build['Template'];
+  db.collection('stacks').update({Name:build['Name']}, build, {upsert:true}, function(err, result){
     if(err){
       console.log(err);
       return res.send({Code: -1, Error:err});
