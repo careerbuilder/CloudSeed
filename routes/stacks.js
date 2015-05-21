@@ -60,17 +60,24 @@ router.post('/api/stacks', function(req, res){
     else{
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
-        fs.writeFileSync(stackspath, JSON.stringify(template));
-        var child = exec('cd ' + stacksrepo + ' git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
-        child.on('stdout', function(data){
-          console.log(data);
-        });
-        child.on('stderr', function(data){
-          console.log(data);
-        });
-        child.on('close', function(code) {
-          console.log("Added stack");
-          return res.send({Code: 400, Message: "Stack Saved!"});
+        fs.writeFile(stackspath, JSON.stringify(template), function(err){
+          if(err){
+            console.log(err);
+            return res.send({Code: 399, Message: "Stack saved to mongo, but not git"});
+          }
+          else{
+            var child = exec('cd ' + stacksrepo + ' git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
+            child.on('stdout', function(data){
+              console.log(data);
+            });
+            child.on('stderr', function(data){
+              console.log(data);
+            });
+            child.on('close', function(code) {
+              console.log("Added stack");
+              return res.send({Code: 400, Message: "Stack Saved!"});
+            });
+          }
         });
       }
       else{
