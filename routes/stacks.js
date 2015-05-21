@@ -66,7 +66,7 @@ router.post('/api/stacks', function(req, res){
             return res.send({Code: 399, Message: "Stack saved to mongo, but not git"});
           }
           else{
-            var child = exec('cd ' + stacksrepo + ' git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
+            var child = exec('cd ' + stacksrepo + ' && git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
             child.on('stdout', function(data){
               console.log(data);
             });
