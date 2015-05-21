@@ -62,7 +62,13 @@ router.post('/api/stacks', function(req, res){
       if(stacksrepo){
         var stackspath = stacksrepo + "/" + name +".stack"
         fs.writeFileSync(stackspath, JSON.stringify(template));
-        var child = exec('git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
+        var child = exec('cd ' + stacksrepo + ' git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
+        child.on('stdout', function(data){
+          console.log(data);
+        });
+        child.on('stderr', function(data){
+          console.log(data);
+        });
         child.on('close', function(code) {
           return res.send({Code: 400, Message: "Stack Saved!"});
         });
