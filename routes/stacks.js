@@ -87,7 +87,7 @@ router.post('/api/stacks', function(req, res){
 });
 
 router.post('/api/build/:name', function(req, res){
-  var auth = req.body;
+  var auth = req.body.userid;
   db.collection('users').findOne({"_id":mongo.toObjectID(auth)}, {"accesskey": 1, "secretkey":1}, function(err, result){
     if(err){
       console.log(err);
