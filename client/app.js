@@ -412,8 +412,7 @@
     }
 
     $scope.buildTemplate=function(stackname){
-      var auth = {accesskey: $scope.user.accesskey, secretkey: $scope.user.secretkey};
-      $http.post('http://52.6.247.162:3000/api/build/' + stackname, auth).success(function(data){
+      $http.post('http://52.6.247.162:3000/api/build/' + stackname, $scope.user._id).success(function(data){
         if(data.Success){
           toastr.success("Template Built!");
         }

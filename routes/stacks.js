@@ -88,34 +88,41 @@ router.post('/api/stacks', function(req, res){
 
 router.post('/api/build/:name', function(req, res){
   var auth = req.body;
-  db.collection('stacks').find({"Name":req.params.name},{"_id":false}).toArray(function(err, results){
+  db.collection('users').findOne({"_id":mongo.toObjectID(auth)}, {"accesskey": 1, "secretkey":1}, function(err, result){
     if(err){
       console.log(err);
-      return res.send({Success: false, Error:err});
+      return res.send({Success:false, Error: err});
     }
-    stack = results[0];
-    var cf = new aws.CloudFormation({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
-    stackname = stack['Name'];
-    cf.describeStacks({"StackName": stackname}, function(err, data){
+    var auth = result;
+    db.collection('stacks').find({"Name":req.params.name},{"_id":false}).toArray(function(err, results){
       if(err){
-        console.log("Creating stack");
-        cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2)}, function(err, data){
-          if(err){
-            console.log(err);
-            return res.send({Success: false, Error:err});
-          }
-          return res.send({Success: true, Data: data});
-        });
+        console.log(err);
+        return res.send({Success: false, Error:err});
       }
-      else{
-        cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2), "UsePreviousTemplate":false}, function(err, data){
-          if(err){
-            console.log(err);
-            return res.send({Success: false, Error:err});
-          }
-          return res.send({Success: true, Data: data});
-        });
-      }
+      stack = results[0];
+      var cf = new aws.CloudFormation({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
+      stackname = stack['Name'];
+      cf.describeStacks({"StackName": stackname}, function(err, data){
+        if(err){
+          console.log("Creating stack");
+          cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2)}, function(err, data){
+            if(err){
+              console.log(err);
+              return res.send({Success: false, Error:err});
+            }
+            return res.send({Success: true, Data: data});
+          });
+        }
+        else{
+          cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2), "UsePreviousTemplate":false}, function(err, data){
+            if(err){
+              console.log(err);
+              return res.send({Success: false, Error:err});
+            }
+            return res.send({Success: true, Data: data});
+          });
+        }
+      });
     });
   });
 });

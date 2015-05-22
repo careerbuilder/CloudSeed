@@ -19,7 +19,7 @@ function rand(rlen){
 router.get('/api/user/:userid', function(req,res){
   var id = req.params.userid;
   var oid = mongo.helper.toObjectID(id)
-  db.collection('users').find({_id: oid}, {email:1, accesskey:1, secretkey:1, _id:1}).toArray(function(err, results){
+  db.collection('users').find({_id: oid}, {email:1, _id:1}).toArray(function(err, results){
     if(err){
       console.log(err);
       return res.send({Success: false, Error:err});
@@ -45,7 +45,7 @@ router.post('/api/login', function(req, res){
     shasum.update(record.salt + b.password);
     var passhash = shasum.digest('hex');
     if(passcheck === passhash){
-      return res.send({Success: true, user: {email: record.email, accesskey: record.accesskey, secretkey: record.secretkey, _id: record._id}});
+      return res.send({Success: true, user: {email: record.email, _id: record._id}});
     }
     else{
       return res.send({Success: false, Error: 'Invalid password'});
