@@ -1,7 +1,6 @@
 (function(){
   var app = angular.module('cloudseed', ['ngAnimate', 'ngCookies', 'toastr']);
 
-
   app.controller('PartsController', function($http, $scope, $cookies, $cookieStore, toastr){
     $.material.init();
     $scope.register = "Log in";
@@ -125,12 +124,6 @@
         }
       }
       var partstring = JSON.stringify(copy);
-/*
-      for(var mapp in copy.Mappings){
-        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(mapp) +'\s*\}', 'g');
-        partstring = partstring.replace(re, JSON.stringify({Ref:mapp+""+newcount}));
-      }
-*/
       for(var cond in copy.Conditions){
         var re = new RegExp('"'+cond+'"', 'g');
         partstring = partstring.replace(re, '"'+cond+''+newcount+'"');
@@ -140,14 +133,13 @@
         partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
       }
       copy = JSON.parse(partstring);
-      //copy.Mappings = $scope.replaceNames(copy.Mappings || {}, newcount);
-      //copy.Conditions = $scope.replaceNames(copy.Conditions || {}, newcount);
       copy.Resources = $scope.replaceNames(copy.Resources || {}, newcount);
       copy.Outputs = $scope.replaceNames(copy.Outputs || {}, newcount);
       for(var par in copy.Parameters){
         if(copy.Parameters[par].Default){
           copy.Parameters[par].Value = copy.Parameters[par].Default;
         }
+        /*
         if(copy.Parameters[par].Type.indexOf('AWS::') >= 0){
           if(copy.Parameters[par].Type.indexOf('List::')  >= 0){
             console.log("Sorry, lists of AWS objects are coming soon!");
@@ -156,9 +148,9 @@
             $http.get('http://52.6.247.162:3000/api/awsvalues/'+copy.Parameters[par].Type.trim() +'?region='+$scope.build.Region).success(function(data){
               //copy.Parameters[par].AllowedValues = data.Values;
             });
-
           }
         }
+        */
       }
       var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy}
       $scope.addedParts.push(mod);
@@ -287,15 +279,12 @@
     }
 
     $scope.checkRequired=function(part, key, index){
-      //console.log("key: " + key +", index" +index);
       var required = (index != part.subparts[key].length-1);
       return required;
     }
 
     $scope.checkRequiredParam=function(value){
-      //console.log(value);
       var req = !value.Hidden && (value.Default === null || value.Default === undefined);
-      //console.log(req);
       return(req);
     }
 
@@ -400,7 +389,6 @@
         }
         $scope.build.Template = template;
         $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-        //$scope.build.Name = $scope.build.Name;
         $http.post('http://52.6.247.162:3000/api/stacks', {build: $scope.build, user: $scope.user.email}).success(function(data){
             if(data['Code'] === 400){
               toastr.success('Stack Saved', 'Your stack was saved successfully!');
@@ -459,7 +447,6 @@
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
         var info = JSON.parse(attrs.validationModel);
-        //console.log(JSON.stringify(info,null,2));
         ctrl.$validators.parameter = function(modelValue, viewValue) {
           var ok = true;
           if(ctrl.$isEmpty(viewValue)) {
