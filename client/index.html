@@ -86,7 +86,7 @@
           <h1>Welcome to CloudSeed!</h1>
           <p>Building a cloudformation stack is now as easy as clicking buttons.</p>
           <p ng-show="loggedin()">Start now by adding your first part from the sidebar, or load an existing stack!</p>
-          <div id="signupin" ng-hide="loggedin()" style="width: 30%; margin-left:auto; margin-right:auto;">
+          <div id="signupin" ng-hide="loggedin()" style="width: 45%; min-width: 400px; margin-left:auto; margin-right:auto;">
             <p>Register/Log in to get started!</p>
             <form class="simple-form" name="loginform" novalidate>
               <div class="input-group form-group" ng-class="{'has-error': (loginform.email.$invalid && loginform.email.$dirty)}">
@@ -123,12 +123,12 @@
           <div ng-show="addedParts.length > 0" style="padding-top:15px;">
             <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}">
               <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Stack Name *</b></span>
-              <input type="text" class="form-control input-lg" style="min-width:150px; width:20%;"
+              <input type="text" class="form-control input-lg" style="min-width:150px; width:40%;"
                 ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" required />
             </div>
             <div class="input-group form-group">
               <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Description</b></span>
-              <input type="text" class="form-control input-lg" style="min-width:150px; width:20%;" ng-model="build.Template.Description" placeholder="" name="stackDescription"/>
+              <input type="text" class="form-control input-lg" style="min-width:150px; width:40%;" ng-model="build.Template.Description" placeholder="" name="stackDescription"/>
             </div>
             <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackRegion.$invalid && PartsForm.stackRegion.$dirty}">
               <span class="input-group-addon" id="stackregionlabel" style="text-align:left; min-width:100px;"><b>Region *</b></span>
