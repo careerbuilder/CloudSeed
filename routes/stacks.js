@@ -1,5 +1,6 @@
 var express = require('express');
-var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
+var mongo = require('mongoskin');
+var db = mongo.db('mongodb://localhost:27017/cloudseed');
 var aws = require('aws-sdk');
 var exec = require('child_process').exec;
 var fs = require('fs');
