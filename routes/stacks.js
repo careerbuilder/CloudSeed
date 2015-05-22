@@ -31,7 +31,6 @@ router.get('/api/stacks', function(req, res){
       console.log(err);
       return res.send({Success: false, Error: err});
     }
-   // console.log(results);
     return res.send(results);
   });
 });
@@ -42,7 +41,6 @@ router.get('/api/stacks/:name', function(req, res){
       console.log(err);
       return res.send({Success: false, Error:err});
     }
-  //  console.log(results);
     return res.send(results);
   });
 });
@@ -88,39 +86,6 @@ router.post('/api/stacks', function(req, res){
   });
 });
 
-/**
-* This method introduced vulnerabilities, by allowing invalid templates to be sent off for building.
-* The replacement method requires a Save, which validates templates.
-*
-router.post('/api/build', function(req, res){
-  var body = req.body;
-  var template = body['Template'];
-  var stackname = body['Name'];
-  aws.config.update({accessKeyId: body['auth']['accesskey'], secretAccessKey: body['auth']['secretkey'], region: body['Region']});
-  cf.describeStacks({"StackName": stackname}, function(err, data){
-    if(err){
-      console.log("Creating stack");
-      cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(template)}, function(err, data){
-        if(err){
-          console.log(err);
-          return res.send({Success: false, Error:err});
-        }
-        return res.send(data);
-      });
-    }
-    else{
-      cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template']), "UsePreviousTemplate":false}, function(err, data){
-        if(err){
-          console.log(err);
-          return res.send({Success: false, Error:err});
-        }
-        return res.send(data);
-      });
-    }
-  });
-});
-*/
-
 router.post('/api/build/:name', function(req, res){
   var auth = req.body;
   db.collection('stacks').find({"Name":req.params.name},{"_id":false}).toArray(function(err, results){
@@ -154,6 +119,5 @@ router.post('/api/build/:name', function(req, res){
     });
   });
 });
-
 
 module.exports = router;
