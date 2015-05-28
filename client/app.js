@@ -415,13 +415,16 @@
       $http.post('http://52.6.247.162:3000/api/build/' + stackname, {userid:$scope.user._id}).success(function(data){
         if(data.Success){
           toastr.success("Template Built!");
+          return true;
         }
         else{
           toastr.error(data.Error, "Something went wrong...");
+          return false;
         }
       }).
       error(function(err){
         toastr.error(err, "Something went wrong...");
+        return false;
       });
     }
 

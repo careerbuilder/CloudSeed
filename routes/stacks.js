@@ -109,7 +109,7 @@ router.post('/api/build/:name', function(req, res){
           cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2)}, function(err, data){
             if(err){
               console.log(err);
-              return res.send({Success: false, Error:err});
+              return res.send({Success: false, Error:err.message});
             }
             return res.send({Success: true, Data: data});
           });
@@ -118,7 +118,7 @@ router.post('/api/build/:name', function(req, res){
           cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2), "UsePreviousTemplate":false}, function(err, data){
             if(err){
               console.log(err);
-              return res.send({Success: false, Error:err});
+              return res.send({Success: false, Error:err.message});
             }
             return res.send({Success: true, Data: data});
           });
