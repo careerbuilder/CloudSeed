@@ -23,7 +23,7 @@
             "Type": "String"
         },
         "SubnetName": {
-            "Description": "Name of the public internet-facing subnet for use with new massive elb subnet",
+            "Description": "Name of the public internet-facing subnet",
             "Type": "String",
             "Default": ""
         },

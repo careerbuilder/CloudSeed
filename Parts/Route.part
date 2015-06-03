@@ -1,0 +1,119 @@
+{
+  "Type" : "Route",
+  "Description" : "Version 1.0.  Creates a Route",
+  "Parameters" : {
+    "RouteTable" : {
+      "Description" : "Host Route Table",
+      "Type" : "String"
+    },
+    "DestinationCidr" : {
+      "Description" : "Which traffic should be routed",
+      "Type" : "String"
+    },
+    "Gateway" : {
+      "Description" : "Id of Gateway",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "Instance" : {
+      "Description" : "Id of EC2 instance",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "NetworkInterface" : {
+      "Description" : "Id of Network Interface",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "VpcPeeringConnection" : {
+      "Description" : "Id of peering connection",
+      "Type" : "String",
+      "Default" : ""
+    }
+  },
+  "Resources" : {
+    "Route" : {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "DestinationCidrBlock" : {
+          "Ref" : "DestinationCidr"
+        },
+        "RouteTableId" : {
+          "Ref" : "RouteTable"
+        },
+        "GatewayId" : {
+          "Fn::If" : [
+            {"Fn::Not" : [
+              {"Fn::Equals" : [{"Ref" : "Gateway"}, ""]}
+            ]}, 
+            {"Ref" : "Gateway"}, 
+            {"Ref" : "AWS::NoValue"}
+          ]
+        },
+        "InstanceId" : {
+          "Fn::If" : [
+          {"Fn::Not" : [
+            {"Fn::Equals" : [{
+                  "Ref" : "Instance"
+            }, ""]}
+          ]}, {
+              "Ref" : "Instance"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "NetworkInterfaceId" : {
+          "Fn::If" : [
+          {"Fn::Not" : [
+            {"Fn::Equals" : [{
+                  "Ref" : "NetworkInterface"
+            }, ""]}
+          ]}, {
+              "Ref" : "NetworkInterface"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "VpcPeeringConnectionId" : {
+          "Fn::If" : [
+          {"Fn::Not" : [
+            {"Fn::Equals" : [{
+                  "Ref" : "VpcPeeringConnection"
+            }, ""]}
+          ]}, {
+              "Ref" : "VpcPeeringConnection"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Connections" : {
+    "References" : [],
+    "Substitutes" : [{
+        "Parameter" : "RouteTable",
+        "Type" : "RouteTable"
+      },
+      {
+        "Parameter" : "Gateway",
+        "Type" : "Gateway"
+      },
+      {
+        "Parameter" : "Instance",
+        "Type" : "EC2"
+      },
+      {
+        "Parameter" : "NetworkInterface",
+        "Type" : "NetworkInterface"
+      },
+      {
+        "Parameter" : "VpcPeeringConnection",
+        "Type" : "VpcPeeringConnection"
+      }
+    ]
+  }
+}

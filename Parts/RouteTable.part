@@ -36,8 +36,7 @@
   },
   "Connections":{
     "References":[
-        {"Type":"List::IGWRoute"},
-        {"Type":"List::SubnetRoute"}
+        {"Type":"List::Route"}
     ],
     "Substitutes":[            
         {
