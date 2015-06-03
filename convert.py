@@ -6,18 +6,27 @@ import os
 import re
 import sys
 import json
+from collections import OrderedDict
 
 template = {}
 profile = {}
 
+new_template = {}
+cs_mods = []
+cs_parts_map = {}
+
 
 def solve_template_functions(function):
+    if not isinstance(function, dict):
+        return function
+    if 'Ref' in function:
+        return function
     for key in function:
         funcname = key.strip()
         values = function[key]
         args = []
         if not isinstance(values, list) and not isinstance(values, dict):
-            continue
+            return function
         for arg in values:
             if isinstance(arg, dict):
                 new_arg = solve_template_functions(arg)
@@ -47,7 +56,7 @@ def solve_template_functions(function):
         elif funcname == 'Fn::Select':
             return args[1][args[0]]
         elif funcname == 'Fn::FindInMap':
-            refmap = template['Mappings'][args[0]]
+            refmap = new_template['Mappings'][args[0]]
             if len(args) > 2:
                 return refmap[args[1]][args[2]]
             else:
@@ -56,62 +65,43 @@ def solve_template_functions(function):
             return function
 
 
-def resolve_conditions():
-    conditions = {}
-    parameters = template['Parameters'] or []
-    cond_text = json.dumps(template['Conditions'])
+def resolve_template_values():
+    parameters = template['Parameters']
+    temp_text = json.dumps(template)
     for parameter in parameters:
+        if 'Default' in template['Parameters'][parameter]:
+            parametervalue = template['Parameters'][parameter]['Default']
         if parameter in profile['parameters']:
             parametervalue = profile['parameters'][parameter]
-        elif 'Default' in template['Parameters'][parameter]:
-            parametervalue = template['Parameters'][parameter]['Default']
         else:
-            parametervalue = ""
-            print("Insufficient Parameters for this template")
-            print("Parameter " + parameter + " has no specified value or default")
-            exit(-1)
+            parametervalue = {'Ref': parameter}
         if 'List' in template['Parameters'][parameter]['Type']:
             parametervalue = re.split(r'\s*,\s*', parametervalue)
-        cond_text = re.sub(r'\{\s*\"Ref\"\s*:\s*\"' + parameter + r'\"\}', json.dumps(parametervalue), cond_text)
-    new_cond = json.loads(cond_text)
-    for cond in new_cond:
-        conditions[cond] = solve_template_functions(new_cond[cond])
-    return conditions
+        temp_text = re.sub(r'\{\s*"Ref"\s*:\s*"' + parameter + r'"\}', json.dumps(parametervalue), temp_text)
+    temp_two = json.loads(temp_text, object_hook=OrderedDict)
+    for cond in temp_two['Conditions']:
+        temp_two['Conditions'][cond] = solve_template_functions(temp_two['Conditions'][cond])
+    outs = {}
+    if 'Outputs' in temp_two:
+        outs = temp_two['Outputs']
+    temp_three_string = json.dumps({'Resources': temp_two['Resources'], 'Outputs': outs})
+    for cond in temp_two['Conditions']:
+        temp_three_string = re.sub('"' + cond + '"', json.dumps(temp_two['Conditions'][cond]), temp_three_string)
+    clean_parts = json.loads(temp_three_string, object_hook=OrderedDict)
+    temp_two['Resources'] = clean_parts['Resources']
+    temp_two['Outputs'] = clean_parts['Outputs']
+    return temp_two
 
 
-def gather_resources(conditions):
+def gather_resources():
     resources = {}
-    for resource in template['Resources']:
-        if 'Condition' in template['Resources'][resource] and not conditions[template['Resources'][resource]['Condition']]:
+    for resource in new_template['Resources']:
+        if 'Condition' in new_template['Resources'][resource] and not new_template['Resources'][resource]['Condition']:
             pass
         else:
-            resources[resource] = template['Resources'][resource]
+            resources[resource] = new_template['Resources'][resource]
+            resources[resource].pop('Condition', None)
     return resources
-
-
-def build_flat_template(parts):
-    flat_template = {
-        'Description': template['Description'],
-        'Mappings': template['Mappings']
-    }
-    part_text = json.dumps({'Conditions': template['Conditions'], 'Resources': parts})
-    for parameter in template['Parameters']:
-        if parameter in profile['parameters']:
-            parametervalue = profile['parameters'][parameter]
-        elif 'Default' in template['Parameters'][parameter]:
-            parametervalue = template['Parameters'][parameter]['Default']
-        else:
-            parametervalue = ""
-            print("Insufficient Parameters for this template")
-            print("Parameter " + parameter + " has no specified value or default")
-            exit(-1)
-        if 'List' in template['Parameters'][parameter]['Type']:
-            parametervalue = re.split(r'\s*,\s*', parametervalue)
-        part_text = re.sub(r'\{\s*\"Ref\"\s*:\s*\"' + parameter + r'\"\}', json.dumps(parametervalue), part_text)
-    new_parts = json.loads(part_text)
-    flat_template['Conditions'] = new_parts['Conditions']
-    flat_template['Resources'] = new_parts['Resources']
-    return flat_template
 
 
 def convert_parts(parts):
@@ -124,23 +114,140 @@ def convert_parts(parts):
                 f.close()
                 for obj in part_obj['Resources']:
                     flat_parts[part_obj['Resources'][obj]['Type']] = part_obj
-    #print(json.dumps(flat_parts, indent=2))
+    mods = []
+    mod_map = {}
     for part in parts:
         if parts[part]['Type'] not in flat_parts:
-            print(parts[part]['Type'])
+            print(parts[part]['Type'] + " does not have a part parallel")
+            print("Cannot build CloudSeed template")
+            exit(-1)
+        else:
+            match_part = flat_parts[parts[part]['Type']]
+            count = 0
+            for mod in mods:
+                if mod['Type'] == match_part['Type'] and mod['Count'] > count:
+                    count = mod['Count']
+            count += 1
+            newguy = prepare_part(match_part, parts[part], count)
+            mod_map[part] = newguy['LogicalName']
+            mods.append(newguy)
+    clean_mods = []
+    for old_part in mods:
+        p_string = json.dumps(old_part)
+        for key in mod_map:
+            p_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + key + r'"\s*\}', json.dumps({'Ref': mod_map[key]}), p_string)
+        clean_mod = json.loads(p_string, object_hook=OrderedDict)
+        for p in clean_mod['Definition']['Parameters']:
+            param = clean_mod['Definition']['Parameters'][p]
+            if 'Value' in param:
+                if isinstance(param['Value'], dict) and 'Ref' in param['Value']:
+                    value = param.pop('Value', None)['Ref']
+                    param['Hidden'] = True
+                    if 'Connections' in clean_mod['Definition'] and 'Substitutes' in clean_mod['Definition']['Connections']:
+                        subs = clean_mod['Definition']['Connections']['Substitutes']
+                        for sub in subs:
+                            if sub['Parameter'] == p:
+                                sub['Reference'] = value
+        clean_mods.append(clean_mod)
+    return clean_mods
 
 
+def prepare_part(part, resource, count):
+    definition_string = json.dumps(part)
+    for res in part['Resources']:
+        definition_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + res + r'"\s*\}', json.dumps({'Ref': res + str(count)}), definition_string)
+    if 'Conditions' in part:
+        for cond in part['Conditions']:
+            definition_string = re.sub('"' + cond + '"', '"' + cond + str(count) + '"', definition_string)
+    definition = json.loads(definition_string, object_hook=OrderedDict)
+    definition['Resources'] = replace_names(definition['Resources'], count)
+    for res in definition['Resources']:
+        flatten_resource(definition['Parameters'], definition['Resources'][res], resource)
+    if 'Conditions' in part:
+        definition['Conditions'] = replace_names(definition['Conditions'], count)
+    if 'Outputs' in part:
+        definition['Outputs'] = replace_names(definition['Outputs'], count)
+    mod = {'Type': part['Type'], 'Count': count, 'LogicalName': part['Type'] + str(count), 'Definition': definition}
+
+    return mod
+
+
+def replace_names(obj, numappend):
+    new_obj = {}
+    for key in obj:
+        new_obj[key + str(numappend)] = obj[key]
+    return new_obj
+
+
+def flatten_resource(params, obj, ref):
+    if isinstance(ref, dict):
+        for key in ref:
+            ref[key] = solve_template_functions(ref[key])
+    for key in obj:
+        if key in ref:
+            if isinstance(obj[key], dict):
+                if 'Ref' in obj[key]:
+                    if obj[key]['Ref'] in params:
+                        if obj[key]['Ref'] == 'Instance':
+                            print("Instance mapping: " + ref[key])
+                        params[obj[key]['Ref']]['Value'] = ref[key]
+                else:
+                    flatten_resource(params, obj[key], ref[key])
+
+
+def build_template(parts):
+    final_template = {}
+    for part in parts:
+        part_piece = {}
+        for key in part['Definition']:
+            if 'Parameters' != key and 'Connections' != key:
+                part_piece[key] = part['Definition'][key]
+        part_string = json.dumps(part_piece)
+        for param in part['Definition']['Parameters']:
+            hidden = False
+            if 'Hidden' in part['Definition']['Parameters'][param]:
+                hidden = part['Definition']['Parameters'][param]['Hidden']
+            if hidden:
+                continue
+            value = None
+            if 'Default' in part['Definition']['Parameters'][param]:
+                value = part['Definition']['Parameters'][param]['Default']
+            if 'Value' in part['Definition']['Parameters'][param]:
+                value = part['Definition']['Parameters'][param]['Value']
+            if value is None:
+                if 'name' in param or 'Name' in param:
+                    value = part['LogicalName']
+            part_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + param + r'"\s*\}', json.dumps(value), part_string)
+        if 'Connections' in part['Definition'] and 'Substitutes' in part['Definition']['Connections']:
+            subs = part['Definition']['Connections']['Substitutes']
+            for sub in subs:
+                if 'Reference' in sub:
+                    part_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + sub['Parameter'] + r'"\s*\}', json.dumps({'Ref': sub['Reference']}), part_string)
+        rep_part = json.loads(part_string, object_hook=OrderedDict)
+        for key in rep_part:
+            if isinstance(rep_part[key], dict):
+                if key not in final_template:
+                    final_template[key] = {}
+                for subkey in rep_part[key]:
+                    final_template[key][subkey] = rep_part[key][subkey]
+    final_template['Description'] = template['Description']
+    return final_template
 
 if __name__ == "__main__":
     pro_file = open(sys.argv[1])
-    profile = json.load(pro_file)
+    profile = json.load(pro_file, object_hook=OrderedDict)
     pro_file.close()
     template_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[1])), '../', profile['template_location']))
     temp_file = open(template_path)
-    template = json.load(temp_file)
+    template = json.load(temp_file, object_hook=OrderedDict)
     temp_file.close()
-    template_conditions = resolve_conditions()
-    raw_parts = gather_resources(template_conditions)
-    new_template = build_flat_template(raw_parts)
-    convert_parts(raw_parts)
+    new_template = resolve_template_values()
     # print(json.dumps(new_template, indent=2))
+    raw_parts = gather_resources()
+    cs_mods = convert_parts(raw_parts)
+    # print(json.dumps(cs_mods, indent=2))
+    cs_template = build_template(cs_mods)
+    # print(json.dumps(cs_template, indent=2))
+    name = re.sub(r'.*[/\\](.*)\.[Jj][Ss][Oo][Nn]', r'\1', sys.argv[1])
+    build = {'Name': name, 'Region': profile['region'], 'Template': cs_template, 'Parts': cs_mods}
+    # print(json.dumps(build, indent=2))
