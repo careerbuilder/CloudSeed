@@ -55,12 +55,12 @@ def solve_template_functions(function):
             return outval
         elif funcname == 'Fn::Select':
             return args[1][args[0]]
-        elif funcname == 'Fn::FindInMap':
-            refmap = new_template['Mappings'][args[0]]
-            if len(args) > 2:
-                return refmap[args[1]][args[2]]
-            else:
-                return refmap[args[1]]
+        #elif funcname == 'Fn::FindInMap':
+        #    refmap = new_template['Mappings'][args[0]]
+        #    if len(args) > 2:
+        #        return refmap[args[1]][args[2]]
+        #    else:
+        #        return refmap[args[1]]
         else:
             return function
 
@@ -154,11 +154,6 @@ def convert_parts(parts):
 
 def prepare_part(part, resource, count):
     definition_string = json.dumps(part)
-    for res in part['Resources']:
-        definition_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + res + r'"\s*\}', json.dumps({'Ref': res + str(count)}), definition_string)
-    if 'Conditions' in part:
-        for cond in part['Conditions']:
-            definition_string = re.sub('"' + cond + '"', '"' + cond + str(count) + '"', definition_string)
     definition = json.loads(definition_string, object_hook=OrderedDict)
     for param in definition['Parameters']:
         if 'Value' not in definition['Parameters'][param]:
@@ -166,13 +161,19 @@ def prepare_part(part, resource, count):
                 definition['Parameters'][param]['Value'] = definition['Parameters'][param]['Default']
         if param in profile['parameters']:
             definition['Parameters'][param]['Value'] = profile['parameters'][param]
-    definition['Resources'] = replace_names(part['Resources'], count)
-    for res in definition['Resources']:
-        flatten_resource(definition['Parameters'], definition['Resources'][res], resource)
+    for reso in definition['Resources']:
+        flatten_resource(definition['Parameters'], definition['Resources'][reso], resource)
+    flat_string = json.dumps(definition)
+    for res in part['Resources']:
+        flat_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + res + r'"\s*\}', json.dumps({'Ref': res + str(count)}), flat_string)
     if 'Conditions' in part:
-        definition['Conditions'] = replace_names(part['Conditions'], count)
+        for cond in part['Conditions']:
+            flat_string = re.sub('"' + cond + '"', '"' + cond + str(count) + '"', flat_string)
+    definition = json.loads(flat_string, object_hook=OrderedDict)
+    definition['Resources'] = replace_names(definition['Resources'], count)
     if 'Outputs' in part:
         definition['Outputs'] = replace_names(definition['Outputs'], count)
+
     mod = {'Type': part['Type'], 'Count': count, 'LogicalName': part['Type'] + str(count), 'Definition': definition}
 
     return mod

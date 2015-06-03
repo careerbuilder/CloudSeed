@@ -68,18 +68,7 @@
             }
         }
     },
-    "Conditions": {
-        "IsPrivateSubnet": {
-            "Fn::Equals": [{"Ref": "Accessibility"},"Private"]
-        },
-        "HasSubnetName": {
-            "Fn::Not": [
-                {
-                    "Fn::Equals": [{"Ref": "SubnetName"},""]
-                }
-            ]
-        }
-    },
+    "Conditions": {},
     "Resources": {
         "Subnet": {
             "Type": "AWS::EC2::Subnet",
@@ -104,23 +93,7 @@
                     },
                     {
                         "Key": "Name",
-                        "Value":{
-                            "Fn::If": [
-                                "HasSubnetName",
-                                {
-                                    "Fn::Join": [
-                                        "",
-                                        [{"Ref": "SubnetName"},"Subnet"]
-                                    ]
-                                },
-                                {
-                                    "Fn::Join": [
-                                        "",
-                                        [{"Ref": "TeamName"},"Subnet"]
-                                    ]
-                                }
-                            ]
-                        }
+                        "Value":{"Ref":"SubnetName"}
                     }
                 ]
             }
