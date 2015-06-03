@@ -160,11 +160,17 @@ def prepare_part(part, resource, count):
         for cond in part['Conditions']:
             definition_string = re.sub('"' + cond + '"', '"' + cond + str(count) + '"', definition_string)
     definition = json.loads(definition_string, object_hook=OrderedDict)
-    definition['Resources'] = replace_names(definition['Resources'], count)
+    for param in definition['Parameters']:
+        if 'Value' not in definition['Parameters'][param]:
+            if 'Default' in definition['Parameters'][param]:
+                definition['Parameters'][param]['Value'] = definition['Parameters'][param]['Default']
+        if param in profile['parameters']:
+            definition['Parameters'][param]['Value'] = profile['parameters'][param]
+    definition['Resources'] = replace_names(part['Resources'], count)
     for res in definition['Resources']:
         flatten_resource(definition['Parameters'], definition['Resources'][res], resource)
     if 'Conditions' in part:
-        definition['Conditions'] = replace_names(definition['Conditions'], count)
+        definition['Conditions'] = replace_names(part['Conditions'], count)
     if 'Outputs' in part:
         definition['Outputs'] = replace_names(definition['Outputs'], count)
     mod = {'Type': part['Type'], 'Count': count, 'LogicalName': part['Type'] + str(count), 'Definition': definition}
@@ -188,11 +194,14 @@ def flatten_resource(params, obj, ref):
             if isinstance(obj[key], dict):
                 if 'Ref' in obj[key]:
                     if obj[key]['Ref'] in params:
-                        if obj[key]['Ref'] == 'Instance':
-                            print("Instance mapping: " + ref[key])
                         params[obj[key]['Ref']]['Value'] = ref[key]
                 else:
-                    flatten_resource(params, obj[key], ref[key])
+                    if isinstance(ref[key], dict):
+                        flatten_resource(params, obj[key], ref[key])
+                    else:
+                        param = re.search(r'\{\s*"Ref"\s*:\s*"([A-Za-z0-9]+)"\}', json.dumps(obj[key])).group(1)
+                        if param in params:
+                            params[param]['Value'] = ref[key]
 
 
 def build_template(parts):
@@ -250,4 +259,4 @@ if __name__ == "__main__":
     # print(json.dumps(cs_template, indent=2))
     name = re.sub(r'.*[/\\](.*)\.[Jj][Ss][Oo][Nn]', r'\1', sys.argv[1])
     build = {'Name': name, 'Region': profile['region'], 'Template': cs_template, 'Parts': cs_mods}
-    # print(json.dumps(build, indent=2))
+    print(json.dumps(build, indent=2))
