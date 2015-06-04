@@ -58,7 +58,7 @@
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-              <li role="presentation" ng-repeat="stack in stacks | filter:{Ready:true}" ng-click="buildTemplate(stack.Name)">
+              <li role="presentation" ng-repeat="stack in (stacks | filter:{Ready:true})" ng-click="buildTemplate(stack.Name)">
                 <a role="menuitem" tabindex="{{$index}}" href="#">
                   {{stack.Name}}
                 </a>
