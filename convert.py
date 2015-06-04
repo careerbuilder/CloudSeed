@@ -89,7 +89,8 @@ def resolve_template_values():
         temp_three_string = re.sub('"' + cond + '"', json.dumps(temp_two['Conditions'][cond]), temp_three_string)
     clean_parts = json.loads(temp_three_string, object_hook=OrderedDict)
     temp_two['Resources'] = clean_parts['Resources']
-    temp_two['Outputs'] = clean_parts['Outputs']
+    if 'Outputs' in temp_two:
+        temp_two['Outputs'] = clean_parts['Outputs']
     return temp_two
 
 
@@ -130,7 +131,8 @@ def convert_parts(parts):
             count += 1
             newguy = prepare_part(match_part, parts[part], part)
             newguy['Count'] = count
-            newguy['Definition']['Outputs'] = replace_names(newguy['Definition']['Outputs'], count)
+            if 'Outputs' in newguy['Definition']:
+                newguy['Definition']['Outputs'] = replace_names(newguy['Definition']['Outputs'], count)
             mod_map[part] = newguy['LogicalName']
             mods.append(newguy)
     clean_mods = []
@@ -216,7 +218,7 @@ def copy_old_fields(params, part, resource):
             params[field] = {'Type': p_type, 'Value': resource[field]}
             part[field] = {'Ref': field}
         else:
-            if isinstance(resource[field], dict):
+            if isinstance(resource[field], dict) and not 'Ref' in resource[field]:
                 copy_old_fields(params, part[field], resource[field])
 
 
