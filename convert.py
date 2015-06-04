@@ -128,7 +128,9 @@ def convert_parts(parts):
                 if mod['Type'] == match_part['Type'] and mod['Count'] > count:
                     count = mod['Count']
             count += 1
-            newguy = prepare_part(match_part, parts[part], count)
+            newguy = prepare_part(match_part, parts[part], part)
+            newguy['Count'] = count
+            newguy['Definition']['Outputs'] = replace_names(newguy['Definition']['Outputs'], count)
             mod_map[part] = newguy['LogicalName']
             mods.append(newguy)
     clean_mods = []
@@ -152,7 +154,7 @@ def convert_parts(parts):
     return clean_mods
 
 
-def prepare_part(part, resource, count):
+def prepare_part(part, resource, orig_name):
     definition_string = json.dumps(part)
     definition = json.loads(definition_string, object_hook=OrderedDict)
     for param in definition['Parameters']:
@@ -165,24 +167,22 @@ def prepare_part(part, resource, count):
         flatten_resource(definition['Parameters'], definition['Resources'][reso], resource)
     flat_string = json.dumps(definition)
     for res in part['Resources']:
-        flat_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + res + r'"\s*\}', json.dumps({'Ref': res + str(count)}), flat_string)
-    if 'Conditions' in part:
-        for cond in part['Conditions']:
-            flat_string = re.sub('"' + cond + '"', '"' + cond + str(count) + '"', flat_string)
+        flat_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + res + r'"\s*\}', json.dumps({'Ref': orig_name}), flat_string)
     definition = json.loads(flat_string, object_hook=OrderedDict)
-    definition['Resources'] = replace_names(definition['Resources'], count)
-    if 'Outputs' in part:
-        definition['Outputs'] = replace_names(definition['Outputs'], count)
-
-    mod = {'Type': part['Type'], 'Count': count, 'LogicalName': part['Type'] + str(count), 'Definition': definition}
+    definition['Resources'] = replace_names(definition['Resources'], orig_name)
+    copy_old_fields(definition['Resources'][orig_name], resource)
+    mod = {'Type': part['Type'], 'LogicalName': orig_name, 'Definition': definition}
 
     return mod
 
 
-def replace_names(obj, numappend):
+def replace_names(obj, change):
     new_obj = {}
     for key in obj:
-        new_obj[key + str(numappend)] = obj[key]
+        if isinstance(change, int):
+            new_obj[key + str(change)] = obj[key]
+        else:
+            new_obj[change] = obj[key]
     return new_obj
 
 
@@ -203,6 +203,15 @@ def flatten_resource(params, obj, ref):
                         param = re.search(r'\{\s*"Ref"\s*:\s*"([A-Za-z0-9]+)"\}', json.dumps(obj[key])).group(1)
                         if param in params:
                             params[param]['Value'] = ref[key]
+
+
+def copy_old_fields(part, resource):
+    for field in resource:
+        if field not in part:
+            part[field] = resource[field]
+        else:
+            if isinstance(resource[field], dict):
+                copy_old_fields(part[field], resource[field])
 
 
 def build_template(parts):
