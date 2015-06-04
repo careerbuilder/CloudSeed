@@ -10,6 +10,7 @@
                 "Ireland",
                 "Singapore"
             ],
+            "Default": "USEast",
             "ConstraintDescription": "Must specify USEast, USEastTest, Ireland, or Singapore."
         },
         "AZ":{
@@ -34,6 +35,7 @@
                 "Private",
                 "Public"
             ],
+            "Default": "Private",
             "ConstraintDescription": "Must specify Public or Private."
         },
         "SubnetCIDR": {
