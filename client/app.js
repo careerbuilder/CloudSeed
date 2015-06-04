@@ -352,6 +352,7 @@
 
     $scope.saveTemplate=function(){
       if($scope.build.Name){
+        $scope.build.Ready = true;
         var template = {};
         template.Description = $scope.build.Template.Description;
         template.Resources = {};
@@ -378,7 +379,6 @@
         $scope.build.Template = template;
         $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
         $http.post('http://52.6.247.162:3000/api/stacks', {build: $scope.build, user: $scope.user.email}).success(function(data){
-        $scope.build.Ready = true;
             if(data['Code'] === 400){
               toastr.success('Stack Saved', 'Your stack was saved successfully!');
             }
