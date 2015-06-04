@@ -170,7 +170,7 @@ def prepare_part(part, resource, orig_name):
         flat_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + res + r'"\s*\}', json.dumps({'Ref': orig_name}), flat_string)
     definition = json.loads(flat_string, object_hook=OrderedDict)
     definition['Resources'] = replace_names(definition['Resources'], orig_name)
-    copy_old_fields(definition['Resources'][orig_name], resource)
+    copy_old_fields(definition['Parameters'], definition['Resources'][orig_name], resource)
     mod = {'Type': part['Type'], 'LogicalName': orig_name, 'Definition': definition}
 
     return mod
@@ -205,15 +205,41 @@ def flatten_resource(params, obj, ref):
                             params[param]['Value'] = ref[key]
 
 
-def copy_old_fields(part, resource):
+def copy_old_fields(params, part, resource):
     for field in resource:
         if field not in part:
-            part[field] = resource[field]
+            p_type = "String"
+            if isinstance(resource[field], list):
+                p_type = "CommaSeparatedList"
+            elif isinstance(resource[field], int):
+                p_type = "Number"
+            params[field] = {'Type': p_type, 'Value': resource[field]}
+            part[field] = {'Ref': field}
         else:
             if isinstance(resource[field], dict):
-                copy_old_fields(part[field], resource[field])
+                copy_old_fields(params, part[field], resource[field])
 
 
+if __name__ == "__main__":
+    pro_file = open(sys.argv[1])
+    profile = json.load(pro_file, object_hook=OrderedDict)
+    pro_file.close()
+    template_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[1])), '../', profile['template_location']))
+    temp_file = open(template_path)
+    template = json.load(temp_file, object_hook=OrderedDict)
+    temp_file.close()
+    new_template = resolve_template_values()
+    # print(json.dumps(new_template, indent=2))
+    raw_parts = gather_resources()
+    cs_mods = convert_parts(raw_parts)
+    # print(json.dumps(cs_mods, indent=2))
+    #cs_template = build_template(cs_mods)
+    # print(json.dumps(cs_template, indent=2))
+    name = re.sub(r'.*[/\\](.*)\.[Jj][Ss][Oo][Nn]', r'\1', sys.argv[1])
+    build = {'Name': name, 'Region': profile['region'], 'Template': {}, 'Parts': cs_mods, 'Ready': False}
+    print(json.dumps(build, indent=2))
+
+'''
 def build_template(parts):
     final_template = {}
     for part in parts:
@@ -251,22 +277,4 @@ def build_template(parts):
                     final_template[key][subkey] = rep_part[key][subkey]
     final_template['Description'] = template['Description']
     return final_template
-
-if __name__ == "__main__":
-    pro_file = open(sys.argv[1])
-    profile = json.load(pro_file, object_hook=OrderedDict)
-    pro_file.close()
-    template_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[1])), '../', profile['template_location']))
-    temp_file = open(template_path)
-    template = json.load(temp_file, object_hook=OrderedDict)
-    temp_file.close()
-    new_template = resolve_template_values()
-    # print(json.dumps(new_template, indent=2))
-    raw_parts = gather_resources()
-    cs_mods = convert_parts(raw_parts)
-    # print(json.dumps(cs_mods, indent=2))
-    cs_template = build_template(cs_mods)
-    # print(json.dumps(cs_template, indent=2))
-    name = re.sub(r'.*[/\\](.*)\.[Jj][Ss][Oo][Nn]', r'\1', sys.argv[1])
-    build = {'Name': name, 'Region': profile['region'], 'Template': cs_template, 'Parts': cs_mods}
-    print(json.dumps(build, indent=2))
+'''
