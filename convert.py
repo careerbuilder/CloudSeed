@@ -237,7 +237,7 @@ if __name__ == "__main__":
     # print(json.dumps(cs_template, indent=2))
     name = re.sub(r'.*[/\\](.*)\.[Jj][Ss][Oo][Nn]', r'\1', sys.argv[1])
     build = {'Name': name, 'Region': profile['region'], 'Template': {}, 'Parts': cs_mods, 'Ready': False}
-    print(json.dumps(build, indent=2))
+    print(json.dumps(build))
 
 '''
 def build_template(parts):
