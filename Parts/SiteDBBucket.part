@@ -1,0 +1,136 @@
+{
+  "Type" : "SiteDBBucket",
+  "Description" : "Version 1.0.  Creates a customized S3 bucket.",
+  "Parameters" : {
+    "BucketShortName" : {
+      "Description" : "Descriptor of Created bucket",
+      "AllowedPattern" : "[a-zA-Z0-9]+",
+      "Type" : "String"
+    },
+    "TeamName" : {
+      "Description" : "Name of owning team",
+      "Type" : "String"
+    },
+    "VPCName" : {
+      "Description" : "Short name of VPC",
+      "AllowedValues" : ["Test", "Prod", "Ireland"],
+      "Type" : "String"
+    }
+  },
+  "Mappings" : {
+    "CIDROne" : {
+      "Test" : "172.26.0.0/16",
+      "Prod" : "172.29.0.0/16",
+      "Ireland" : "172.28.0.0/16"
+    },
+    "CIDRTwo" : {
+      "Test" : "172.21.0.0/16",
+      "Prod" : "172.22.0.0/16",
+      "Ireland" : "172.23.0.0/16"
+    },
+    "RegionName" : {
+      "Test" : "useasttest",
+      "Prod" : "useast",
+      "Ireland" : "ireland"
+    }
+  },
+  "Resources" : {
+    "S3Bucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "BucketName" : {
+          "Fn::Join" : ["-", {
+              "Ref" : "TeamName"
+            }, {
+              "Ref" : "BucketShortName"
+            }, {
+              "Fn::FindInMap" : ["RegionName", {
+                  "Ref" : "VPCName"
+                }
+              ]
+            }
+          ]
+        },
+        "LifecycleConfiguration" : {
+          "Rules" : [{
+              "ExpirationInDays" : 120,
+              "Status" : "Enabled",
+              "Transition" : {
+                "StorageClass" : "Glacier",
+                "TransitionInDays" : 30
+              }
+            }
+          ]
+        },
+        "LoggingConfiguration" : {
+          "LogFilePrefix" : "Log"
+        },
+        "Tags" : [{
+            "Key" : "TeamName",
+            "Value" : {
+              "Ref" : "TeamName"
+            }
+          }
+        ]
+      }
+    },
+    "S3Policy" : {
+      "Type" : "AWS::IAM::Policy",
+      "Properties" : {
+        "PolicyDocument" : {
+          "Id" : {
+            "Fn::Join" : ["", {
+                "Ref" : "TeamName"
+              }, {
+                "Ref" : "BucketShortName"
+              }, {
+                "Fn::FindInMap" : ["RegionName", {
+                    "Ref" : "VPCName"
+                  }
+                ]
+              }, "Policy"]
+          },
+          "Statement" : [{
+              "Sid" : "IPAllow",
+              "Effect" : "Allow",
+              "Principal" : {
+                "AWS" : "*"
+              },
+              "Action" : "s3:*",
+              "Resource" : {
+                "Ref" : "S3Bucket"
+              },
+              "Condition" : {
+                "IpAddress" : {
+                  "aws:SourceIp" : "204.246.246.253/32"
+                }
+              }
+            }
+          ]
+        },
+        "PolicyName" : {
+          "Fn::Join" : ["-", {
+              "Ref" : "TeamName"
+            }, {
+              "Ref" : "BucketShortName"
+            }, {
+              "Fn::FindInMap" : ["RegionName", {
+                  "Ref" : "VPCName"
+                }
+              ]
+            }, "Policy"]
+        }
+      }
+    }
+  },
+  "Outputs" : {
+    "BucketID" : {
+      "Description" : "ID of created ACL",
+      "Value" : {
+        "Ref" : "S3Bucket"
+      }
+    }
+  },
+  "Connections" : {}
+
+}
