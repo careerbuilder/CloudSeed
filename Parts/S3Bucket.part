@@ -4,7 +4,7 @@
   "Parameters" : {
     "Name" : {
       "Description" : "Name of Created bucket",
-      "AllowedPattern":"[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+"
+      "AllowedPattern":"[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+",
       "Type" : "String"
     },
     "TeamName" : {
