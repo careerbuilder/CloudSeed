@@ -9,7 +9,7 @@ import re
 client = MongoClient('localhost', 27017)
 db = client.cloudseed
 parts = db.parts
-stacks = db.stacks
+#stacks = db.stacks
 
 for root, dirs, files in os.walk(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])),'Parts')):
     for file in files:
@@ -22,6 +22,7 @@ for root, dirs, files in os.walk(os.path.join(os.path.dirname(os.path.abspath(sy
             obj['Subpart'] = False
         parts.replace_one({'Type': obj['Type']}, obj, True)
 
+'''
 for root, dirs, files in os.walk(os.path.join('CLI','Stacks')):
     for file in files:
         f = open(os.path.abspath(os.path.join(root, file)))
@@ -32,3 +33,5 @@ for root, dirs, files in os.walk(os.path.join('CLI','Stacks')):
         obj['Name'] = name
         obj['Stack'] = stack
         stacks.replace_one({'Name':obj['Name']}, obj, True)
+'''
+
