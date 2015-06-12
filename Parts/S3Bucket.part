@@ -1,0 +1,51 @@
+{
+  "Type": "S3Bucket",
+  "Description" : "Version 1.0.  Creates an S3 bucket.",
+  "Parameters" : {
+    "Name" : {
+      "Description" : "Name of Created bucket",
+      "AllowedPattern":"[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+"
+      "Type" : "String"
+    },
+    "TeamName" : {
+      "Description" : "Name of owning team",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "S3Bucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "BucketName" : {"Ref": "Name"},
+        "LifecycleConfiguration" : {
+          "Rules": [
+            {
+              "ExpirationInDays" : 120,
+              "Status" :"Enabled",
+              "Transition" : {
+                "StorageClass" : "Glacier",
+                "TransitionInDays" : 30
+              }
+            }
+          ]
+        },
+        "LoggingConfiguration" : {
+          "DestinationBucketName" : String,
+          "LogFilePrefix" : "Log"
+        },
+        "Tags" : [
+          {"Key": "TeamName", "Value":{"Ref":"TeamName"}}
+        ],
+      }
+    }
+  },
+  "Outputs" : {
+    "BucketID" : {
+      "Description" : "ID of created ACL",
+      "Value" : {
+        "Ref" : "S3Bucket"
+      }
+    }
+  },
+  "Connections":{}
+}
