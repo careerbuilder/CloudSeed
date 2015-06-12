@@ -90,24 +90,10 @@
       "Type" : "AWS::S3::BucketPolicy",
       "Properties" : {
         "PolicyDocument" : {
-          "Id" : {
-            "Fn::Join" : ["", [{
-                  "Ref" : "TeamName"
-                }, {
-                  "Ref" : "BucketShortName"
-                }, {
-                  "Fn::FindInMap" : ["Info", {
-                      "Ref" : "VPCName"
-                    }, "Name"]
-                }, "Policy"]]
-          },
           "Statement" : [{
-              "Sid" : "IPAllow",
               "Effect" : "Allow",
-              "Principal" : {
-                "AWS" : "*"
-              },
-              "Action" : "s3:*",
+              "Principal" : "*",
+              "Action" : ["s3:*"],
               "Resource" : { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" } , "/*" ]]},
               "Condition" : {
                 "IpAddress" : {
