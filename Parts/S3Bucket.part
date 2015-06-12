@@ -1,31 +1,75 @@
 {
   "Type" : "S3Bucket",
-  "Description" : "Version 1.0.  Creates an S3 bucket.",
+  "Description" : "Version 1.0.  Creates a customized S3 bucket.",
   "Parameters" : {
-    "Name" : {
-      "Description" : "Name of Created bucket",
-      "AllowedPattern" : "[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+",
+    "BucketShortName" : {
+      "Description" : "Descriptor of Created bucket",
+      "AllowedPattern" : "[a-zA-Z0-9]+",
       "Type" : "String"
     },
     "TeamName" : {
       "Description" : "Name of owning team",
       "Type" : "String"
+    },
+    "VPCName" : {
+      "Description" : "Short name of VPC",
+      "AllowedValues" : ["USEastTest", "USEast", "Ireland"],
+      "Type" : "String"
+    },
+    "DeleteDays":{
+      "Description": "Days after creation to delete",
+      "Type": "Integer",
+      "Default": 120
+    },
+    "GlacierDays":{
+      "Description": "Days after creation to move into glacier",
+      "Type":"Integer",
+      "Default": 30
+    }
+  },
+  "Mappings" : {
+    "Info" : {
+      "USEastTest" : {
+        "CIDROne" : "172.26.0.0/16",
+        "CIDRTwo" : "172.21.0.0/16",
+        "Name" : "useasttest"
+      },
+      "USEast" : {
+        "CIDROne" : "172.29.0.0/16",
+        "CIDRTwo" : "172.22.0.0/16",
+        "Name" : "useast"
+      },
+      "Ireland" : {
+        "CIDROne" : "172.28.0.0/16",
+        "CIDRTwo" : "172.23.0.0/16",
+        "Name" : "ireland"
+      }
     }
   },
   "Resources" : {
     "S3Bucket" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
+        "AccessControl": "LogDeliveryWrite",
         "BucketName" : {
-          "Ref" : "Name"
+          "Fn::Join" : ["-", [{
+                "Ref" : "TeamName"
+              }, {
+                "Ref" : "BucketShortName"
+              }, {
+                "Fn::FindInMap" : ["Info", {
+                    "Ref" : "VPCName"
+                  }, "Name"]
+              }
+            ]]
         },
         "LifecycleConfiguration" : {
           "Rules" : [{
-              "ExpirationInDays" : 120,
+              "ExpirationInDays" : {"Ref":"DeleteDays"},
               "Status" : "Enabled",
               "Transition" : {
                 "StorageClass" : "Glacier",
-                "TransitionInDays" : 30
+                "TransitionInDays" : {"Ref":"GlacierDays"}
               }
             }
           ]
@@ -40,6 +84,51 @@
             }
           }
         ]
+      }
+    },
+    "S3Policy" : {
+      "Type" : "AWS::S3::BucketPolicy",
+      "Properties" : {
+        "PolicyDocument" : {
+          "Id" : {
+            "Fn::Join" : ["", [{
+                  "Ref" : "TeamName"
+                }, {
+                  "Ref" : "BucketShortName"
+                }, {
+                  "Fn::FindInMap" : ["Info", {
+                      "Ref" : "VPCName"
+                    }, "Name"]
+                }, "Policy"]]
+          },
+          "Statement" : [{
+              "Sid" : "IPAllow",
+              "Effect" : "Allow",
+              "Principal" : {
+                "AWS" : "*"
+              },
+              "Action" : "s3:*",
+              "Resource" : { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" } , "/*" ]]},
+              "Condition" : {
+                "IpAddress" : {
+                  "aws:SourceIp" : ["204.246.246.253/32", {
+                      "Fn::FindInMap" : ["Info", {
+                          "Ref" : "VPCName"
+                        }, "CIDROne"]
+                    }, {
+                      "aws:SourceIp" : {
+                        "Fn::FindInMap" : ["Info", {
+                            "Ref" : "VPCName"
+                          }, "CIDRTwo"]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "Bucket" : {"Ref":"S3Bucket"}
       }
     }
   },
