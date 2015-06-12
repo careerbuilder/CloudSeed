@@ -41,15 +41,18 @@
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
         "BucketName" : {
-          "Fn::Join" : ["-", {
-              "Ref" : "TeamName"
-            }, {
-              "Ref" : "BucketShortName"
-            }, {
-              "Fn::FindInMap" : ["Info", {
-                  "Ref" : "VPCName"
-                }, "Name"]
-            }
+          "Fn::Join" : [
+            "-", [
+              {
+                "Ref" : "TeamName"
+              }, {
+                "Ref" : "BucketShortName"
+              }, {
+                "Fn::FindInMap" : ["Info", {
+                    "Ref" : "VPCName"
+                  }, "Name"]
+              }
+            ]
           ]
         },
         "LifecycleConfiguration" : {
@@ -80,15 +83,19 @@
       "Properties" : {
         "PolicyDocument" : {
           "Id" : {
-            "Fn::Join" : ["", {
-                "Ref" : "TeamName"
-              }, {
-                "Ref" : "BucketShortName"
-              }, {
-                "Fn::FindInMap" : ["Info", {
-                    "Ref" : "VPCName"
-                  }, "Name"]
-              }, "Policy"]
+            "Fn::Join" : [
+              "", [
+                {
+                  "Ref" : "TeamName"
+                }, {
+                  "Ref" : "BucketShortName"
+                }, {
+                  "Fn::FindInMap" : ["Info", {
+                      "Ref" : "VPCName"
+                    }, "Name"]
+                }, "Policy"
+              ]
+          ]
           },
           "Statement" : [{
               "Sid" : "IPAllow",
@@ -124,7 +131,8 @@
           ]
         },
         "PolicyName" : {
-          "Fn::Join" : ["-", {
+          "Fn::Join" : ["-", [
+            {
               "Ref" : "TeamName"
             }, {
               "Ref" : "BucketShortName"
@@ -133,6 +141,7 @@
                   "Ref" : "VPCName"
                 }, "Name"]
             }, "Policy"]
+          ]
         }
       }
     }
