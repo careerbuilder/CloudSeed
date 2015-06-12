@@ -77,7 +77,7 @@
       }
     },
     "S3Policy" : {
-      "Type" : "AWS::IAM::Policy",
+      "Type" : "AWS::S3::BucketPolicy",
       "Properties" : {
         "PolicyDocument" : {
           "Id" : {
@@ -98,9 +98,7 @@
                 "AWS" : "*"
               },
               "Action" : "s3:*",
-              "Resource" : {
-                "Ref" : "S3Bucket"
-              },
+              "Resource" : { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" } , "/*" ]]},
               "Condition" : {
                 "IpAddress" : {
                   "aws:SourceIp" : ["204.246.246.253/32", {
@@ -120,17 +118,7 @@
             }
           ]
         },
-        "PolicyName" : {
-          "Fn::Join" : ["-", [{
-                "Ref" : "TeamName"
-              }, {
-                "Ref" : "BucketShortName"
-              }, {
-                "Fn::FindInMap" : ["Info", {
-                    "Ref" : "VPCName"
-                  }, "Name"]
-              }, "Policy"]]
-        }
+        "Bucket" : {"Ref":"S3Bucket"}
       }
     }
   },
