@@ -85,37 +85,6 @@
           }
         ]
       }
-    },
-    "S3Policy" : {
-      "Type" : "AWS::S3::BucketPolicy",
-      "Properties" : {
-        "PolicyDocument" : {
-          "Statement" : [{
-              "Effect" : "Allow",
-              "Principal" : "*",
-              "Action" : ["s3:*"],
-              "Resource" : { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" } , "/*" ]]},
-              "Condition" : {
-                "IpAddress" : {
-                  "aws:SourceIp" : ["204.246.246.253/32", {
-                      "Fn::FindInMap" : ["Info", {
-                          "Ref" : "VPCName"
-                        }, "CIDROne"]
-                    }, {
-                      "aws:SourceIp" : {
-                        "Fn::FindInMap" : ["Info", {
-                            "Ref" : "VPCName"
-                          }, "CIDRTwo"]
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        },
-        "Bucket" : {"Ref":"S3Bucket"}
-      }
     }
   },
   "Outputs" : {
