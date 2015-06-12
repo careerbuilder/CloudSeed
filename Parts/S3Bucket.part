@@ -1,10 +1,10 @@
 {
-  "Type": "S3Bucket",
+  "Type" : "S3Bucket",
   "Description" : "Version 1.0.  Creates an S3 bucket.",
   "Parameters" : {
     "Name" : {
       "Description" : "Name of Created bucket",
-      "AllowedPattern":"[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+",
+      "AllowedPattern" : "[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+",
       "Type" : "String"
     },
     "TeamName" : {
@@ -16,12 +16,13 @@
     "S3Bucket" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
-        "BucketName" : {"Ref": "Name"},
+        "BucketName" : {
+          "Ref" : "Name"
+        },
         "LifecycleConfiguration" : {
-          "Rules": [
-            {
+          "Rules" : [{
               "ExpirationInDays" : 120,
-              "Status" :"Enabled",
+              "Status" : "Enabled",
               "Transition" : {
                 "StorageClass" : "Glacier",
                 "TransitionInDays" : 30
@@ -30,12 +31,15 @@
           ]
         },
         "LoggingConfiguration" : {
-          "DestinationBucketName" : String,
           "LogFilePrefix" : "Log"
         },
-        "Tags" : [
-          {"Key": "TeamName", "Value":{"Ref":"TeamName"}}
-        ],
+        "Tags" : [{
+            "Key" : "TeamName",
+            "Value" : {
+              "Ref" : "TeamName"
+            }
+          }
+        ]
       }
     }
   },
@@ -47,5 +51,6 @@
       }
     }
   },
-  "Connections":{}
+  "Connections" : {}
+
 }
