@@ -41,9 +41,7 @@
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
         "BucketName" : {
-          "Fn::Join" : [
-            "-", [
-              {
+          "Fn::Join" : ["-", [{
                 "Ref" : "TeamName"
               }, {
                 "Ref" : "BucketShortName"
@@ -52,8 +50,7 @@
                     "Ref" : "VPCName"
                   }, "Name"]
               }
-            ]
-          ]
+            ]]
         },
         "LifecycleConfiguration" : {
           "Rules" : [{
@@ -83,9 +80,7 @@
       "Properties" : {
         "PolicyDocument" : {
           "Id" : {
-            "Fn::Join" : [
-              "", [
-                {
+            "Fn::Join" : ["", [{
                   "Ref" : "TeamName"
                 }, {
                   "Ref" : "BucketShortName"
@@ -93,9 +88,7 @@
                   "Fn::FindInMap" : ["Info", {
                       "Ref" : "VPCName"
                     }, "Name"]
-                }, "Policy"
-              ]
-          ]
+                }, "Policy"]]
           },
           "Statement" : [{
               "Sid" : "IPAllow",
@@ -109,14 +102,10 @@
               },
               "Condition" : {
                 "IpAddress" : {
-                  "Fn::Or" : [{
-                      "aws:SourceIp" : "204.246.246.253/32"
-                    }, {
-                      "aws:SourceIp" : {
-                        "Fn::FindInMap" : ["Info", {
-                            "Ref" : "VPCName"
-                          }, "CIDROne"]
-                      }
+                  "aws:SourceIp" : ["204.246.246.253/32", {
+                      "Fn::FindInMap" : ["Info", {
+                          "Ref" : "VPCName"
+                        }, "CIDROne"]
                     }, {
                       "aws:SourceIp" : {
                         "Fn::FindInMap" : ["Info", {
@@ -131,17 +120,15 @@
           ]
         },
         "PolicyName" : {
-          "Fn::Join" : ["-", [
-            {
-              "Ref" : "TeamName"
-            }, {
-              "Ref" : "BucketShortName"
-            }, {
-              "Fn::FindInMap" : ["Info", {
-                  "Ref" : "VPCName"
-                }, "Name"]
-            }, "Policy"]
-          ]
+          "Fn::Join" : ["-", [{
+                "Ref" : "TeamName"
+              }, {
+                "Ref" : "BucketShortName"
+              }, {
+                "Fn::FindInMap" : ["Info", {
+                    "Ref" : "VPCName"
+                  }, "Name"]
+              }, "Policy"]]
         }
       }
     }
