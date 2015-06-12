@@ -13,18 +13,28 @@
     },
     "VPCName" : {
       "Description" : "Short name of VPC",
-      "AllowedValues" : ["Test", "Prod", "Ireland"],
+      "AllowedValues" : ["USEastTest", "USEast", "Ireland"],
       "Type" : "String"
+    },
+    "DeleteDays":{
+      "Description": "Days after creation to delete",
+      "Type": "Integer",
+      "Default": 120
+    },
+    "GlacierDays":{
+      "Description": "Days after creation to move into glacier",
+      "Type":"Integer",
+      "Default": 30
     }
   },
   "Mappings" : {
     "Info" : {
-      "Test" : {
+      "USEastTest" : {
         "CIDROne" : "172.26.0.0/16",
         "CIDRTwo" : "172.21.0.0/16",
         "Name" : "useasttest"
       },
-      "Prod" : {
+      "USEast" : {
         "CIDROne" : "172.29.0.0/16",
         "CIDRTwo" : "172.22.0.0/16",
         "Name" : "useast"
@@ -55,11 +65,11 @@
         },
         "LifecycleConfiguration" : {
           "Rules" : [{
-              "ExpirationInDays" : 120,
+              "ExpirationInDays" : {"Ref":"DeleteDays"},
               "Status" : "Enabled",
               "Transition" : {
                 "StorageClass" : "Glacier",
-                "TransitionInDays" : 30
+                "TransitionInDays" : {"Ref":"GlacierDays"}
               }
             }
           ]
