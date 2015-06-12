@@ -18,20 +18,22 @@
     }
   },
   "Mappings" : {
-    "CIDROne" : {
-      "Test" : "172.26.0.0/16",
-      "Prod" : "172.29.0.0/16",
-      "Ireland" : "172.28.0.0/16"
-    },
-    "CIDRTwo" : {
-      "Test" : "172.21.0.0/16",
-      "Prod" : "172.22.0.0/16",
-      "Ireland" : "172.23.0.0/16"
-    },
-    "RegionName" : {
-      "Test" : "useasttest",
-      "Prod" : "useast",
-      "Ireland" : "ireland"
+    "Info" : {
+      "Test" : {
+        "CIDROne" : "172.26.0.0/16",
+        "CIDRTwo" : "172.21.0.0/16",
+        "Name" : "useasttest"
+      },
+      "Prod" : {
+        "CIDROne" : "172.29.0.0/16",
+        "CIDRTwo" : "172.22.0.0/16",
+        "Name" : "useast"
+      },
+      "Ireland" : {
+        "CIDROne" : "172.28.0.0/16",
+        "CIDRTwo" : "172.23.0.0/16",
+        "Name" : "ireland"
+      }
     }
   },
   "Resources" : {
@@ -44,10 +46,9 @@
             }, {
               "Ref" : "BucketShortName"
             }, {
-              "Fn::FindInMap" : ["RegionName", {
+              "Fn::FindInMap" : ["Info", {
                   "Ref" : "VPCName"
-                }
-              ]
+                }, "Name"]
             }
           ]
         },
@@ -84,10 +85,9 @@
               }, {
                 "Ref" : "BucketShortName"
               }, {
-                "Fn::FindInMap" : ["RegionName", {
+                "Fn::FindInMap" : ["Info", {
                     "Ref" : "VPCName"
-                  }
-                ]
+                  }, "Name"]
               }, "Policy"]
           },
           "Statement" : [{
@@ -102,7 +102,22 @@
               },
               "Condition" : {
                 "IpAddress" : {
-                  "aws:SourceIp" : "204.246.246.253/32"
+                  "Fn::Or" : [{
+                      "aws:SourceIp" : "204.246.246.253/32"
+                    }, {
+                      "aws:SourceIp" : {
+                        "Fn::FindInMap" : ["Info", {
+                            "Ref" : "VPCName"
+                          }, "CIDROne"]
+                      }
+                    }, {
+                      "aws:SourceIp" : {
+                        "Fn::FindInMap" : ["Info", {
+                            "Ref" : "VPCName"
+                          }, "CIDRTwo"]
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -114,10 +129,9 @@
             }, {
               "Ref" : "BucketShortName"
             }, {
-              "Fn::FindInMap" : ["RegionName", {
+              "Fn::FindInMap" : ["Info", {
                   "Ref" : "VPCName"
-                }
-              ]
+                }, "Name"]
             }, "Policy"]
         }
       }
