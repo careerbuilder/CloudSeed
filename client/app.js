@@ -206,7 +206,7 @@
 
     $scope.setParam=function(part, sub, name){
       var param = sub.Parameter;
-      var isList = (sub.Type.indexOf("List::") !=0);
+      var isList = (sub.Type.indexOf("List::") == 0);
       if(!isList){
         sub.Reference = {Ref: name};
       }
