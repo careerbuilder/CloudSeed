@@ -206,10 +206,11 @@
 
     $scope.setParam=function(part, sub, name){
       var param = sub.Parameter;
-      if(typeof(sub.Reference) == typeof("")){
+      var isList = (sub.Type.indexOf("List::") !=0);
+      if(!isList){
         sub.Reference = {Ref: name};
       }
-      if(typeof(sub.Reference) == typeof([])){
+      else if(isList){
         if(name === 'None'){
           sub.Reference = [];
         }else{
