@@ -207,7 +207,7 @@
     $scope.setParam=function(part, sub, name){
       var param = sub.Parameter;
       if(typeof(sub.Reference) == typeof("")){
-        sub.Reference = name;
+        sub.Reference = {Ref: name};
       }
       if(typeof(sub.Reference) == typeof([])){
         if(name === 'None'){
@@ -215,14 +215,14 @@
         }else{
           var found = false;
           for(var i=0; i<sub.Reference.length; i++){
-            if(sub.Reference[i] === name){
+            if(sub.Reference[i].Ref === name){
               found = true;
               sub.Reference.splice(i,1);
               break;
             }
           }
           if(!found){
-            sub.Reference.push(name);
+            sub.Reference.push({Ref:name});
           }
         }
       }
@@ -312,7 +312,7 @@
           sub = subs[i];
           if(sub.Reference.length > 0 && sub.Reference != 'None'){
             var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
-            partstring = partstring.replace(re, JSON.stringify({Ref:sub.Reference}));
+            partstring = partstring.replace(re, JSON.stringify(sub.Reference));
           }
         }
       }
