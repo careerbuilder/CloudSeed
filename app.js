@@ -12,7 +12,7 @@ app.set('views', __dirname + '/client');
 app.use(bodyParser.json())
 app.use(favicon(__dirname + '/favicon.ico'));
 
-var port = 80;
+var port = 3000;
 
 // ROUTES FOR OUR API
 // =============================================================================
