@@ -401,7 +401,7 @@
     }
 
     $scope.buildTemplate=function(stackname){
-      $http.post('http://52.6.247.162:3000/api/build/' + stackname, {userid:$scope.user._id}).success(function(data){
+      $http.post('http://cloudseed.cbsitedb.net/api/build/' + stackname, {userid:$scope.user._id}).success(function(data){
         if(data.Success){
           toastr.success("Template Built!");
           return true;
