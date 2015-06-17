@@ -199,7 +199,7 @@
           sub.Reference = [];
         }
         else{
-          sub.Reference = 'None';
+          sub.Reference = {Ref:'None'};
         }
       }
     }
@@ -227,7 +227,7 @@
           }
         }
       }
-      part.Definition.Parameters[param].Hidden=(sub.Reference.Ref.length > 0 && sub.Reference.Ref!='None');
+      part.Definition.Parameters[param].Hidden=(sub.Reference.length > 0 && sub.Reference.Ref!='None');
     }
 
     $scope.canAddSubPart=function(part, name, index){
@@ -311,7 +311,7 @@
         var subs = apart.Definition.Connections.Substitutes || [];
         for(var i=0; i<subs.length; i++){
           sub = subs[i];
-          if(sub.Reference.Ref.length > 0 && sub.Reference.Ref != 'None'){
+          if(sub.Reference.length > 0 && sub.Reference.Ref != 'None'){
             var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
             partstring = partstring.replace(re, JSON.stringify(sub.Reference));
           }
