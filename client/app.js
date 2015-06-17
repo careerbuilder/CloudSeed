@@ -227,7 +227,7 @@
           }
         }
       }
-      part.Definition.Parameters[param].Hidden=(sub.Reference.length > 0 && sub.Reference.Ref!='None');
+      part.Definition.Parameters[param].Hidden=((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None'));
     }
 
     $scope.canAddSubPart=function(part, name, index){
@@ -311,7 +311,8 @@
         var subs = apart.Definition.Connections.Substitutes || [];
         for(var i=0; i<subs.length; i++){
           sub = subs[i];
-          if(sub.Reference.length > 0 && sub.Reference.Ref != 'None'){
+          var isList = (sub.Type.indexOf("List::")==0);
+          if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
             var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
             partstring = partstring.replace(re, JSON.stringify(sub.Reference));
           }
