@@ -1,9 +1,19 @@
 var express    = require('express'); 		// call express
+var https      = require('https');
+var fs         = require('fs');
 var bodyParser = require('body-parser');
 var path       = require('path');
 var favicon    = require('serve-favicon');
 var app        = express(); 			// define our app using express
 
+
+var key_file = "/home/ubuntu/ssl/cbsitedb.key";
+var cert_file = "/home/ubuntu/ssl/-star-cbsitedb-net.crt.cer";
+
+var config = {
+  key: fs.readFileSync(key_file),
+ cert: fs.readFileSync(cert_file)
+};
 
 app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
@@ -43,5 +53,5 @@ app.use(function(req, res, next){
   return res.type('txt').send('Not found');
 });
 
-app.listen(port);
+https.createServer(config, app).listen(port);
 console.log('Magic happens on port ' + port);
