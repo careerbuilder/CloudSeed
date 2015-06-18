@@ -12,17 +12,17 @@
     $scope.parts = [];
     $scope.stacks = [];
     $scope.build = {};
-    $http.get('http://cloudseed.cbsitedb.net/api/parts').success(function(data){
+    $http.get('https://cloudseed.cbsitedb.net/api/parts').success(function(data){
       $scope.parts = data;
     });
-    $http.get('http://cloudseed.cbsitedb.net/api/stacks').success(function(data){
+    $http.get('https://cloudseed.cbsitedb.net/api/stacks').success(function(data){
       $scope.stacks = data;
     });
-    $http.get('http://cloudseed.cbsitedb.net/api/regions').success(function(data){
+    $http.get('https://cloudseed.cbsitedb.net/api/regions').success(function(data){
       $scope.regions = data.Regions;
     });
     if($cookies.c_s66d){
-      $http.get('http://cloudseed.cbsitedb.net/api/user/'+$cookies.c_s66d).success(function(data){
+      $http.get('https://cloudseed.cbsitedb.net/api/user/'+$cookies.c_s66d).success(function(data){
         $scope.user = data.user;
       });
     }
@@ -36,7 +36,7 @@
     $scope.UserInfoBtn_click=function(){
       var err = "";
       if($scope.register === 'Log in'){
-        $http.post('http://cloudseed.cbsitedb.net/api/login', $scope.auth).success(function(data, status){
+        $http.post('https://cloudseed.cbsitedb.net/api/login', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
           }
@@ -58,7 +58,7 @@
         });
       }
       else if($scope.register === 'Register'){
-        $http.post('http://cloudseed.cbsitedb.net/api/register', $scope.auth).success(function(data, status){
+        $http.post('https://cloudseed.cbsitedb.net/api/register', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
             toastr.warning(err, "This is awkward...");
@@ -347,7 +347,7 @@
     }
 
     $scope.refreshStacks=function(){
-      $http.get('http://cloudseed.cbsitedb.net/api/stacks').success(function(data){
+      $http.get('https://cloudseed.cbsitedb.net/api/stacks').success(function(data){
         $scope.stacks = data;
       });
     }
@@ -380,7 +380,7 @@
         }
         $scope.build.Template = template;
         $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-        $http.post('http://cloudseed.cbsitedb.net/api/stacks', {build: $scope.build, user: $scope.user.email}).success(function(data){
+        $http.post('https://cloudseed.cbsitedb.net/api/stacks', {build: $scope.build, user: $scope.user.email}).success(function(data){
             if(data['Code'] === 400){
               toastr.success('Stack Saved', 'Your stack was saved successfully!');
             }
@@ -396,14 +396,14 @@
     }
 
     $scope.loadTemplate=function(name){
-      $http.get('http://cloudseed.cbsitedb.net/api/stacks/'+name).success(function(data){
+      $http.get('https://cloudseed.cbsitedb.net/api/stacks/'+name).success(function(data){
         $scope.build = JSON.parse(JSON.stringify(data[0]));
         $scope.addedParts = JSON.parse(JSON.stringify(data[0]['Parts']));
       });
     }
 
     $scope.buildTemplate=function(stackname){
-      $http.post('http://cloudseed.cbsitedb.net/api/build/' + stackname, {userid:$scope.user._id}).success(function(data){
+      $http.post('https://cloudseed.cbsitedb.net/api/build/' + stackname, {userid:$scope.user._id}).success(function(data){
         if(data.Success){
           toastr.success("Template Built!");
           return true;
