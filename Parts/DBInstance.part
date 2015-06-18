@@ -58,6 +58,11 @@
           "Description":"Name of OptionGroup",
           "Type":"String"
         },
+        "ParameterGroup":{
+          "Description": "Name of the ParameterGroup",
+          "Type": "String",
+          "Default": ""
+        },
         "SAUserName":{
           "Description": "Username of SA user",
           "Type":"String"
@@ -68,7 +73,16 @@
           "Default":3633
         }
     },
-    "Conditions": {},
+    "Conditions": {
+      "HasParamGroup":{
+        "Fn::Not":[
+          "Fn::Equals": [
+            "",
+            {"Ref":"ParameterGroup"}
+          ]
+        ]
+      }
+    },
     "Resources": {
         "DBInstance": {
             "Type" : "AWS::RDS::DBInstance",
@@ -79,6 +93,13 @@
                 "BackupRetentionPeriod" : {"Ref":"BackupDays"},
                 "DBInstanceClass" :{"Ref": "InstanceSize"},
                 "DBInstanceIdentifier" : {"Ref": "RDSName"},
+                "DBParameterGroupName": {
+                  "Fn::If":[
+                    "HasParamGroup",
+                    {"Ref": "ParameterGroup"},
+                    {"Ref":"AWS::NoValue"}
+                  ]
+                },
                 "DBSubnetGroupName" : {"Ref": "SubnetGroup"},
                 "Engine" : {"Ref": "DBEngine"},
                 "EngineVersion": {"Ref":"DBVersion"},
