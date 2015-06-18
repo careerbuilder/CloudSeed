@@ -1,130 +1,164 @@
 {
-    "Description": "Version 1.0.0  Creates an RDS instance",
-    "Type": "DBInstance",
-    "Parameters": {
-        "RDSName": {
-            "Description": "Name of the created RDS Instance",
-            "Type": "String"
-        },
-        "RDSSG":{
-            "Description" : "IDs of security groups to use for new RDS",
-            "Type": "CommaDelimitedList"
-        },
-        "SubnetGroup":{
-          "Description" : "name of subnet group to use for new RDS",
-          "Type": "String"
-        },
-        "SnapshotID":{
-          "Description": "ID of snapshot to use (if any)",
-          "Type": "String",
-          "Default": ""
-        },
-        "GBAllocated":{
-          "Description": "GB of allocated storage",
-          "Type": "Number",
-          "Default": 1000
-        },
-        "BackupDays":{
-          "Description": "Days to backup",
-          "Type":"Number",
-          "Default": 14
-        },
-        "InstanceSize":{
-          "Description": "Size and type of DBInstance",
-          "Type": "String",
-          "Default": "db.r3.xlarge",
-          "AllowedPattern": "db.[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
-        },
-        "DBEngine":{
-          "Description":"DBEngine",
-          "Type": "String",
-          "AllowedValues": ["MySQL", "oracle-se1", "oracle-se", "oracle-ee", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web", "postgres"]
-        },
-        "DBVersion":{
-          "Description": "Version of the DBEngine",
-          "Type":"String"
-        },
-        "numIOPS":{
-          "Description": "Must be 10x the GBAllocated",
-          "Type": "Number",
-          "Default": 10000
-        },
-        "licensetype":{
-          "Description": "Model of licensing to use",
-          "Type":"String",
-          "Default": "license-included"
-        },
-        "OptionGroup":{
-          "Description":"Name of OptionGroup",
-          "Type":"String"
-        },
-        "ParameterGroup":{
-          "Description": "Name of the ParameterGroup",
-          "Type": "String",
-          "Default": ""
-        },
-        "SAUserName":{
-          "Description": "Username of SA user",
-          "Type":"String"
-        },
-        "Portnum":{
-          "Description":"Port",
-          "Type":"Number",
-          "Default":3633
-        }
+  "Description" : "Version 1.0.0  Creates an RDS instance",
+  "Type" : "DBInstance",
+  "Parameters" : {
+    "RDSName" : {
+      "Description" : "Name of the created RDS Instance",
+      "Type" : "String"
     },
-    "Conditions": {
-      "HasParamGroup":{
-        "Fn::Not":[
-          "Fn::Equals": [
-            "",
-            {"Ref":"ParameterGroup"}
-          ]
-        ]
-      }
+    "RDSSG" : {
+      "Description" : "IDs of security groups to use for new RDS",
+      "Type" : "CommaDelimitedList"
     },
-    "Resources": {
-        "DBInstance": {
-            "Type" : "AWS::RDS::DBInstance",
-            "Properties" : {
-                "AllocatedStorage" : {"Ref":"GBAllocated"},
-                "AllowMajorVersionUpgrade" : false,
-                "AutoMinorVersionUpgrade" : false,
-                "BackupRetentionPeriod" : {"Ref":"BackupDays"},
-                "DBInstanceClass" :{"Ref": "InstanceSize"},
-                "DBInstanceIdentifier" : {"Ref": "RDSName"},
-                "DBParameterGroupName": {
-                  "Fn::If":[
-                    "HasParamGroup",
-                    {"Ref": "ParameterGroup"},
-                    {"Ref":"AWS::NoValue"}
-                  ]
-                },
-                "DBSubnetGroupName" : {"Ref": "SubnetGroup"},
-                "Engine" : {"Ref": "DBEngine"},
-                "EngineVersion": {"Ref":"DBVersion"},
-                "Iops" : {"Ref":"numIOPS"},
-                "LicenseModel" : {"Ref":"licensetype"},
-                "MasterUsername" : {"Ref":"SAUserName"},
-                "MasterUserPassword" : "changemeNOW",
-                "OptionGroupName": {"Ref":"OptionGroup"},
-                "Port" : {"Ref":"Portnum"},
-                "PubliclyAccessible" : false,
-                "StorageType" : "io1",
-                "VPCSecurityGroups" : {"Ref": "RDSSG"}
+    "SubnetGroup" : {
+      "Description" : "name of subnet group to use for new RDS",
+      "Type" : "String"
+    },
+    "SnapshotID" : {
+      "Description" : "ID of snapshot to use (if any)",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "GBAllocated" : {
+      "Description" : "GB of allocated storage",
+      "Type" : "Number",
+      "Default" : 1000
+    },
+    "BackupDays" : {
+      "Description" : "Days to backup",
+      "Type" : "Number",
+      "Default" : 14
+    },
+    "InstanceSize" : {
+      "Description" : "Size and type of DBInstance",
+      "Type" : "String",
+      "Default" : "db.r3.xlarge",
+      "AllowedPattern" : "db.[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
+    },
+    "DBEngine" : {
+      "Description" : "DBEngine",
+      "Type" : "String",
+      "AllowedValues" : ["MySQL", "oracle-se1", "oracle-se", "oracle-ee", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web", "postgres"]
+    },
+    "DBVersion" : {
+      "Description" : "Version of the DBEngine",
+      "Type" : "String"
+    },
+    "numIOPS" : {
+      "Description" : "Must be 10x the GBAllocated",
+      "Type" : "Number",
+      "Default" : 10000
+    },
+    "licensetype" : {
+      "Description" : "Model of licensing to use",
+      "Type" : "String",
+      "Default" : "license-included"
+    },
+    "OptionGroup" : {
+      "Description" : "Name of OptionGroup",
+      "Type" : "String"
+    },
+    "ParameterGroup" : {
+      "Description" : "Name of the ParameterGroup",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "SAUserName" : {
+      "Description" : "Username of SA user",
+      "Type" : "String"
+    },
+    "Portnum" : {
+      "Description" : "Port",
+      "Type" : "Number",
+      "Default" : 3633
+    }
+  },
+  "Conditions" : {
+    "HasParamGroup" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "ParameterGroup"
             }
-        }       
-    },
-    "Outputs": {
-      "RDSID":{
-        "Description": "ID of created Instance",
-        "Value":{"Ref":"DBInstance"}
-      }
-    },
-    "Connections":{
-      "Substitutes":[
-        {"Type":"SubnetGroup", "Parameter":"SubnetGroup"},
-        {"Type":"List::SecurityGroup", "Parameter":"RDSSG"}
+          ]
+        }
       ]
     }
+  },
+  "Resources" : {
+    "DBInstance" : {
+      "Type" : "AWS::RDS::DBInstance",
+      "Properties" : {
+        "AllocatedStorage" : {
+          "Ref" : "GBAllocated"
+        },
+        "AllowMajorVersionUpgrade" : false,
+        "AutoMinorVersionUpgrade" : false,
+        "BackupRetentionPeriod" : {
+          "Ref" : "BackupDays"
+        },
+        "DBInstanceClass" : {
+          "Ref" : "InstanceSize"
+        },
+        "DBInstanceIdentifier" : {
+          "Ref" : "RDSName"
+        },
+        "DBParameterGroupName" : {
+          "Fn::If" : ["HasParamGroup", {
+              "Ref" : "ParameterGroup"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "DBSubnetGroupName" : {
+          "Ref" : "SubnetGroup"
+        },
+        "Engine" : {
+          "Ref" : "DBEngine"
+        },
+        "EngineVersion" : {
+          "Ref" : "DBVersion"
+        },
+        "Iops" : {
+          "Ref" : "numIOPS"
+        },
+        "LicenseModel" : {
+          "Ref" : "licensetype"
+        },
+        "MasterUsername" : {
+          "Ref" : "SAUserName"
+        },
+        "MasterUserPassword" : "changemeNOW",
+        "OptionGroupName" : {
+          "Ref" : "OptionGroup"
+        },
+        "Port" : {
+          "Ref" : "Portnum"
+        },
+        "PubliclyAccessible" : false,
+        "StorageType" : "io1",
+        "VPCSecurityGroups" : {
+          "Ref" : "RDSSG"
+        }
+      }
+    }
+  },
+  "Outputs" : {
+    "RDSID" : {
+      "Description" : "ID of created Instance",
+      "Value" : {
+        "Ref" : "DBInstance"
+      }
+    }
+  },
+  "Connections" : {
+    "Substitutes" : [{
+        "Type" : "SubnetGroup",
+        "Parameter" : "SubnetGroup"
+      }, {
+        "Type" : "List::SecurityGroup",
+        "Parameter" : "RDSSG"
+      }
+    ]
+  }
 }
