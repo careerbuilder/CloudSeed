@@ -15,23 +15,7 @@ function rand(rlen){
     return text;
 }
 
-router.get('/api/user/:userid', function(req,res){
-  var id = req.params.userid;
-  var oid = db.to_object_id(id);
-  db.get_user({_id: oid}, function(err, results){
-    if(err){
-     return res.send({Success: false, Error:err});
-   }
-   console.log(results);
-   var userinfo = {
-     email: results.email,
-     _id: results._id
-   };
-   return res.send({Success: true, user: userinfo});
-  });
-});
-
-router.post('/api/login', function(req, res){
+router.post('/login', function(req, res){
   var b = req.body;
   var shasum = crypto.createHash('sha256');
   db.get_user({email: b.email.toLowerCase(), active:true}, function(err, result){
@@ -47,7 +31,7 @@ router.post('/api/login', function(req, res){
     shasum.update(record.salt + b.password);
     var passhash = shasum.digest('hex');
     if(passcheck === passhash){
-      return res.send({Success: true, user: {email: record.email, _id: record._id}});
+      return res.send({Success: true, user: {email: record.email, _id: record.confirm}});
     }
     else{
       return res.send({Success: false, Error: 'Invalid password'});
@@ -55,7 +39,7 @@ router.post('/api/login', function(req, res){
   });
 });
 
-router.post('/api/register', function(req, res){
+router.post('/register', function(req, res){
   var b = req.body;
   var shasum = crypto.createHash('sha256');
   var salt = rand(10);
@@ -87,19 +71,6 @@ router.post('/api/register', function(req, res){
           return res.send({Success: true});
         }
       });
-    }
-  });
-});
-
-router.get('/api/confirm/:userconfirm', function(req,res){
-  var signature = req.params.userconfirm;
-  db.update_user({confirm:signature}, {active:true}, function(err, data){
-    if(err){
-      console.log(err);
-      return res.send({Success:false, Error: err});
-    }
-    else{
-      return res.redirect('/');
     }
   });
 });

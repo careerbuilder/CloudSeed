@@ -3,7 +3,7 @@ var db = require('../tools/db_tool.js');
 var aws = require('aws-sdk');
 var router = express.Router();
 
-router.get('/api/awsvalues/:awstype', function(req, res){
+router.get('/awsvalues/:awstype', function(req, res){
   var ptype = req.params.awstype;
   var region = req.query.region;
   var ec2 = new aws.EC2({region:region});
@@ -71,7 +71,7 @@ router.get('/api/awsvalues/:awstype', function(req, res){
   else{return res.send({Success:true, Values:[]})}
 });
 
-router.get('/api/parts', function(req, res){
+router.get('/', function(req, res){
   db.get_parts({Subpart:false}, function(err, results){
     if(err){
       console.log(err);
@@ -82,7 +82,7 @@ router.get('/api/parts', function(req, res){
   });
 });
 
-router.get('/api/parts/:type', function(req, res){
+router.get('/:type', function(req, res){
   db.get_part({"Type":req.params.type}, function(err, results){
     if(err){
       console.log(err);
