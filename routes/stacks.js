@@ -26,12 +26,12 @@ router.get('/api/regions', function(req, res){
 });
 
 router.get('/api/stacks', function(req, res){
-  db.collection('stacks').find({},{"Name":true, "Ready":true}).toArray(function(err, results){
+  db.get_stacks({},function(err, results){
     if(err){
       console.log(err);
       return res.send({Success: false, Error: err});
     }
-    return res.send(results);
+    return res.send({Name: results.Name, Ready: results.Ready});
   });
 });
 

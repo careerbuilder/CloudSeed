@@ -4,7 +4,7 @@ var nodemailer = require('nodemailer');
 var sesTransport = require('nodemailer-ses-transport');
 var transporter = nodemailer.createTransport(sesTransport())
 var crypto = require('crypto');
-var db_tools = require('../tools/db_tool.js');
+var db = require('../tools/db_tool.js');
 var router = express.Router();
 
 function rand(rlen){
@@ -17,8 +17,8 @@ function rand(rlen){
 
 router.get('/api/user/:userid', function(req,res){
   var id = req.params.userid;
-  var oid = db_tools.to_object_id(id);
-  db_tools.get_user({_id: oid}, function(err, results){
+  var oid = db.to_object_id(id);
+  db.get_user({_id: oid}, function(err, results){
     if(err){
      return res.send({Success: false, Error:err});
    }
@@ -33,7 +33,7 @@ router.get('/api/user/:userid', function(req,res){
 
 router.post('/api/login', function(req, res){
   var b = req.body;
-  //var shasum = crypto.createHash('sha256');
+  var shasum = crypto.createHash('sha256');
   db.get_user({email: b.email.toLowerCase(), active:true}, function(err, result){
     if(err){
       console.log(err);
@@ -42,10 +42,11 @@ router.post('/api/login', function(req, res){
     if(!result){
       return res.send({Success: false, Error: 'No such user'});
     }
-    var passcheck = result.password;
-    //shasum.update(result.salt + b.password);
-    //var passhash = shasum.digest('hex');
-    if(passcheck === b.password){
+    var record = result;
+    var passcheck = record.password;
+    shasum.update(record.salt + b.password);
+    var passhash = shasum.digest('hex');
+    if(passcheck === passhash){
       return res.send({Success: true, user: {email: record.email, _id: record._id}});
     }
     else{
