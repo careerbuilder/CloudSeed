@@ -27,17 +27,13 @@ var port = 3000;
 
 // ROUTES FOR OUR API
 // =============================================================================
-
-var auth = require('./routes/auth.js');
-var parts = require('./routes/parts.js');
-var stacks = require('./routes/stacks.js');
-app.use(auth);
-app.use(parts);
-app.use(stacks);
+//
 
 app.get('/', function(req, res){
   res.render('index');
 });
+
+app.use('/api/', require('routes/api.js'));
 
 //keep this last, as it will return 404
 app.use(function(req, res, next){
