@@ -4,8 +4,7 @@ var nodemailer = require('nodemailer');
 var sesTransport = require('nodemailer-ses-transport');
 var transporter = nodemailer.createTransport(sesTransport())
 var crypto = require('crypto');
-var mongo = require('mongoskin');
-var db = mongo.db('mongodb://localhost:27017/cloudseed');
+var db_tools = require('../tools/db_tool.js');
 var router = express.Router();
 
 function rand(rlen){
@@ -18,31 +17,33 @@ function rand(rlen){
 
 router.get('/api/user/:userid', function(req,res){
   var id = req.params.userid;
-  var oid = mongo.helper.toObjectID(id)
-  db.collection('users').find({_id: oid}, {email:1, _id:1}).toArray(function(err, results){
+  var oid = db_tools.to_object_id(id);
+  db_tools.get_user({_id: oid}, function(err, results){
     if(err){
-      console.log(err);
-      return res.send({Success: false, Error:err});
-    }
-    var userinfo = results[0];
-    return res.send({Success: true, user: userinfo});
+     return res.send({Success: false, Error:err});
+   }
+   console.log(results);
+   var userinfo = {
+     email: results.email,
+     _id: results._id
+   };
+   return res.send({Success: true, user: userinfo});
   });
 });
 
 router.post('/api/login', function(req, res){
   var b = req.body;
   //var shasum = crypto.createHash('sha256');
-  db.collection('users').find({email: b.email.toLowerCase(), active:true}).toArray(function(err, results){
+  db.get_user({email: b.email.toLowerCase(), active:true}, function(err, result){
     if(err){
       console.log(err);
       return res.send({Success: false, Error: err});
     }
-    if(results.length < 1){
+    if(!result){
       return res.send({Success: false, Error: 'No such user'});
     }
-    var record = results[0];
-    var passcheck = record.password;
-    //shasum.update(record.salt + b.password);
+    var passcheck = result.password;
+    //shasum.update(result.salt + b.password);
     //var passhash = shasum.digest('hex');
     if(passcheck === b.password){
       return res.send({Success: true, user: {email: record.email, _id: record._id}});
@@ -60,14 +61,14 @@ router.post('/api/register', function(req, res){
   shasum.update(salt + b.password);
   var passhash = shasum.digest('hex');
   var emailconfirm = uuid.v4();
-  db.collection('users').insert({email: b.email.toLowerCase(), password: passhash, salt: salt, accesskey: b.accesskey, secretkey: b.secretkey, active:false, confirm:emailconfirm}, function(err, results){
+  db.put_user({email: b.email.toLowerCase(), password: passhash, salt: salt, accesskey: b.accesskey, secretkey: b.secretkey, active:false, confirm:emailconfirm}, function(err, results){
     if(err){
       if(err.err.indexOf('duplicate') >= 0){
         return res.send({Success: false, Error: "User with that email already exists!"})
       }
       return res.send({Success: false, Error: err});
     } else{
-      var record = results[0];
+      var record = results;
       var plaintext = 'Your account is created, but cannot be accessed until you confirm your email by visiting this site: https://cloudseed.cbsitedb.net/api/confirm/'+emailconfirm;
       var html = "<h1>Welcome to Cloudseed!</h1><p>An account has been created for this email, but will not be active until the email is confirmed. If this was not you, please ignore this email. "+"Otherwise, activate the account here <a href='https://cloudseed.cbsitedb.net/api/confirm/"+emailconfirm+"'>https://cloudseed.cbsitedb.net/api/confirm/"+emailconfirm+"</a></p>";
       transporter.sendMail({
@@ -91,7 +92,7 @@ router.post('/api/register', function(req, res){
 
 router.get('/api/confirm/:userconfirm', function(req,res){
   var signature = req.params.userconfirm;
-  db.collection('users').update({confirm:signature}, {$set:{active:true}}, function(err, data){
+  db.update_user({confirm:signature}, {active:true}, function(err, data){
     if(err){
       console.log(err);
       return res.send({Success:false, Error: err});
