@@ -44,7 +44,7 @@ router.post('/api/login', function(req, res){
     var passcheck = record.password;
     //shasum.update(record.salt + b.password);
     //var passhash = shasum.digest('hex');
-    if(passcheck === b.password){
+    if(passcheck === passhash){
       return res.send({Success: true, user: {email: record.email, _id: record._id}});
     }
     else{

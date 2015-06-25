@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="bower_components/angular-toastr/dist/angular-toastr.css">
 
 
-    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles.css">
 
     <!-- bootstrap scripts-->
     <script src="bower_components/jquery/dist/jquery.min.js"></script><!-- load jquery -->
@@ -20,10 +20,10 @@
     <!--angular  -->
     <script src="bower_components/angular/angular.min.js"></script><!-- load angular -->
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
     <!-- controllers -->
-    <script type="text/javascript" src="scripts/app.js"></script>
+    <script type="text/javascript" src="app.js"></script>
     <link rel="icon" href="favicon.ico" />
     <link rel="shortcut icon" href="favicon.ico" />
 
@@ -77,43 +77,16 @@
           </li>
         </ul>
       </div>
+      <div ng-controller="LoginController">
+        <code>{{template.url}}</code>
+        <hr/>
+        <div ng-include="template.url"></div>
+      </div>
       <div id="stage" style="width:70%; float:left; display:inline;">
         <div class="jumbotron jumbotron-material-grey" style="text-align:center; min-width:450px;" ng-show="addedParts.length < 1" >
           <h1>Welcome to CloudSeed!</h1>
           <p>Building a cloudformation stack is now as easy as clicking buttons.</p>
           <p ng-show="loggedin()">Start now by adding your first part from the sidebar, or load an existing stack!</p>
-          <div id="signupin" ng-hide="loggedin()" style="width: 45%; min-width: 400px; margin-left:auto; margin-right:auto;">
-            <p>Register/Log in to get started!</p>
-            <form class="simple-form" name="loginform" novalidate>
-              <div class="input-group form-group" ng-class="{'has-error': (loginform.email.$invalid && loginform.email.$dirty)}">
-                <span class="input-group-addon" id="Email Address" style="text-align:left; min-width:150px;"><b>Email Address</b></span>
-                <input type="email" class="form-control" placeholder="Email" name="email" ng-model="auth.email" required />
-              </div>
-              <div class="input-group form-group" ng-class="{'has-error': (loginform.password.$invalid && loginform.password.$dirty)}">
-                <span class="input-group-addon" id="Password" style="text-align:left; min-width:150px;"><b>Password</b></span>
-                <input type="password" class="form-control" placeholder="Password" name="Password" ng-pattern="/\S{8,}/i" ng-model="auth.password" required />
-              </div>
-              <div id="registered" ng-if="!registered">
-                <div class="input-group form-group" ng-class="{'has-error': (loginform.Password2.$invalid && loginform.Password2.$dirty)}">
-                  <span class="input-group-addon" id="confirmpassword" style="text-align:left; min-width:150px;"><b>Confirm Password</b></span>
-                  <input type="password" class="form-control" placeholder="Password again" name="Password2"
-                    ng-model="auth.password2" compare-to="auth.password" ng-required="!registered"/>
-                </div>
-                <div class="input-group form-group" ng-class="{'has-error': (loginform.awskey.$invalid && loginform.awskey.$dirty)}">
-                  <span class="input-group-addon" id="awskeylabel" style="text-align:left; min-width:150px;"><b>AWS Access Key</b></span>
-                  <input type="text" class="form-control" placeholder="ie XXXXXXXXXXXXXXXX" name="awskey"
-                    ng-model="auth.accesskey" pattern="[A-Z0-9]{20}" ng-required="!registered"/>
-                </div>
-                <div class="input-group form-group" ng-class="{'has-error': (loginform.awsskey.$invalid && loginform.awsskey.$dirty)}">
-                  <span class="input-group-addon" id="awskeylabel" style="text-align:left; min-width:150px;"><b>AWS Secret Key</b></span>
-                  <input type="text" class="form-control" placeholder="ie XX5xXYx0XxxX0XX0X-XxXxx088xxXxXXXxxXx9x" name="awsskey"
-                    ng-model="auth.secretkey" pattern="[A-Za-z0-9+\-\\/]{40}" ng-required="!registered"/>
-                </div>
-              </div>
-              <button id="submituser" type="button"  style="display: inline; margin-right:50px;" class="btn btn-lg" ng-click="UserInfoBtn_click()" ng-disabled="loginform.$invalid">{{registered ? 'Login' : 'Register'}}</button>
-              <button class="btn" type="button" style="display:inline;" ng-click="toggleSignup()">{{(registered ? 'Register' : 'Login') + " Instead?"}}</button>
-            </form>
-          </div>
         </div>
         <form name="PartsForm" class="simple-form" ng-if="loggedin()" novalidate>
           <div ng-show="addedParts.length > 0" style="padding-top:15px;">
