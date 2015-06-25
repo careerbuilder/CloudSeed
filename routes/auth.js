@@ -9,7 +9,7 @@ var router = express.Router();
 
 function rand(rlen){
     var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-/.+_*&^%%$#@!~";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-/.+_*&^%$#@!~";
     for( var i=0; i < rlen; i++ )
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
@@ -103,6 +103,5 @@ router.get('/api/confirm/:userconfirm', function(req,res){
     }
   });
 });
-
 
 module.exports = router;
