@@ -2,9 +2,8 @@
   var app = angular.module('cloudseed', ['ngAnimate', 'ngCookies', 'toastr']);
 
   app.controller('PartsController', function($http, $scope, $cookies, $cookieStore, toastr){
-    //$.material.init();
-    $scope.register = "Log in";
-    $scope.notRegister= "Register";
+
+    $scope.registered = true;
     $scope.auth = {};
     $scope.user = {};
     $scope.regions = [];
@@ -28,14 +27,12 @@
     }
 
     $scope.toggleSignup=function(){
-      var temp = $scope.register;
-      $scope.register = $scope.notRegister;
-      $scope.notRegister = temp;
+      $scope.registered = !($scope.registered);
     }
 
     $scope.UserInfoBtn_click=function(){
       var err = "";
-      if($scope.register === 'Log in'){
+      if($scope.registered){
         $http.post('http://localhost:3000/api/login', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
@@ -57,7 +54,7 @@
           toastr.error('Check back soon!', 'Endpoint cannot be reached');
         });
       }
-      else if($scope.register === 'Register'){
+      else if(!($scope.registered)){
         $http.post('http://localhost:3000/api/register', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
@@ -66,8 +63,7 @@
           else{
             if(data.Success){
               toastr.success("Welcome to Cloudseed!", "Confirmation Email Sent!");
-              $scope.register = 'Log in';
-              $scope.notRegister = 'Register';
+              $scope.registered = true;
               $scope.auth = {};
             }
             else{
