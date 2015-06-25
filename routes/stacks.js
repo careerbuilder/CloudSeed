@@ -1,6 +1,5 @@
 var express = require('express');
-var mongo = require('mongoskin');
-var db = mongo.db('mongodb://localhost:27017/cloudseed');
+var db = require('../tools/db_tool.js');
 var aws = require('aws-sdk');
 var exec = require('child_process').exec;
 var fs = require('fs');
@@ -37,12 +36,12 @@ router.get('/api/stacks', function(req, res){
 });
 
 router.get('/api/stacks/:name', function(req, res){
-  db.collection('stacks').find({"Name":req.params.name},{"_id":false}).toArray(function(err, results){
+  db.get_stack({"Name":req.params.name}, function(err, result){
     if(err){
       console.log(err);
       return res.send({Success: false, Error:err});
     }
-    return res.send(results);
+    return res.send(result);
   });
 });
 
@@ -51,7 +50,7 @@ router.post('/api/stacks', function(req, res){
   var email = req.body.user;
   var name = build['Name'].trim();
   var template = build['Template'];
-  db.collection('stacks').update({Name:build['Name']}, build, {upsert:true}, function(err, result){
+  db.put_stack({Name:build['Name']}, build, function(err, result){
     if(err){
       console.log(err);
       return res.send({Code: -1, Error:err});
@@ -89,20 +88,23 @@ router.post('/api/stacks', function(req, res){
 
 router.post('/api/build/:name', function(req, res){
   var auth = mongo.helper.toObjectID(req.body.userid);
-  db.collection('users').findOne({"_id":auth}, {"accesskey": 1, "secretkey":1}, function(err, result){
+  db.get_user({"_id":auth}, function(err, result){
     if(err){
       console.log(err);
       return res.send({Success:false, Error: err});
     }
-    var auth = result;
-    db.collection('stacks').find({"Name":req.params.name},{"_id":false}).toArray(function(err, results){
+    var auth = {
+      accesskey: result.accesskey,
+      secretkey: result.secretkey
+    };
+    db.get_stack({"Name":req.params.name}, function(err, results){
       if(err){
         console.log(err);
         return res.send({Success: false, Error:err});
       }
-      stack = results[0];
+      var stack = results;
       var cf = new aws.CloudFormation({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
-      stackname = stack['Name'];
+      var stackname = stack['Name'];
       cf.describeStacks({"StackName": stackname}, function(err, data){
         if(err){
           console.log("Creating stack");
