@@ -6,7 +6,7 @@ var path       = require('path');
 var favicon    = require('serve-favicon');
 var app        = express(); 			// define our app using express
 
-
+/*
 var key_file = "/home/ubuntu/ssl/cbsitedb.key";
 var cert_file = "/home/ubuntu/ssl/-star-cbsitedb-net.crt.cer";
 
@@ -14,6 +14,7 @@ var config = {
   key: fs.readFileSync(key_file),
  cert: fs.readFileSync(cert_file)
 };
+*/
 
 app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
@@ -26,17 +27,13 @@ var port = 3000;
 
 // ROUTES FOR OUR API
 // =============================================================================
-
-var auth = require('./routes/auth.js');
-var parts = require('./routes/parts.js');
-var stacks = require('./routes/stacks.js');
-app.use(auth);
-app.use(parts);
-app.use(stacks);
+//
 
 app.get('/', function(req, res){
   res.render('index');
 });
+
+app.use('/api/', require('routes/api.js'));
 
 //keep this last, as it will return 404
 app.use(function(req, res, next){
@@ -53,5 +50,6 @@ app.use(function(req, res, next){
   return res.type('txt').send('Not found');
 });
 
-https.createServer(config, app).listen(port);
+//https.createServer(config, app).listen(port);
+app.listen(port);
 console.log('Magic happens on port ' + port);
