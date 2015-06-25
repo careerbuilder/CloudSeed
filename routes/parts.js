@@ -1,5 +1,5 @@
 var express = require('express');
-var db = require('mongoskin').db('mongodb://localhost:27017/cloudseed');
+var db = require('../tools/db_tool.js');
 var aws = require('aws-sdk');
 var router = express.Router();
 
@@ -72,7 +72,7 @@ router.get('/api/awsvalues/:awstype', function(req, res){
 });
 
 router.get('/api/parts', function(req, res){
-  db.collection('parts').find({Subpart:false},{"_id":false}).toArray(function(err, results){
+  db.get_parts({Subpart:false}, function(err, results){
     if(err){
       console.log(err);
       return res.send({Success: false, Error: err});
@@ -83,7 +83,7 @@ router.get('/api/parts', function(req, res){
 });
 
 router.get('/api/parts/:type', function(req, res){
-  db.collection('parts').find({"Type":req.params.type},{"_id":false}).toArray(function(err, results){
+  db.get_part({"Type":req.params.type}, function(err, results){
     if(err){
       console.log(err);
       return res.send({Success: false, Error: err});
