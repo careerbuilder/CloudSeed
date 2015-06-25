@@ -29,7 +29,7 @@ module.exports ={
   get_stack: function(stack, callback){
     db.collection('stacks').findOne(stack, callback);
   },
-  put_stack: function(stack, callback){
-    db.collection.insert(stack, callback);
+  put_stack: function(stack, k_v, callback){
+    db.collection.update(stack, k_v, {upsert:true}, callback);
   }
 }
