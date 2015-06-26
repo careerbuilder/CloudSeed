@@ -11,7 +11,7 @@ if(!stacksrepo){
   console.log("Stacks_Repo not configured");
 }
 
-router.get('/api/regions', function(req, res){
+router.get('/regions', function(req, res){
   ec2.describeRegions({}, function(err, data){
     if(err){
       console.log(err);
@@ -25,27 +25,27 @@ router.get('/api/regions', function(req, res){
   });
 });
 
-router.get('/api/stacks', function(req, res){
+router.get('/', function(req, res){
   db.get_stacks({},function(err, results){
     if(err){
       console.log(err);
       return res.send({Success: false, Error: err});
     }
-    return res.send({Name: results.Name, Ready: results.Ready});
+    return res.send({Success:true, Name: results.Name, Ready: results.Ready});
   });
 });
 
-router.get('/api/stacks/:name', function(req, res){
+router.get('/:name', function(req, res){
   db.get_stack({"Name":req.params.name}, function(err, result){
     if(err){
       console.log(err);
       return res.send({Success: false, Error:err});
     }
-    return res.send(result);
+    return res.send({Success:true, Data: result});
   });
 });
 
-router.post('/api/stacks', function(req, res){
+router.post('/stacks', function(req, res){
   var build = req.body.build;
   var email = req.body.user;
   var name = build['Name'].trim();
@@ -86,7 +86,7 @@ router.post('/api/stacks', function(req, res){
   });
 });
 
-router.post('/api/build/:name', function(req, res){
+router.post('/build/:name', function(req, res){
   var auth = mongo.helper.toObjectID(req.body.userid);
   db.get_user({"_id":auth}, function(err, result){
     if(err){

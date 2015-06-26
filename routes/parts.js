@@ -78,7 +78,7 @@ router.get('/', function(req, res){
       return res.send({Success: false, Error: err});
     }
     // console.log(results);
-    return res.send(results);
+    return res.send({Success:true, Data: results});
   });
 });
 
@@ -89,7 +89,7 @@ router.get('/:type', function(req, res){
       return res.send({Success: false, Error: err});
     }
   //  console.log(results);
-    return res.send(results);
+    return res.send({Success:true, Data: results});
   });
 });
 

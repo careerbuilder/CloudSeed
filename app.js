@@ -33,7 +33,7 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
-app.use('/api/', require('routes/api.js'));
+app.use('/api/', require('./routes/api.js'));
 
 //keep this last, as it will return 404
 app.use(function(req, res, next){
