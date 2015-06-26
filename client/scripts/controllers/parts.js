@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('PartsController', function($http, $scope, $cookies, $cookieStore, toastr){
+app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
   $scope.user = {};
   $scope.regions = [];
   $scope.addedParts = [];
@@ -31,8 +31,8 @@ app.controller('PartsController', function($http, $scope, $cookies, $cookieStore
       console.log(data.Error);
     }
   });
-  if($cookieStore.get('c_s66d')){
-    $http.get('http://localhost:3000/api/users/'+$cookieStore.get('c_s66d')||"").success(function(data){
+  if($cookies.c_s66d){
+    $http.get('http://localhost:3000/api/users/'+$cookies.c_s66d ||"").success(function(data){
       if(data.Success){
         $scope.user = data.user;
       }
