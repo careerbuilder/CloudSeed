@@ -1,7 +1,8 @@
 'use strict';
 
-app.controller('LoginCtrl', function($http, $scope, $cookies, $cookieStore, toastr){
-
+app.controller('LoginCtrl', function($http, $scope, $location, $cookies, $cookieStore, toastr){
+  $scope.auth ={};
+  
   $scope.login=function(){
     $http.post('http://localhost:3000/api/auth/login', $scope.auth).success(function(data, status){
       if(status != 200){
@@ -12,12 +13,11 @@ app.controller('LoginCtrl', function($http, $scope, $cookies, $cookieStore, toas
         if(data.Success){
           $cookieStore.put('c_s66d', data.user._id);
           $scope.loginResult = {Success: true, Message: "Log in successful!"};
-          //events
-          $scope.user = data.user;
-          toastr.success("Welcome to Cloudseed!");
+          $scope.$emit('loginSuccess', data.user);
+          $location.path('/parts');
         }
         else{
-          err = data.Error;
+          var err = data.Error;
           $scope.loginResult = {Success:false, Message:err};
           toastr.error(err);
         }

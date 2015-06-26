@@ -18,6 +18,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
   $http.get('http://localhost:3000/api/stacks').success(function(data){
     if(data.Success){
       $scope.stacks = data.Data;
+      console.log(data);
+      $scope.$emit('stacksUpdated', data.Data);
     }
     else{
       console.log(data.Error);
@@ -52,8 +54,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
     var num = 0;
     var newcount = 1;
     var others = [];
-    for(j=0; j<$scope.addedParts.length; j++){
-      other = $scope.addedParts[j];
+    for(var j=0; j<$scope.addedParts.length; j++){
+      var other = $scope.addedParts[j];
       if(other.Type === type){
         others.push(other.Count);
         if(other.Count > num){
@@ -61,13 +63,13 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
         }
       }
     }
-    for(k=1; k<=num+1; k++){
+    for(var k=1; k<=num+1; k++){
       if(others.indexOf(k) == -1){
         newcount = k;
         break;
       }
     }
-    copy = {};
+    var copy = {};
     for(var i=0; i<$scope.parts.length; i++){
       var part = $scope.parts[i];
       if(part.Type === type){
@@ -111,11 +113,11 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
         $scope.addedParts.splice(i, 1);
       }
     }
-    for(j=0; j<$scope.addedParts.length; j++){
+    for(var j=0; j<$scope.addedParts.length; j++){
       var part = $scope.addedParts[j];
       if(part.Definition.Connections){
         var subs = part.Definition.Connections.Substitutes || [];
-        for(k=0; k<subs.length; k++){
+        for(var k=0; k<subs.length; k++){
           var sub = subs[k];
           if(sub.Reference === name){
             $scope.setParam(part, sub, 'None');
@@ -130,14 +132,14 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
 
   $scope.getSubs=function(subtype){
     if(subtype.lastIndexOf('List::',0) === 0){
-      ct = subtype.replace('List::', '');
+      var ct = subtype.replace('List::', '');
     }
     else{
-      ct = subtype;
+      var ct = subtype;
     }
     var subs = [];
     for(var i=0; i<$scope.addedParts.length; i++){
-      part = $scope.addedParts[i];
+      var part = $scope.addedParts[i];
       if(part.Type === ct){
         subs.push(part.LogicalName);
       }
@@ -262,7 +264,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
     if(apart.Definition.Connections){
       var subs = apart.Definition.Connections.Substitutes || [];
       for(var i=0; i<subs.length; i++){
-        sub = subs[i];
+        var sub = subs[i];
         var isList = (sub.Type.indexOf("List::")==0);
         if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
@@ -279,11 +281,11 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
         for(var i=0; i<path.length; i++){
           res = res[path[i]];
         }
-        for(j=0; j<models.length; j++){
+        for(var j=0; j<models.length; j++){
           var sm = {};
           var model = models[j];
           var empty = false;
-          for(mparam in model){
+          for(var mparam in model){
             if(!model[mparam].Value){
               empty = true;
               break;
@@ -299,8 +301,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
   }
 
   $scope.refreshStacks=function(){
-    $http.get('http://localhost:3000/api/stacks').success(function(data){
+    $http.get('http://localhost:3000/api/stacks/').success(function(data){
       $scope.stacks = data;
+      console.log(data);
+      $scope.$emit('stacksUpdated', data.Data);
     });
   }
 
@@ -355,7 +359,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr){
   }
 
   $scope.buildTemplate=function(stackname){
-    $http.post('http://localhost:3000/api/build/' + stackname, {userid:$scope.user._id}).success(function(data){
+    $http.post('http://localhost:3000/api/stacks/build/' + stackname, {userid:$scope.user._id}).success(function(data){
       if(data.Success){
         toastr.success("Template Built!");
         return true;

@@ -31,7 +31,7 @@ router.get('/', function(req, res){
       console.log(err);
       return res.send({Success: false, Error: err});
     }
-    return res.send({Success:true, Name: results.Name, Ready: results.Ready});
+    return res.send({Success:true, Data:results});
   });
 });
 
@@ -45,7 +45,7 @@ router.get('/:name', function(req, res){
   });
 });
 
-router.post('/stacks', function(req, res){
+router.post('/', function(req, res){
   var build = req.body.build;
   var email = req.body.user;
   var name = build['Name'].trim();

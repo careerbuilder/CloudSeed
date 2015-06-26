@@ -40,20 +40,20 @@
         </div>
         <ul class="nav navbar-nav navelement">
           <li class="dropdown navelement" style="color:#000;" ng-if="loggedin()">
-            <a href="#/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
               Load
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
               <li role="presentation" ng-repeat="stack in stacks" ng-click="loadTemplate(stack.Name)">
-                <a role="menuitem" tabindex="{{$index}}" href="#/">
+                <a role="menuitem" tabindex="{{$index}}" href="#">
                   {{stack.Name}}
                 </a>
               </li>
             </ul>
           </li>
           <li class="dropdown navelement" style="color:#000;" ng-if="loggedin()">
-            <a href="#/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
               Build
               <span class="caret"></span>
             </a>
