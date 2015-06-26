@@ -2,8 +2,8 @@
   var app = angular.module('cloudseed', ['ngAnimate', 'ngCookies', 'toastr']);
 
   app.controller('PartsController', function($http, $scope, $cookies, $cookieStore, toastr){
-
-    $scope.registered = true;
+    $scope.register = "Log in";
+    $scope.notRegister= "Register";
     $scope.auth = {};
     $scope.user = {};
     $scope.regions = [];
@@ -17,23 +17,25 @@
     $http.get('http://localhost:3000/api/stacks').success(function(data){
       $scope.stacks = data;
     });
-    $http.get('http://localhost:3000/api/regions').success(function(data){
+    $http.get('http://localhost:3000/api/stacks/regions').success(function(data){
       $scope.regions = data.Regions;
     });
     if($cookies.c_s66d){
-      $http.get('http://localhost:3000/api/user/'+$cookies.c_s66d).success(function(data){
+      $http.get('http://localhost:3000/api/users/'+$cookies.c_s66d).success(function(data){
         $scope.user = data.user;
       });
     }
 
     $scope.toggleSignup=function(){
-      $scope.registered = !($scope.registered);
+      var temp = $scope.register;
+      $scope.register = $scope.notRegister;
+      $scope.notRegister = temp;
     }
 
     $scope.UserInfoBtn_click=function(){
       var err = "";
-      if($scope.registered){
-        $http.post('http://localhost:3000/api/login', $scope.auth).success(function(data, status){
+      if($scope.register === 'Log in'){
+        $http.post('http://localhost:3000/api/auth/login', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
           }
@@ -54,8 +56,8 @@
           toastr.error('Check back soon!', 'Endpoint cannot be reached');
         });
       }
-      else if(!($scope.registered)){
-        $http.post('http://localhost:3000/api/register', $scope.auth).success(function(data, status){
+      else if($scope.register === 'Register'){
+        $http.post('http://localhost:3000/api/auth/register', $scope.auth).success(function(data, status){
           if(status != 200){
             err = "Endpoint cannot be reached";
             toastr.warning(err, "This is awkward...");
@@ -63,7 +65,8 @@
           else{
             if(data.Success){
               toastr.success("Welcome to Cloudseed!", "Confirmation Email Sent!");
-              $scope.registered = true;
+              $scope.register = 'Log in';
+              $scope.notRegister = 'Register';
               $scope.auth = {};
             }
             else{
@@ -399,7 +402,7 @@
     }
 
     $scope.buildTemplate=function(stackname){
-      $http.post('http://localhost:3000/api/build/' + stackname, {userid:$scope.user._id}).success(function(data){
+      $http.post('http://localhost:3000/api/stacks/build/' + stackname, {userid:$scope.user._id}).success(function(data){
         if(data.Success){
           toastr.success("Template Built!");
           return true;
