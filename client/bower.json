@@ -21,12 +21,12 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.0",
+    "angular": "~1.4.1",
     "angular-animate": "~1.4.0",
-    "angular-cookies": "~1.4.0",
+    "angular-cookies": "~1.4.1",
     "angular-toastr": "~1.4.1",
     "jquery": "~2.1.4",
-    "bootstrap": "~3.3.4",
-    "angular-route": "~1.4.0"
+    "bootstrap": "~3.3.5",
+    "angular-route": "~1.4.1"
   }
 }
