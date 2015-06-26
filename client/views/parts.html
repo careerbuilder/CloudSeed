@@ -1,5 +1,5 @@
 <div class="container-fluid" id="page">
-  <div class="well-material-grey sidebar well" ng-if="loggedin()">
+  <div class="well-material-grey sidebar well">
     <ul class="nav nav-stacked">
       <li role="presentation"><h4>Add a Part</h4></li>
       <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
@@ -10,7 +10,7 @@
     </ul>
   </div>
   <div id="stage" style="width:70%; float:left; display:inline;">
-    <form name="PartsForm" class="simple-form" ng-if="loggedin()" novalidate>
+    <form name="PartsForm" class="simple-form" novalidate>
       <div ng-show="addedParts.length > 0" style="padding-top:15px;">
         <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}">
           <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Stack Name *</b></span>

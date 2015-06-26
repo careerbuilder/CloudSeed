@@ -17,11 +17,11 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
 	})
 	.when('/parts', {
 		controller: 'PartCtrl',
-		templateUrl: 'views/groups.html'
+		templateUrl: 'views/parts.html'
 	})
 	.when('/config', {
 		controller: 'ConfigCtrl',
-		templateUrl: 'views/databases.html'
+		templateUrl: 'views/config.html'
 	})
 	.otherwise({redirectTo: 'home'});
   $httpProvider.interceptors.push('httpRequestInterceptor');
