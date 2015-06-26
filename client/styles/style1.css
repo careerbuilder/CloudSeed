@@ -4,6 +4,7 @@ body{
 }
 /***NAVBAR****/
 
+
 @media (min-width: 768px)
 .navbar-right {
   float: right!important;
@@ -165,6 +166,16 @@ button, input, select, textarea {
   text-decoration: none;
   background-color: #2196F3;
 }
+a#login, a#signup {
+  margin: 0px 10px 0px 10px;
+  padding: 5px 35px;
+  border-radius: 4px !important;
+}
+
+.btn-primary:focus {
+  background-color: #90C9F5;
+  background-position: 0 -15px;
+}
 
 .btn:focus {
  text-decoration: none;
@@ -179,8 +190,9 @@ span.glyphicon.glyphicon-plus {
 
 .btn-default, .btn-info, .btn-primary, .btn-success, .btn-warning {
   text-shadow: none;
-  -webkit-box-shadow: none
-  background-color: #FFFFFF;
+  -webkit-box-shadow: none;
+  background-color: #90C9F5;
+  color: #FFFFFF;
   border-color: #2196F3;
   border-radius: 0px !important;
   border: 1px solid #90C9F5 !important;
