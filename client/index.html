@@ -20,44 +20,46 @@
     <!--angular  -->
     <script src="bower_components/angular/angular.min.js"></script><!-- load angular -->
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
     <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
     <!-- controllers -->
     <script type="text/javascript" src="index.js"></script>
     <script type="text/javascript" src="scripts/controllers/login.js"></script>
     <script type="text/javascript" src="scripts/controllers/parts.js"></script>
+    <script type="text/javascript" src="scripts/controllers/signup.js"></script>
 
     <link rel="icon" href="favicon.ico" />
     <link rel="shortcut icon" href="favicon.ico" />
 
   </head>
-  <body ng-controller="PartsController" style="padding-top: 70px;">
+  <body ng-controller="PageController" style="padding-top: 70px;">
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header navelement" style="margin-right:25px;" class="navelement">
-          <a class="navbar-brand navelement" style="color:#000; padding:0px;" href="#"><img src="CloudseedLogosmaller.png" alt="logo"></img></a>
+          <a class="navbar-brand navelement" style="color:#000; padding:0px;" href="#/"><img src="CloudseedLogosmaller.png" alt="logo"></img></a>
         </div>
         <ul class="nav navbar-nav navelement">
           <li class="dropdown navelement" style="color:#000;" ng-if="loggedin()">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            <a href="#/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
               Load
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
               <li role="presentation" ng-repeat="stack in stacks" ng-click="loadTemplate(stack.Name)">
-                <a role="menuitem" tabindex="{{$index}}" href="#">
+                <a role="menuitem" tabindex="{{$index}}" href="#/">
                   {{stack.Name}}
                 </a>
               </li>
             </ul>
           </li>
           <li class="dropdown navelement" style="color:#000;" ng-if="loggedin()">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            <a href="#/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
               Build
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
               <li role="presentation" ng-repeat="stack in (stacks | filter:{Ready:true})" ng-click="buildTemplate(stack.Name)">
-                <a role="menuitem" tabindex="{{$index}}" href="#">
+                <a role="menuitem" tabindex="{{$index}}" href="#/">
                   {{stack.Name}}
                 </a>
               </li>
@@ -65,150 +67,12 @@
           </li>
         </ul>
         <a class="navbar-text navbar-right" style="color:#000; padding-right:10px;" ng-click="logOut()" ng-show="loggedin()">Log Out</a>
-        <p class="navbar-text navbar-right" style="color:#000; padding-right:10px;" ng-show="loggedin()">Signed in as <a href="#" class="navbar-link">{{user.email}}</a></p>
+        <p class="navbar-text navbar-right" style="color:#000; padding-right:10px;" ng-show="loggedin()">Signed in as <a href="#/" class="navbar-link">{{user.email}}</a></p>
       </div>
     </nav>
-    <div class="container-fluid" id="page">
-      <div class="well-material-grey sidebar well" ng-if="loggedin()">
-        <ul class="nav nav-stacked">
-          <li role="presentation"><h4>Add a Part</h4></li>
-          <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
-            <button class="btn navbar-btn partbutton" ng-click="addPart(part.Type)">
-              <span class="glyphicon glyphicon-plus" style="color:green;padding-right:10px;"></span>{{part.Type}}
-            </button>
-          </li>
-        </ul>
-      </div>
-      <div id="stage" style="width:70%; float:left; display:inline;">
-        <div class="jumbotron jumbotron-material-grey" style="text-align:center; min-width:450px;" ng-show="addedParts.length < 1" >
-          <h1>Welcome to CloudSeed!</h1>
-          <p>Building a cloudformation stack is now as easy as clicking buttons.</p>
-          <p ng-show="loggedin()">Start now by adding your first part from the sidebar, or load an existing stack!</p>
-          <div id="signupin" ng-hide="loggedin()" style="width: 45%; min-width: 400px; margin-left:auto; margin-right:auto;">
-            <p>Register/Log in to get started!</p>
-            <form class="simple-form" name="loginform" novalidate>
-              <div class="input-group form-group" ng-class="{'has-error': (loginform.email.$invalid && loginform.email.$dirty)}">
-                <span class="input-group-addon" id="Email Address" style="text-align:left; min-width:150px;"><b>Email Address</b></span>
-                <input type="email" class="form-control" placeholder="Email" name="email" ng-model="auth.email" required />
-              </div>
-              <div class="input-group form-group" ng-class="{'has-error': (loginform.password.$invalid && loginform.password.$dirty)}">
-                <span class="input-group-addon" id="Password" style="text-align:left; min-width:150px;"><b>Password</b></span>
-                <input type="password" class="form-control" placeholder="Password" name="Password" ng-pattern="/\S{8,}/i" ng-model="auth.password" required />
-              </div>
-              <div id="registered" ng-if="!registered">
-                <div class="input-group form-group" ng-class="{'has-error': (loginform.Password2.$invalid && loginform.Password2.$dirty)}">
-                  <span class="input-group-addon" id="confirmpassword" style="text-align:left; min-width:150px;"><b>Confirm Password</b></span>
-                  <input type="password" class="form-control" placeholder="Password again" name="Password2"
-                    ng-model="auth.password2" compare-to="auth.password" ng-required="!registered"/>
-                </div>
-                <div class="input-group form-group" ng-class="{'has-error': (loginform.awskey.$invalid && loginform.awskey.$dirty)}">
-                  <span class="input-group-addon" id="awskeylabel" style="text-align:left; min-width:150px;"><b>AWS Access Key</b></span>
-                  <input type="text" class="form-control" placeholder="ie XXXXXXXXXXXXXXXX" name="awskey"
-                    ng-model="auth.accesskey" pattern="[A-Z0-9]{20}" ng-required="!registered"/>
-                </div>
-                <div class="input-group form-group" ng-class="{'has-error': (loginform.awsskey.$invalid && loginform.awsskey.$dirty)}">
-                  <span class="input-group-addon" id="awskeylabel" style="text-align:left; min-width:150px;"><b>AWS Secret Key</b></span>
-                  <input type="text" class="form-control" placeholder="ie XX5xXYx0XxxX0XX0X-XxXxx088xxXxXXXxxXx9x" name="awsskey"
-                    ng-model="auth.secretkey" pattern="[A-Za-z0-9+\-\\/]{40}" ng-required="!registered"/>
-                </div>
-              </div>
-              <button id="submituser" type="button"  style="display: inline; margin-right:50px;" class="btn btn-lg" ng-click="UserInfoBtn_click()" ng-disabled="loginform.$invalid">{{registered ? 'Login' : 'Register'}}</button>
-              <button class="btn" type="button" style="display:inline;" ng-click="toggleSignup()">{{(registered ? 'Register' : 'Login') + " Instead?"}}</button>
-            </form>
-          </div>
-        </div>
-        <form name="PartsForm" class="simple-form" ng-if="loggedin()" novalidate>
-          <div ng-show="addedParts.length > 0" style="padding-top:15px;">
-            <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}">
-              <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Stack Name *</b></span>
-              <input type="text" class="form-control input-lg" style="min-width:150px; width:40%;"
-                ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" required />
-            </div>
-            <div class="input-group form-group">
-              <span class="input-group-addon" id="stacknamelabel" style="text-align:left; min-width:100px;"><b>Description</b></span>
-              <input type="text" class="form-control input-lg" style="min-width:150px; width:40%;" ng-model="build.Template.Description" placeholder="" name="stackDescription"/>
-            </div>
-            <div class="input-group form-group" ng-class="{'has-error': PartsForm.stackRegion.$invalid && PartsForm.stackRegion.$dirty}">
-              <span class="input-group-addon" id="stackregionlabel" style="text-align:left; min-width:100px;"><b>Region *</b></span>
-              <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.Region" required>
-                <option ng-repeat="r in regions">{{r}}</option>
-              </select>
-            </div>
-            <button class="btn btn-default" ng-disabled="addedParts.length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
-          </div>
-          <div ng-repeat="apart in addedParts track by $index" class="panel panel-default partpanel">
-            <div class="panel-heading" ng-click="apart.Collapsed = !apart.Collapsed">
-                <span class="glyphicon glyphicon-remove" style="color:red; padding-right:10px;" ng-click="removePart(apart.LogicalName)"></span>
-                <h3 style="display:inline;">{{apart.LogicalName}}</h3>
-                <span class="glyphicon glyphicon-triangle-bottom" style="font-size:10pt; float:right;" ng-show="apart.Collapsed"></span>
-                <span class="glyphicon glyphicon-triangle-top" style="font-size:10pt; float:right;" ng-hide="apart.Collapsed"></span>
-            </div>
-            <div class="panel-body" ng-hide="apart.Collapsed">
-              <ul class="list-group">
-                <li class="list-group-item" ng-show="visibleParams(apart) > 0">
-                  <h4>Parameters</h4>
-                  <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
-                    <ng-form name="parametersForm">
-                      <div class="input-group form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid && parametersForm.txtvalue.$dirty) || (parametersForm.selectvalue.$invalid && parametersForm.selectvalue.$dirty)}">
-                        <span class="input-group-addon" id="{{key}}-Title" style="min-width:200px; text-align:left;"><b>{{requiredName(key, value)}}</b></span>
-                        <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
-                          parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
-                          ng-required="checkRequiredParam(value)">
-                        <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
-                          ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value" ng-required="!value.Hidden && !value.Default && value.AllowedValues">
-                          <option ng-repeat="av in value.AllowedValues">{{av}}</option>
-                        </select>
-                      </div>
-                    </ng-form>
-                  </div>
-                </li>
-                <li class="list-group-item" ng-show="apart.Definition.Connections.SubParts">
-                  <h4>SubParts</h4>
-                  <div ng-repeat="(key, value) in apart.Definition.Connections.SubParts" style="margin-left:25px;">
-                    <span><b>{{value.Type.replace("List::","")}}</b></span>
-                    <table class="table table-bordered table-striped" style="border-collapse:separate;" ng-init="addSubPart(apart, key)">
-                      <tr>
-                        <th ng-repeat="(param,details) in value.Model">{{param}}</th>
-                        <th></th>
-                      </tr>
-                      <tr ng-repeat="subp in apart.subparts[key] track by $index">
-                        <td ng-repeat="(param,details) in value.Model">
-                          <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="checkRequired(apart, key, $parent.$index)">
-                        </td>
-                        <td ng-show="value.Type.lastIndexOf('List::', 0) === 0" style="width:90px;">
-                          <button ng-click="addSubPart(apart, key)" ng-show="canAddSubPart(apart, key, $index)">
-                            <span class="glyphicon glyphicon-plus" style="color:green;"></span>
-                          </button>
-                          <button ng-click="removeSubPart(apart, key, $index)" ng-hide="$index === apart.subparts[key].length-1">
-                            <span class="glyphicon glyphicon-remove" style="color:red;"></span>
-                          </button>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </li>
-              </ul>
-              <div ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
-                <h4>Substitutions</h4>
-                <div class="input-group" ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index">
-                  <span class="input-group-addon" style="min-width:200px; text-align:left;"><b>{{sub.Parameter}}</b></span>
-                  <div class="dropdown" ng-init="RefInit(sub)">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{sub.Reference}}<span class="caret"></span></button>
-                    <ul class="dropdown-menu dropdown-menu" role="menu">
-                      <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="setParam(apart, sub, 'None')">None</a></li>
-                      <li role="presentation" ng-repeat="name in getSubs(sub.Type)" tabindex="{{$index}}" ng-class="{'ddl-active': (typeof(sub.Reference)===typeof([]) && sub.Reference.indexOf(name)>-1)}">
-                        <a role="menuitem" ng-click="setParam(apart, sub, name)">
-                          {{name}}
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+    <!--CONTENT-->
+    <div ng-view class="view" style="padding-bottom:75px;"></div>
+    <!--       -->
+
   </body>
 </html>
