@@ -1,0 +1,30 @@
+<div class="container content">
+    <div class="row">
+        <div class="col-md-4">&nbsp;</div>
+        <div class="col-md-4">
+            <div class="container-fluid">
+                <h2>Login</h2>
+                <form class="simple-form" name="loginform" novalidate>
+                  <div class="input-group form-group" ng-class="{'has-error': (loginform.email.$invalid && loginform.email.$dirty)}">
+                    <span class="input-group-addon" id="EmailAddress" style="text-align:left; min-width:100px;"><b>Email</b></span>
+                    <input type="email" class="form-control" placeholder="Email" name="email" ng-model="auth.email" required />
+                  </div>
+                  <div class="input-group form-group" ng-class="{'has-error': (loginform.password.$invalid && loginform.password.$dirty)}">
+                    <span class="input-group-addon" id="Password" style="text-align:left; min-width:100px;"><b>Password</b></span>
+                    <input type="password" class="form-control" placeholder="Password" name="Password" ng-pattern="/\S{8,}/i" ng-model="auth.password" required />
+                  </div>
+                </form>
+                <a href="#/signup"><em>Not yet a member? Sign up instead</em></a>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()" ng-disabled="loginform.$invalid">Log in</button>
+                <br />
+                <div class="alert alert-dismissible" role="alert" ng-if="loginResult" ng-class="{'alert-danger': !loginResult.Success, 'alert-success': loginResult.Success}">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <strong>{{loginResult.Message}}</strong>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">&nbsp;</div>
+    </div>
+</div>
