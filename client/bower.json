@@ -6,7 +6,7 @@
     "Adam Yost <Adam.Yost@Careerbuilder.com>"
   ],
   "description": "spawn cloudformation templates",
-  "main": "app.js",
+  "main": "index.js",
   "keywords": [
     "aws",
     "cloudformation",
