@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <div class="jumbotron jumbotron-material-grey" style="text-align:center;">
+    <h1>Welcome to CloudSeed!</h1>
+    <p>Building a cloudformation stack is now as easy as clicking buttons.</p>
+    <div class="row">
+      <div class="col-xs-2">&nbsp;</div>
+      <div class="col-xs-8" align="center">
+        <a class="btn btn-primary with-ripple" href="#/login" ng-hide="auth.userinfo()">Log In</a>
+        <a class="btn btn-info with-ripple" href="#/signup" ng-hide="auth.userinfo()">Sign Up</a>
+        <a class="btn btn-lg btn-info with-ripple" href="#/parts" ng-show="auth.userinfo()">Go!</a>
+      </div>
+      <div class="col-xs-2">&nbsp;</div>
+    </div>
+  </div>
+</div>

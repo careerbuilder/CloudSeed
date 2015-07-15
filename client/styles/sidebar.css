@@ -1,0 +1,32 @@
+.overlay{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom: 0;
+  overflow-y: scroll;
+  z-index:1000;
+  background-color:lightgrey;
+}
+
+.stick-right{
+  position:absolute;
+  top:50%;
+  right:0;
+}
+
+.pull-btn{
+  position:fixed;
+  top:50%;
+  left:0;
+  max-width:50px;
+  min-height:100px;
+}
+
+.pointer{
+  cursor:pointer;
+}
+
+#stage{
+  overflow:hidden;
+  min-height:300px;
+}

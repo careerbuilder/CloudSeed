@@ -1,0 +1,42 @@
+body{
+  padding-top:65px;
+}
+
+[ng-click], [data-ng-click], [x-ng-click] {
+    cursor: pointer;
+}
+
+.sidebar{
+  min-width:250px;
+  float:left;
+  display:inline;
+}
+
+.navelement{
+  display: inline;
+  float:left;
+}
+
+#stage{
+  padding-left:10px;
+  float:left;
+  width:80%;
+
+}
+.partbutton{
+  width:100%;
+  min-height:40px;
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:5px;
+  margin-top:0px;
+  margin-bottom:0px;
+  text-align:left;
+}
+
+.ddl-active{
+  background-color:#4caf50;
+}
+.ddl-active:hover{
+  background-color:#59b75c;
+}

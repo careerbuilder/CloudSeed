@@ -1,0 +1,168 @@
+<div class="container" id="page">
+  <div class="row">
+    <!-- sidebar -->
+    <div class="col-md-3 hidden-xs hidden-sm">
+      <ul class="nav nav-stacked">
+        <li role="presentation"><h4>Add a Part</h4></li>
+        <hr>
+        <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
+          <a ng-click="addPart(part.Type)" role="button">{{part.Type}}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-xs-8 hidden-md hidden-lg overlay" ng-show="expand">
+      <div class="col-xs-10">
+        <ul class="nav nav-stacked">
+          <li role="presentation"><h4>Add a Part</h4></li>
+          <hr>
+          <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
+            <a ng-click="addPart(part.Type)" role="button">{{part.Type}}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-xs-2 stick-right">
+        <div class="stick-right">
+          <button class="btn" ng-click="expand=false"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-1 hidden-md hidden-lg">
+      <div class="pull-btn" ng-hide="expand">
+        <button class="btn" ng-click="expand=true">
+          <span class="glyphicon glyphicon-option-vertical"></span>
+          <br />
+          <span class="glyphicon glyphicon-chevron-right"></span>
+          <br />
+          <span class="glyphicon glyphicon-option-vertical"></span>
+        </button>
+      </div>
+    </div>
+    <div id="stage" class="col-xs-11 col-md-9">
+      <div class="row well" id="stackcontrols">
+        <div class="col-xs-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Load <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu scrollable-menu">
+              <li class="pointer" ng-repeat="stack in stacks track by $index" ng-click="loadTemplate(stack.Name)"><a>{{stack.Name}}</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Build <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu scrollable-menu">
+              <li class="pointer" ng-repeat="stack in stacks track by $index" ng-click="buildTemplate(stack.Name)"><a>{{stack.Name}}</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <button type="button" class="btn btn-danger" ng-click="discardStack()" ng-disabled="addedParts<1">Discard Stack</button>
+        </div>
+      </div>
+        <form name="PartsForm" class="simple-form" novalidate>
+        <div ng-show="addedParts.length >0">
+          <div class="row">
+            <div class="col-md-6">
+              <input type="text" class="form-control" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}" required >
+            </div>
+            <div class="col-md-1">&nbsp;</div>
+            <div class="col-md-5">
+              <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.Region" ng-class="{'has-error': PartsForm.stackRegion.$invalid && PartsForm.stackRegion.$dirty}" required>
+                <option ng-repeat="r in regions">{{r}}</option>
+              </select>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-xs-9">
+              <input type="text" class="form-control" ng-model="build.Template.Description" placeholder="Description" name="stackDescription"/>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default" ng-disabled="addedParts.length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
+            </div>
+          </div>
+          <hr>
+        </div>
+        <div ng-repeat="apart in addedParts track by $index" class="panel panel-default">
+          <div class="panel-heading pointer" ng-click="apart.Collapsed = !apart.Collapsed">
+            <h2 class="panel-title">
+              <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.LogicalName)"></span>
+              {{apart.LogicalName}}
+              <span class="glyphicon glyphicon-triangle-bottom pull-right" ng-show="apart.Collapsed"></span>
+              <span class="glyphicon glyphicon-triangle-top pull-right" ng-hide="apart.Collapsed"></span>
+            </h2>
+          </div>
+          <div class="panel-body" ng-hide="apart.Collapsed">
+            <div ng-show="visibleParams(apart) > 0">
+              <h4>Parameters</h4>
+              <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
+                <ng-form name="parametersForm">
+                  <div class="form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid && parametersForm.txtvalue.$dirty) || (parametersForm.selectvalue.$invalid && parametersForm.selectvalue.$dirty)}">
+                    <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, value)}}</strong></label>
+                    <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
+                      parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
+                      ng-required="checkRequiredParam(value)">
+                    <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
+                      ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
+                      ng-required="!value.Hidden && !value.Default && value.AllowedValues">
+                      <option ng-repeat="av in value.AllowedValues">{{av}}</option>
+                    </select>
+                  </div><!--/input-->
+                </ng-form>
+              </div>
+            </div>
+            <div ng-show="apart.Definition.Connections.SubParts">
+              <hr>
+              <h4>SubParts</h4>
+              <div ng-repeat="(key, value) in apart.Definition.Connections.SubParts">
+                <span><b>{{value.Type.replace("List::","")}}</b></span>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-condensed" ng-init="addSubPart(apart, key)">
+                    <tr>
+                      <th ng-repeat="(param,details) in value.Model">{{param}}</th>
+                      <th></th>
+                    </tr>
+                    <tr ng-repeat="subp in apart.subparts[key] track by $index">
+                      <td ng-repeat="(param,details) in value.Model">
+                        <input type="text" class="form-control" ng-model="subp[param].Value" ng-required="checkRequired(apart, key, $parent.$index)">
+                      </td>
+                      <td ng-show="value.Type.lastIndexOf('List::', 0) === 0" style="width:90px;">
+                        <button ng-click="addSubPart(apart, key)" ng-show="canAddSubPart(apart, key, $index)">
+                          <span class="glyphicon glyphicon-plus" style="color:green;"></span>
+                        </button>
+                        <button ng-click="removeSubPart(apart, key, $index)" ng-hide="$index === apart.subparts[key].length-1">
+                          <span class="glyphicon glyphicon-remove" style="color:red;"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </div><!--/table-responsive-->
+              </div>
+              <hr>
+            </div>
+            <div ng-show="apart.Definition.Connections.Substitutes.length && !apart.Collapsed">
+              <hr>
+              <h4>Substitutions</h4>
+              <div class="form-group" ng-repeat="sub in apart.Definition.Connections.Substitutes track by $index">
+                <label class="control-label"><strong>{{sub.Parameter}}</strong></label>
+                <div class="dropdown" ng-init="RefInit(sub)">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{getReferences(sub)}}<span class="caret"></span></button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="setParam(apart, sub, 'None')">None</a></li>
+                    <li role="presentation" ng-repeat="name in getSubs(sub.Type)" tabindex="{{$index}}" ng-class="{'ddl-active': (typeof(sub.Reference)===typeof([]) && getReferences(sub).indexOf(name.trim())>-1)}">
+                      <a role="menuitem" ng-click="setParam(apart, sub, name)">{{name}}</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

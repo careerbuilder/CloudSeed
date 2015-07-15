@@ -4,21 +4,19 @@ var fs         = require('fs');
 var bodyParser = require('body-parser');
 var path       = require('path');
 var favicon    = require('serve-favicon');
+global.config  = require('./config.json');
 var app        = express(); 			// define our app using express
 
-
-var key_file = "/home/ubuntu/ssl/cbsitedb.key";
-var cert_file = "/home/ubuntu/ssl/-star-cbsitedb-net.crt.cer";
-
 var config = {
-  key: fs.readFileSync(key_file),
- cert: fs.readFileSync(cert_file)
+  key: fs.readFileSync(global.config.SSL.keyfile),
+ cert: fs.readFileSync(global.config.SSL.certfile)
 };
+
 
 app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'client')));
-app.set('views', __dirname + '/client');
+app.set('views', __dirname + '/client/views');
 app.use(bodyParser.json())
 app.use(favicon(__dirname + '/favicon.ico'));
 
@@ -26,17 +24,13 @@ var port = 3000;
 
 // ROUTES FOR OUR API
 // =============================================================================
-
-var auth = require('./routes/auth.js');
-var parts = require('./routes/parts.js');
-var stacks = require('./routes/stacks.js');
-app.use(auth);
-app.use(parts);
-app.use(stacks);
+//
 
 app.get('/', function(req, res){
   res.render('index');
 });
+
+app.use('/api/', require('./routes/api.js'));
 
 //keep this last, as it will return 404
 app.use(function(req, res, next){
