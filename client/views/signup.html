@@ -27,7 +27,7 @@
           </div>
         </form>
         <a href="#/login"><em>Already a member? Log in instead</em></a>
-        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="signUp()" ng-disabled="loginform.$invalid">Sign up</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="signup()" ng-disabled="loginform.$invalid">Sign up</button>
         <br />
         <div class="alert alert-dismissible" role="alert" ng-if="signupResult" ng-class="{'alert-danger': !signupResult.Success, 'alert-success': signupResult.Success}">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
