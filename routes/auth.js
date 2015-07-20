@@ -58,7 +58,7 @@ router.post('/register', function(req, res){
       var html = "<h1>Welcome to Cloudseed!</h1><p>An account has been created for this email, but will not be active until the email is confirmed. If this was not you, please ignore this email. "+"Otherwise, activate the account here <a href='https://cloudseed.cbsitedb.net/api/confirm/"+emailconfirm+"'>https://cloudseed.cbsitedb.net/api/confirm/"+emailconfirm+"</a></p>";
       transporter.sendMail({
         from: 'CloudSeed@cbsitedb.net',
-        to: record.email,
+        to: b.email,
         subject: 'Please confirm your CloudSeed account',
         text: plaintext,
         html: html
