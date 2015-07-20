@@ -16,17 +16,4 @@ router.get('/:id', function(req,res){
   });
 });
 
-router.get('/confirm/:userconfirm', function(req,res){
-  var signature = req.params.userconfirm;
-  db.update_user({confirm:signature}, {active:true}, function(err, data){
-    if(err){
-      console.log(err);
-      return res.send({Success:false, Error: err});
-    }
-    else{
-      return res.redirect('/');
-    }
-  });
-});
-
 module.exports = router;
