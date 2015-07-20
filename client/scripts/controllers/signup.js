@@ -14,7 +14,6 @@ app.controller('SignupCtrl', function($http, $location, $scope, toastr){
           $scope.auth = {};
           $scope.signupResult={Success:true, Message: "Signup complete! Check your email!"};
           toastr.success("Welcome to Cloudseed!", "Confirmation Email Sent!");
-          $location.path('#/')
         }
         else{
           $scope.signupResult={Success:false, Message: data.Error};

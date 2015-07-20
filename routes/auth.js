@@ -41,6 +41,7 @@ router.post('/login', function(req, res){
 
 router.post('/register', function(req, res){
   var b = req.body;
+  console.log(b);
   var shasum = crypto.createHash('sha256');
   var salt = rand(10);
   shasum.update(salt + b.password);
