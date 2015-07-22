@@ -303,9 +303,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
 
   $scope.refreshStacks=function(){
     $http.get('/api/stacks/').success(function(data){
-      $scope.stacks = data;
-      console.log(data);
-      $scope.$emit('stacksUpdated', data.Data);
+      if(data.Success){
+        $scope.stacks = data.Data;
+        $scope.$emit('stacksUpdated', data.Data);
+      }
     });
   }
 
