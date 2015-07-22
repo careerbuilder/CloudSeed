@@ -1,5 +1,9 @@
 var mongo = require('mongoskin');
-var db = mongo.db('mongodb://localhost:27017/cloudseed');
+var conn = "mongodb://localhost:27017/cloudseed"
+if(global.config.DB.Type === 'mongo'){
+  conn = global.config.DB.Conn_String;
+}
+var db = mongo.db(conn);
 
 module.exports ={
   to_object_id: function(id){
