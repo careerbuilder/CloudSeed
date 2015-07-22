@@ -7,10 +7,7 @@ var favicon    = require('serve-favicon');
 global.config  = require('./config.json');
 var app        = express(); 			// define our app using express
 
-var config = {
-  key: fs.readFileSync(global.config.SSL.keyfile),
- cert: fs.readFileSync(global.config.SSL.certfile)
-};
+
 
 
 app.set('view engine','html');
@@ -47,5 +44,14 @@ app.use(function(req, res, next){
   return res.type('txt').send('Not found');
 });
 
-https.createServer(config, app).listen(port);
+if('SSL' in global.config){
+  var config = {
+    key: fs.readFileSync(global.config.SSL.keyfile),
+   cert: fs.readFileSync(global.config.SSL.certfile)
+  };
+  https.createServer(config, app).listen(port);
+}
+else{
+  app.listen(port);
+}
 console.log('Magic happens on port ' + port);

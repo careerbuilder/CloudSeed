@@ -3,7 +3,7 @@
 app.controller('LoginCtrl', function($http, $scope, $location, authservice, toastr){
 
   $scope.login=function(){
-    $http.post('https://cloudseed.cbsitedb.net/api/auth/login', $scope.auth).success(function(data, status){
+    $http.post('/api/auth/login', $scope.auth).success(function(data, status){
       if(status != 200){
         err = "Endpoint cannot be reached";
         $scope.loginResult = {Success:false, Message:err};

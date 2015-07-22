@@ -9,7 +9,7 @@ app.factory('authservice', ['$http','$cookieStore', function($http, $cookieStore
 
   if(cookie){
     console.log("found session in progress");
-    $http.get('https://cloudseed.cbsitedb.net/api/users/'+cookie).success(function(data){
+    $http.get('/api/users/'+cookie).success(function(data){
       if(data.Success){
         user = data.user;
         auth_ID = cookie;

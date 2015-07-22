@@ -3,7 +3,7 @@
 app.controller('SignupCtrl', function($http, $location, $scope, toastr){
 
   $scope.signup = function(){
-    $http.post('https://cloudseed.cbsitedb.net/api/auth/register', $scope.auth).success(function(data, status){
+    $http.post('/api/auth/register', $scope.auth).success(function(data, status){
       if(status != 200){
         err = "Endpoint cannot be reached";
         toastr.warning(err, "This is awkward...");

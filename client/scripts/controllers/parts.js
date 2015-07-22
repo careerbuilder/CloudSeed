@@ -7,7 +7,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.parts = [];
   $scope.stacks = [];
   $scope.build = {};
-  $http.get('https://cloudseed.cbsitedb.net/api/parts').success(function(data){
+  $http.get('/api/parts').success(function(data){
     if(data.Success){
       $scope.parts = data.Data;
     }
@@ -15,7 +15,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       console.log(data.Error);
     }
   });
-  $http.get('https://cloudseed.cbsitedb.net/api/stacks').success(function(data){
+  $http.get('/api/stacks').success(function(data){
     if(data.Success){
       $scope.stacks = data.Data;
       $scope.$emit('stacksUpdated', data.Data);
@@ -24,7 +24,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       console.log(data.Error);
     }
   });
-  $http.get('https://cloudseed.cbsitedb.net/api/stacks/regions').success(function(data){
+  $http.get('/api/stacks/regions').success(function(data){
     if(data.Success){
       $scope.regions = data.Regions;
     }
@@ -302,7 +302,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   }
 
   $scope.refreshStacks=function(){
-    $http.get('https://cloudseed.cbsitedb.net/api/stacks/').success(function(data){
+    $http.get('/api/stacks/').success(function(data){
       $scope.stacks = data;
       console.log(data);
       $scope.$emit('stacksUpdated', data.Data);
@@ -337,7 +337,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
       $scope.build.Template = template;
       $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-      $http.post('https://cloudseed.cbsitedb.net/api/stacks', {build: $scope.build, user: $scope.auth.userinfo().email}).success(function(data){
+      $http.post('/api/stacks', {build: $scope.build, user: $scope.auth.userinfo().email}).success(function(data){
           if(data['Code'] === 400){
             toastr.success('Stack Saved', 'Your stack was saved successfully!');
           }
@@ -354,7 +354,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
 
   $scope.loadTemplate=function(name){
     console.log("parts loading " + name);
-    $http.get('https://cloudseed.cbsitedb.net/api/stacks/'+name).success(function(data){
+    $http.get('/api/stacks/'+name).success(function(data){
       if(data.Success){
         $scope.build = JSON.parse(JSON.stringify(data.Data));
         $scope.addedParts = JSON.parse(JSON.stringify(data.Data.Parts));
@@ -363,7 +363,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   }
 
   $scope.buildTemplate=function(stackname){
-    $http.post('https://cloudseed.cbsitedb.net/api/stacks/build/' + stackname, {userid:$scope.auth.userinfo().confirm}).success(function(data){
+    $http.post('/api/stacks/build/' + stackname, {userid:$scope.auth.userinfo().confirm}).success(function(data){
       if(data.Success){
         toastr.success("Template Built!");
         return true;
