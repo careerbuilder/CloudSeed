@@ -1,0 +1,9 @@
+{
+  "DB":{
+    "Type": "mongo",
+    "Conn_String": "mongodb://cloudseed.yourdomain.com:27017/cloudseed"
+  },
+  "STACKREPO": "/path/to/Stacks/folder",
+  "APIHost": "https://cloudseed.yourdomain.com",
+  "EmailAccount": "CloudSeed@yourdomain.com"
+}
