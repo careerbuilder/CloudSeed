@@ -7,14 +7,6 @@ var crypto = require('crypto');
 var db = require('../tools/db_tool.js');
 var router = express.Router();
 
-function rand(rlen){
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-/.+_*&^%$#@!~";
-    for( var i=0; i < rlen; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text;
-}
-
 router.get('/confirm/:userconfirm', function(req,res){
   var signature = req.params.userconfirm;
   db.update_user({confirm:signature}, {active:true}, function(err, data){
@@ -55,7 +47,7 @@ router.post('/login', function(req, res){
 router.post('/register', function(req, res){
   var b = req.body;
   var shasum = crypto.createHash('sha256');
-  var salt = rand(10);
+  var salt = uuid.v4();
   shasum.update(salt + b.password);
   var passhash = shasum.digest('hex');
   var emailconfirm = uuid.v4();
