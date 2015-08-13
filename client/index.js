@@ -17,11 +17,17 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
 	})
 	.when('/parts', {
 		controller: 'PartCtrl',
-		templateUrl: 'views/parts.html'
+		templateUrl: 'views/parts.html',
+		resolve:{
+			auth: ["authservice", function(authservice) {return authservice.hasAccess();}]
+		}
 	})
 	.when('/config', {
 		controller: 'ConfigCtrl',
-		templateUrl: 'views/config.html'
+		templateUrl: 'views/config.html',
+		resolve:{
+			auth: ["authservice", function(authservice) {return authservice.hasAccess();}]
+		}
 	})
 	.otherwise({redirectTo: '/'});
   $httpProvider.interceptors.push('httpRequestInterceptor');
@@ -55,3 +61,12 @@ app.factory('httpRequestInterceptor', function ($cookieStore) {
     }
   };
 });
+
+app.run(["$rootScope", "$location", "toastr", function($rootScope, $location, toastr) {
+  $rootScope.$on("$routeChangeError", function(event, current, previous, eventObj) {
+    if (eventObj.authenticated === false) {
+      toastr.error('Please Log in First');
+      $location.path("/login");
+    }
+  });
+}]);

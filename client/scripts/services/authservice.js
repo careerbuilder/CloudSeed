@@ -1,6 +1,6 @@
 "use strict";
 
-app.factory('authservice', ['$http','$cookieStore', function($http, $cookieStore){
+app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $cookieStore){
 
   var auth_ID;
   var user;
@@ -39,6 +39,16 @@ app.factory('authservice', ['$http','$cookieStore', function($http, $cookieStore
   }
   authservice.userinfo = function(){
     return user;
+  }
+  authservice.hasAccess=  function(){
+    var deferred = $q.defer();
+    if(user){
+      deferred.resolve(user);
+    }
+    else{
+      deferred.reject({authenticated: false});
+    }
+    return deferred.promise;
   }
   return authservice;
 
