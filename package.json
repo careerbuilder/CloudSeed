@@ -1,5 +1,5 @@
 {
-  "name": "Cloud_Seed",
+  "name": "CloudSeed",
   "version": "1.0.0",
   "description": "A Cloudformation Template generator",
   "main": "app.js",
@@ -18,7 +18,7 @@
     "Parts"
   ],
   "author": "Adam Yost",
-  "license": "MIT",
+  "license": "Apache v2",
   "bugs": {
     "url": "https://github.com/cbdr/Cloud_Seed/issues"
   },

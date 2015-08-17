@@ -1,4 +1,4 @@
-#Cloud_Seed
+#CloudSeed
 _def: The process of controlled atmospheric interruptions in order to stimulate cloud formation_
 
 Cloudseed is a substitute control plane. Instead of making untraceable changes to stacks directly through the amazon API, Cloudseed uses the Cloudformation API to submit stack templates. These templates can be checked in to change tracking, and any changes are recorded and reversible.
