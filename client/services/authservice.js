@@ -59,15 +59,15 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
     $cookieStore.remove('c_s66d');
   }
   authservice.authid = function(){
-    return auth_ID;
+    return $q.when(auth_ID);
   }
   authservice.userinfo = function(){
-    return user;
+    return $q.when(user);
   }
   authservice.hasAccess=  function(){
     var deferred = $q.defer();
     if(user){
-      deferred.resolve(user);
+      deferred.resolve($q.when(user));
     }
     else{
       deferred.reject({authenticated: false});
