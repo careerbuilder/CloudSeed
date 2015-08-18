@@ -40,8 +40,8 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
       udeferred.reject(res.data);
       cdeferred.reject(res.data);
     });
-    user = $q.when(udeferred.promise);
-    auth_ID = $q.when(cdeferred.promise);
+    user = udeferred.promise;
+    auth_ID = cdeferred.promise;
   }
 
   var authservice = {};
@@ -59,10 +59,22 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
     $cookieStore.remove('c_s66d');
   }
   authservice.authid = function(){
-    return auth_ID;
+    auth_ID.then(function(res){
+      return res;
+    },
+    function(err){
+      console.log(err);
+      return null;
+    });
   }
   authservice.userinfo = function(){
-    return user;
+    user.then(function(res){
+      return res;
+    },
+    function(err){
+      console.log(err);
+      return null;
+    });
   }
   authservice.hasAccess=  function(){
     var deferred = $q.defer();
