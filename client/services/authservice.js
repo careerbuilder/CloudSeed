@@ -3,7 +3,7 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,15 +21,27 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
 
   if(cookie){
     console.log("found session in progress");
-    $http.get('/api/users/'+cookie).success(function(data){
+    var udeferred = $q.defer();
+    var cdeferred = $q.defer();
+    $http.get('/api/users/'+cookie)
+    .then(function(res){
+      var data = res.data;
       if(data.Success){
-        user = data.user;
-        auth_ID = cookie;
+        udeferred.resolve(data.user);
+        cdeferred.resolve(cookie);
       }
       else{
         console.log(data.Error);
+        udeferred.reject(data);
+        cdeferred.reject(data);
       }
+    },
+    function(res){
+      udeferred.reject(res.data);
+      cdeferred.reject(res.data);
     });
+    user = udeferred.promise;
+    auth_ID = cdeferred.promise;
   }
 
   var authservice = {};
