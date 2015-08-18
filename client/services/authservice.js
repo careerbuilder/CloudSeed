@@ -21,30 +21,58 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
 
   if(cookie){
     console.log("found session in progress");
-    var udeferred = $q.defer();
-    var cdeferred = $q.defer();
     $http.get('/api/users/'+cookie)
     .then(function(res){
       var data = res.data;
       if(data.Success){
-        udeferred.resolve(data.user);
-        cdeferred.resolve(cookie);
+        user = data.user;
+        auth_ID = cookie;
       }
       else{
         console.log(data.Error);
-        udeferred.reject(data);
-        cdeferred.reject(data);
+        user = null;
+        auth_ID = null;
       }
     },
     function(res){
-      udeferred.reject(res.data);
-      cdeferred.reject(res.data);
+      user = null;
+      auth_ID = null;
     });
-    user = udeferred.promise;
-    auth_ID = cdeferred.promise;
   }
 
   var authservice = {};
+
+  function load_cookie(){
+    var cookie = $cookieStore.get('c_s66d');
+    var c_promise = $q.defer();
+    if(cookie){
+      console.log("found session in progress");
+      $http.get('/api/users/'+cookie)
+      .then(function(res){
+        var data = res.data;
+        if(data.Success){
+          user = data.user;
+          auth_ID = cookie;
+          c_promise.resolve(cookie);
+        }
+        else{
+          console.log(data.Error);
+          user = null;
+          auth_ID = null;
+          c_promise.reject(data);
+        }
+      },
+      function(res){
+        user = null;
+        auth_ID = null;
+        c_promise.reject(data);
+      });
+    }
+    else{
+      c_promise.reject('No Cookie');
+    }
+    return c_promise.promise;
+  }
 
   authservice.saveAuth = function(userinfo){
     $cookieStore.put('c_s66d', userinfo._id);
@@ -59,31 +87,26 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
     $cookieStore.remove('c_s66d');
   }
   authservice.authid = function(){
-    auth_ID.then(function(res){
-      return res;
-    },
-    function(err){
-      console.log(err);
-      return null;
-    });
+    return auth_ID;
   }
   authservice.userinfo = function(){
-    user.then(function(res){
-      return res;
-    },
-    function(err){
-      console.log(err);
-      return null;
-    });
+    return user;
   }
   authservice.hasAccess=  function(){
     var deferred = $q.defer();
-    if(user){
-      deferred.resolve(user);
-    }
-    else{
-      deferred.reject({authenticated: false});
-    }
+    load_cookie().then(
+      function(data){
+        if(data){
+          deferred.resolve(data);
+        }
+        else{
+          deferred.reject({authenticated: false});
+        }
+      },
+      function(err){
+        deferred.reject({authenticated: false});
+      }
+    );
     return deferred.promise;
   }
   return authservice;
