@@ -10,16 +10,32 @@ Previously, in order to create a stack through Cloudformation, several generic t
 Instead, why not have one file per stack, and add/remove/edit that file in order to alter the stack? That would fix the searching, allow for easy change tracking, and reduce the labor needed to add or remove component of the stack. Without Cloudseed, this would be accomplished through tedious file editing, with much code duplication. Copy and paste would be a regular event, and human error would become a huge problem. In my experience, buttons are far easier.
 
 ##How to
-Cloudseed is an __internally deployed solution__. This means that there is no single location for Cloudseed (this may change), but instead a single location for each group using it. You are responsible for deploying the instance you will use.
+Cloudseed is an __internally deployed solution__. This means that there is no single location for Cloudseed (this may change), but instead a single location for each group using it. You are responsible for deploying the instance you will use. This helps to separate stacks between deployments and helps prevent overcrowding of the repos.
 
-###1. Deploy/configure the instance -
-Clone, fork, or download the code for Cloudseed, and send it to a server. This server will need access to AWS (either via internet or being in the AWS cloud) and need open inbound access on the express port (default 3000) to a range accessible by your team as well as a valid mongo server. Navigate to the Cloudseed folder and edit the `config.json.sample` file with the appropriate info, then save it as `config.json`. If you are using Mongo, run mongoinit.sh then start node with `nohup node app.js &`.
+###1. Set up dependencies -
+CloudSeed needs to be place on an EC2 instance created with a role which gives it SES send Email permissions. Therefore, the first step is to create a role with SES Send Mail permissions. I'd recommend also adding ReadOnly permissions, to prevent the CloudSeed box from having access to other services. Cloudformation permissions are evaluated using the logged in user's account, so they are unnecessary for the CloudSeed role. While in the AWS console, be sure to set up SES to allow sending from a verified domain, so that Cloudseed can verify user emails.
+
+Once the role is created, spin up an EC2 instance using that role. We recommend a micro instance of ubuntu, but a CloudSeed image may soon be available.
+
+SSH into the new box and install mongodb (if you want a local mongo server), nodejs, python3, and git.
+
+Clone Cloudseed by typing `git clone git@github.com:careerbuilder/CloudSeed.git` and `cd` into the newly created directory.
+
+Find and edit the `config.json.sample` file with the appropriate info, then save it as `config.json`.
+
+If you are using a local Mongo instance, run `sh mongoinit.sh` to create the collections.
+
+Start node with `nohup node app.js &`.
 
 ###2. Add users -
-Visit the IP or domain name of your deployed instance and add a user for yourself. This will require a name, Email, and AWS credentials.
+Congratulations by this step the app is live on your server, and you can begin adding users to the system!
+
+Visit the IP or domain name of your deployed instance and navigate to the signup page. Signing up a user will require a name, Email, and AWS credentials. The AWS credentials come from a created AWS IAM users, so if you don't have any, be sure to make one for each user, giving them full Cloudformation permissions.
 
 ###3. Begin building your stack! -
-Click the buttons corresponding to the components you need. They will be added on the right, and clicking their name will open a panel to add parameters. Once all required parameters (including stack name at the top!) are filled, the stack can be saved.
+Once logged in, you should be presented with a collection of parts with which you can build a stack.
+
+Click the buttons corresponding to the components you need. They will be added on the right, and clicking their name will open a panel to add parameters. Once all required parameters are filled, the stack can be saved.
 
 ###4. Send the stack to AWS -
-All saved stacks are visible under the "Build" menu on the navbar. Clicking one will send the template to Cloudformation for immediate construction using your user keys.
+All saved stacks are visible under the "Build" dropdown. Clicking one will send the template to Cloudformation for immediate construction using your user keys.
