@@ -56,6 +56,7 @@ app.controller('PageController', function($http, $scope, $location, toastr, auth
 	$scope.logOut=function(){
 		$scope.user={};
 		authservice.clearAuth();
+		$location.path('/login');
 	}
 
 });
