@@ -1,7 +1,9 @@
 {
   "DB":{
     "Type": "mongo",
-    "Conn_String": "mongodb://cloudseed.yourdomain.com:27017/cloudseed"
+    "Host" : "localhost",
+    "Port": 27017,
+    "Database": "cloudseed"
   },
   "STACKREPO": "/path/to/Stacks/folder",
   "APIHost": "https://cloudseed.yourdomain.com",
