@@ -79,11 +79,11 @@
         <div ng-show="addedParts.length >0">
           <div class="row">
             <div class="col-md-6">
-              <input type="text" class="form-control" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" ng-class="{'has-error': PartsForm.stackName.$invalid && PartsForm.stackName.$dirty}" required >
+              <input type="text" class="form-control" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" ng-class="{'has-error': PartsForm.stackName.$invalid}" required >
             </div>
             <div class="col-md-1">&nbsp;</div>
             <div class="col-md-5">
-              <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.Region" ng-class="{'has-error': PartsForm.stackRegion.$invalid && PartsForm.stackRegion.$dirty}" required>
+              <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.Region" ng-class="{'has-error': PartsForm.stackRegion.$invalid}" required>
                 <option ng-repeat="r in regions">{{r}}</option>
               </select>
             </div>
@@ -113,7 +113,7 @@
               <h4>Parameters</h4>
               <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
                 <ng-form name="parametersForm">
-                  <div class="form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid && parametersForm.txtvalue.$dirty) || (parametersForm.selectvalue.$invalid && parametersForm.selectvalue.$dirty)}">
+                  <div class="form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
                     <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, value)}}</strong></label>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                       parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
