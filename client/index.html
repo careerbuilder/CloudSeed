@@ -3,7 +3,7 @@
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at
--- 
+--
 --     http://www.apache.org/licenses/LICENSE-2.0
 -- Unless required by applicable law or agreed to in writing, software
 -- distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,7 +43,7 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            <li ng-show="auth.userinfo()"><p class="navbar-text"><span class="hidden-xs hidden-sm">Signed in as:</span> {{auth.userinfo().email}}</p></li>
+            <li ng-show="auth.userinfo()"><a href="#/config" class="navbar-text"><span class="hidden-xs hidden-sm">Signed in as:</span> {{auth.userinfo().email}}</a></li>
             <hr class="hidden-md hidden-lg">
             <li ng-show="auth.userinfo()"><a href="#/" ng-click="logOut()">Log Out</a></li>
           </ul>
