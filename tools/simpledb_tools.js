@@ -3,7 +3,7 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,9 +21,6 @@ var db = new amazon.SimpleDB({
 var user_domain = "TestDomain";
 
 module.exports ={
-  to_object_id: function(id){
-    return mongo.helper.toObjectID(id);
-  },
   put_user: function(user, callback){
 
     var params = {
@@ -49,7 +46,7 @@ module.exports ={
   },
   update_user: function(user, k_v, callback){
 
-    var select_expr =
+    //var select_expr =
     var set = {$set: k_v};
     db.collection('users').update(user, set, callback);
   },
@@ -105,85 +102,5 @@ module.exports ={
       if (err) console.log(err, err.stack); // an error occurred
       else     console.log(data);           // successful response
     });
-  },
-  test_database_put: function(err, data){
-
-    var params = {
-      Attributes:
-      [
-        {
-          Name: 'email',
-          Value: 'a.mcmanigal2@gmail.com',
-          Replace: true
-        },
-
-        {
-          Name: 'team',
-          Value: 'Search',
-          Replace: false
-        }
-
-    ],
-    DomainName: 'TestDomain',
-    ItemName: 'a.mcmanigal2@gmail.com',
-    };
-    db.putAttributes(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
-    });
-
   }
-
-
-  //Create Domain (Table)
-  /*
-  db.createDomain({
-    DomainName: "TestDomain"
-  },
-  function(err, data){
-    if(err) console.log(err, err.stack)
-    else console.log(data);
-  })
-  */
-
-  //Getting Domains (Tables)
-  /*
-  var params = {
-    MaxNumberOfDomains: 10,
-    NextToken: 'STRING_VALUE'
-  };
-  db.listDomains(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
-  });
-  */
-
-  //Adding Rows
-  /*
-  var params = {
-    Attributes:
-    [
-      {
-        Name: 'email',
-        Value: 'a.mcmanigal1@gmail.com',
-        Replace: true
-      },
-
-      {
-        Name: 'team',
-        Value: 'Search',
-        Replace: false
-      }
-
-  ],
-  DomainName: 'TestDomain',
-  ItemName: 'user',
-};
-db.putAttributes(params, function(err, data) {
-  if (err) console.log(err, err.stack); // an error occurred
-  else     console.log(data);           // successful response
-});
-  */
-
-  //Getting Rows
 }
