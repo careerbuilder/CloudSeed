@@ -15,14 +15,7 @@
 var app = angular.module('cloudseed', ['ngRoute', 'ngCookies', 'toastr']);
 
 app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
-	$routeProvider.when('/', {
-		controller: 'PartCtrl',
-		templateUrl: 'views/parts.html',
-		resolve:{
-			auth: ["authservice", function(authservice) {return authservice.hasAccess();}]
-		}
-	})
-	.when('/login', {
+	$routeProvider.when('/login', {
 		controller: 'LoginCtrl',
 		templateUrl: 'views/login.html'
 	})
@@ -33,6 +26,13 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
 	.when('/config', {
 		controller: 'ConfigCtrl',
 		templateUrl: 'views/config.html',
+		resolve:{
+			auth: ["authservice", function(authservice) {return authservice.hasAccess();}]
+		}
+	})
+	.when('/', {
+		controller: 'PartCtrl',
+		templateUrl: 'views/parts.html',
 		resolve:{
 			auth: ["authservice", function(authservice) {return authservice.hasAccess();}]
 		}
