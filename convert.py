@@ -9,6 +9,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 #
+
+
 # Convert Multifile Stacks in to single file, CloudSeed Safe stacks.
 #
 
@@ -95,8 +97,6 @@ def resolve_template_values():
     if 'Outputs' in temp_two:
         outs = temp_two['Outputs']
     temp_three_string = json.dumps({'Resources': temp_two['Resources'], 'Outputs': outs})
-    for cond in temp_two['Conditions']:
-        temp_three_string = re.sub('"' + cond + '"', json.dumps(temp_two['Conditions'][cond]), temp_three_string)
     clean_parts = json.loads(temp_three_string, object_hook=OrderedDict)
     temp_two['Resources'] = clean_parts['Resources']
     if 'Outputs' in temp_two:
@@ -107,11 +107,15 @@ def resolve_template_values():
 def gather_resources():
     resources = {}
     for resource in new_template['Resources']:
-        if 'Condition' in new_template['Resources'][resource] and not new_template['Resources'][resource]['Condition']:
-            pass
-        else:
-            resources[resource] = new_template['Resources'][resource]
-            resources[resource].pop('Condition', None)
+        if 'Condition' in new_template['Resources'][resource]:
+            condname = new_template['Resources'][resource]['Condition']
+            include = solve_template_functions(new_template['Conditions'][condname])
+            if not include:
+                # print("Skipping ", resource)
+                continue
+        resources[resource] = new_template['Resources'][resource]
+        resources[resource].pop('Condition', None)
+
     return resources
 
 
@@ -161,7 +165,7 @@ def convert_parts(parts):
                         subs = clean_mod['Definition']['Connections']['Substitutes']
                         for sub in subs:
                             if sub['Parameter'] == p:
-                                sub['Reference'] = value
+                                sub['Reference'] = {"Ref": value}
         clean_mods.append(clean_mod)
     return clean_mods
 
@@ -219,6 +223,8 @@ def flatten_resource(params, obj, ref):
 
 def copy_old_fields(params, part, resource):
     for field in resource:
+        if "Metadata" in field:
+            continue
         if field not in part:
             p_type = "String"
             if isinstance(resource[field], list):
