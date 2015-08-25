@@ -3,7 +3,7 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,12 @@ var router = express.Router();
 router.get('/awsvalues/:awstype', function(req, res){
   var ptype = req.params.awstype;
   var region = req.query.region;
-  var ec2 = new aws.EC2({region:region});
+  var aws_obj = {region:region};
+  if('Amazon' in global.config){
+    aws_obj.AccessKey = global.config.AccessKey;
+    aws_obj.SecretKey = global.config.SecretKey;
+  }
+  var ec2 = new aws.EC2(aws_obj);
   if(ptype==='AWS::EC2::AvailabilityZone::Name'){
     ec2.describeAvailabilityZones({}, function(err, data) {
       if (err){
