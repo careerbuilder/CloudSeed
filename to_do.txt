@@ -15,7 +15,4 @@ VPNConnectionRoute
 VPNGateway
 VPNGatewayRoutePropagation
 
-
-
-
-
+Metadata - Allow for CFN-INIT configurations by allowing file/script upload. Split the file on new line and use FN::Join to fill the file.
