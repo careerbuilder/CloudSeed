@@ -122,6 +122,25 @@ def gather_resources():
     return resources
 
 
+def check_convertible(parts):
+    flat_parts = {}
+    for root, dirs, filenames in os.walk(os.path.join(script_location, 'Parts')):
+        for filename in filenames:
+            if '.part' in filename:
+                f = open(os.path.join(root, filename))
+                part_obj = json.load(f)
+                f.close()
+                for obj in part_obj['Resources']:
+                    flat_parts[part_obj['Resources'][obj]['Type']] = part_obj
+    problems = []
+    for part in parts:
+        if parts[part]['Type'] not in flat_parts:
+            if parts[part]['Type'] not in problems:
+                problems.append(parts[part]['Type'])
+    return len(problems)==0, problems
+
+
+
 def convert_parts(parts):
     flat_parts = {}
     for root, dirs, filenames in os.walk(os.path.join(script_location, 'Parts')):
