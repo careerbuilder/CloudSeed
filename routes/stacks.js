@@ -82,7 +82,7 @@ router.post('/', function(req, res){
           }
           else{
             var userstring = email.split('@')[0].replace('\.', ' ') +' <'+email+'>';
-            var child = exec('cd ' + stacksrepo + ' && git add -A && git commit -a -m "Cloudseed stack changes" --author ' + userstring + ' && git push');
+            var child = exec('cd ' + stacksrepo + ' && git add -A && git commit -a -m "Cloudseed stack changes" --author ' + userstring);
             child.stdout.on('data', function(data){
               console.log(data);
             });
@@ -91,7 +91,17 @@ router.post('/', function(req, res){
             });
             child.on('close', function(code) {
               console.log("Added stack");
-              return res.send({Code: 400, Message: "Stack Saved!"});
+              var pushchild = exec('gitpush');
+              pushchild.stdout.on('data', function(data){
+                console.log(data);
+              });
+              pushchild.stderr.on('data', function(data){
+                console.log(data);
+              });
+              pushchild.on('close', function(code) {
+                console.log("Added stack");
+                return res.send({Code: 400, Message: "Stack Saved!"});
+              });
             });
           }
         });
