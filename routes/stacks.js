@@ -81,7 +81,7 @@ router.post('/', function(req, res){
             return res.send({Code: 399, Message: "Stack saved to datastore, but not git"});
           }
           else{
-            var child = exec('cd ' + stacksrepo + ' && git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email);
+            var child = exec('cd ' + stacksrepo + ' && git add -A && git commit -a -m "Cloudseed stack changes" --author ' + email + ' && git push');
             child.stdout.on('data', function(data){
               console.log(data);
             });
