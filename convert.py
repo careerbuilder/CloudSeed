@@ -90,11 +90,12 @@ def resolve_template_values():
         else:
             parametervalue = {'Ref': parameter}
         if 'List' in template['Parameters'][parameter]['Type']:
-            parametervalue = re.split(r'\s*,\s*', parametervalue)
+            parametervalue = re.split(r'\s*,\s*', str(parametervalue))
         temp_text = re.sub(r'\{\s*"Ref"\s*:\s*"' + parameter + r'"\}', json.dumps(parametervalue), temp_text)
     temp_two = json.loads(temp_text, object_hook=OrderedDict)
-    for cond in temp_two['Conditions']:
-        temp_two['Conditions'][cond] = solve_template_functions(temp_two['Conditions'][cond])
+    if 'Conditions' in temp_two:
+        for cond in temp_two['Conditions']:
+            temp_two['Conditions'][cond] = solve_template_functions(temp_two['Conditions'][cond])
     outs = {}
     if 'Outputs' in temp_two:
         outs = temp_two['Outputs']
