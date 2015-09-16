@@ -270,12 +270,8 @@ def main(file_pointer):
     template = json.load(temp_file, object_hook=OrderedDict)
     temp_file.close()
     new_template = resolve_template_values()
-    # print(json.dumps(new_template, indent=2))
     raw_parts = gather_resources()
     cs_mods = convert_parts(raw_parts)
-    # print(json.dumps(cs_mods, indent=2))
-    #cs_template = build_template(cs_mods)
-    # print(json.dumps(cs_template, indent=2))
     name = re.sub(r'(.*?[/\\])*(.*?)\.[Jj][Ss][Oo][Nn]', r'\2', sys.argv[1])
     build = {'Name': name, 'Region': profile['region'], 'Template': {}, 'Parts': cs_mods, 'Ready': False}
     fout = open(os.path.join(script_location, name + '.json'), 'w')
