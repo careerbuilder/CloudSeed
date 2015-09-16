@@ -23,6 +23,8 @@ from collections import OrderedDict
 template = {}
 profile = {}
 
+script_location = os.path.dirname(os.path.abspath(sys.argv[0]))
+
 new_template = {}
 cs_mods = []
 cs_parts_map = {}
@@ -121,7 +123,7 @@ def gather_resources():
 
 def convert_parts(parts):
     flat_parts = {}
-    for root, dirs, filenames in os.walk('./Parts'):
+    for root, dirs, filenames in os.walk(os.path.join(script_location, 'Parts')):
         for filename in filenames:
             if '.part' in filename:
                 f = open(os.path.join(root, filename))
@@ -143,8 +145,7 @@ def convert_parts(parts):
                 if mod['Type'] == match_part['Type'] and mod['Count'] > count:
                     count = mod['Count']
             count += 1
-            newguy = prepare_part(match_part, parts[part], part)
-            newguy['Count'] = count
+            newguy = prepare_part(match_part, parts[part], part, count)
             if 'Outputs' in newguy['Definition']:
                 newguy['Definition']['Outputs'] = replace_names(newguy['Definition']['Outputs'], count)
             mod_map[part] = newguy['LogicalName']
@@ -170,7 +171,7 @@ def convert_parts(parts):
     return clean_mods
 
 
-def prepare_part(part, resource, orig_name):
+def prepare_part(part, resource, orig_name, count):
     definition_string = json.dumps(part)
     definition = json.loads(definition_string, object_hook=OrderedDict)
     for param in definition['Parameters']:
@@ -184,11 +185,13 @@ def prepare_part(part, resource, orig_name):
     flat_string = json.dumps(definition)
     for res in part['Resources']:
         flat_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + res + r'"\s*\}', json.dumps({'Ref': orig_name}), flat_string)
+    if 'Conditions' in part:
+        for cond in part['Conditions']:
+            flat_string = re.sub(re.escape('"' + cond + '"'), '"'+cond + str(count)+'"', flat_string)
     definition = json.loads(flat_string, object_hook=OrderedDict)
     definition['Resources'] = replace_names(definition['Resources'], orig_name)
     copy_old_fields(definition['Parameters'], definition['Resources'][orig_name], resource)
-    mod = {'Type': part['Type'], 'LogicalName': orig_name, 'Definition': definition}
-
+    mod = {'Type': part['Type'], 'LogicalName': orig_name, 'Definition': definition, 'Count': count}
     return mod
 
 
@@ -238,8 +241,8 @@ def copy_old_fields(params, part, resource):
                 copy_old_fields(params, part[field], resource[field])
 
 
-if __name__ == "__main__":
-    pro_file = open(sys.argv[1])
+def main(file_pointer):
+    pro_file = open(file_pointer)
     profile = json.load(pro_file, object_hook=OrderedDict)
     pro_file.close()
     template_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[1])), '../', profile['template_location']))
@@ -253,9 +256,19 @@ if __name__ == "__main__":
     # print(json.dumps(cs_mods, indent=2))
     #cs_template = build_template(cs_mods)
     # print(json.dumps(cs_template, indent=2))
-    name = re.sub(r'.*[/\\](.*)\.[Jj][Ss][Oo][Nn]', r'\1', sys.argv[1])
+    name = re.sub(r'(.*?[/\\])*(.*?)\.[Jj][Ss][Oo][Nn]', r'\2', sys.argv[1])
     build = {'Name': name, 'Region': profile['region'], 'Template': {}, 'Parts': cs_mods, 'Ready': False}
-    print(json.dumps(build))
+    fout = open(os.path.join(script_location, name + '.json'), 'w')
+    json.dump(build, fout)
+    fout.close()
+    print('Done')
+
+
+
+
+
+if __name__ == "__main__":
+    main(sys.argv[1])
 
 '''
 def build_template(parts):
@@ -296,3 +309,28 @@ def build_template(parts):
     final_template['Description'] = template['Description']
     return final_template
 '''
+
+'''def convert_parts(parts):
+    flat_parts = {}
+    for root, dirs, filenames in os.walk(os.path.join(script_location, 'Parts')):
+        for filename in filenames:
+            if '.part' in filename:
+                f = open(os.path.join(root, filename))
+                part_obj = json.load(f)
+                f.close()
+                for obj in part_obj['Resources']:
+                    flat_parts[part_obj['Resources'][obj]['Type']] = part_obj
+    mods = []
+    mod_map = {}
+    bad = 0
+    for part in parts:
+        if parts[part]['Type'] not in flat_parts:
+            print(parts[part]['Type'] + " does not have a part parallel")
+            bad += 1
+            #print("Cannot build CloudSeed template")
+        else:
+            print("We got a ", parts[part]['Type'])
+    if bad < 1:
+        print("all good bro")
+    exit(-1)
+    '''
