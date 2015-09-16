@@ -91,7 +91,7 @@ router.post('/', function(req, res){
             });
             child.on('close', function(code) {
               console.log("Added stack");
-              var pushchild = exec('gitpush');
+              var pushchild = exec('cd ' + stacksrepo + ' && git push');
               pushchild.stdout.on('data', function(data){
                 console.log(data);
               });
