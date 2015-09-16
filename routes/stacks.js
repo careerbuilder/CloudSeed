@@ -81,7 +81,8 @@ router.post('/', function(req, res){
             return res.send({Code: 399, Message: "Stack saved to datastore, but not git"});
           }
           else{
-            var userstring = email.split('@')[0].replace('\.', ' ') +' <'+email+'>';
+            var email = email.trim();
+            var userstring = '"'+email.split('@')[0].replace('\.', ' ') +' <'+email+'>'+'" && git push';
             var child = exec('cd ' + stacksrepo + ' && git add -A && git commit -a -m "Cloudseed stack changes" --author ' + userstring);
             child.stdout.on('data', function(data){
               console.log(data);
@@ -91,17 +92,7 @@ router.post('/', function(req, res){
             });
             child.on('close', function(code) {
               console.log("Added stack");
-              var pushchild = exec('cd ' + stacksrepo + ' && git push');
-              pushchild.stdout.on('data', function(data){
-                console.log(data);
-              });
-              pushchild.stderr.on('data', function(data){
-                console.log(data);
-              });
-              pushchild.on('close', function(code) {
-                console.log("Added stack");
-                return res.send({Code: 400, Message: "Stack Saved!"});
-              });
+              return res.send({Code: 400, Message: "Stack Saved!"});
             });
           }
         });
