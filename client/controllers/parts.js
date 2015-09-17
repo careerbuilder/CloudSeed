@@ -301,7 +301,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
             else{
               dep = sub.Reference.Ref;
             }
-            apart.Definition.Resources[sub.Dependent] = dep;
+            apart.Definition.Resources[sub.Dependent].DependsOn = dep;
           }
         }
       });
