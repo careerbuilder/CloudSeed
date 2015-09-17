@@ -16,6 +16,14 @@
       }
     }
   },
+  "Outputs" : {
+    "VPNGatewayID" : {
+      "Description" : "ID of created VPNGateway",
+      "Value" : {
+        "Ref" : "VPNGateway"
+      }
+    }
+  },
   "Connections":{
         "Dependencies":[],
         "References":{},

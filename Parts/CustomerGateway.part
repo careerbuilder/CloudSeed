@@ -26,6 +26,14 @@
       }
     } 
   },
+  "Outputs" : {
+    "CustomerGatewayID" : {
+      "Description" : "ID of created CustomerGateway",
+      "Value" : {
+        "Ref" : "CustomerGateway"
+      }
+    }
+  },
   "Connections":{
         "Dependencies":[],
         "References":{},

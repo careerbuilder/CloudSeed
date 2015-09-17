@@ -20,6 +20,14 @@
       }
     } 
   },
+  "Outputs" : {
+    "VPNGatewayRoutePropagationID" : {
+      "Description" : "ID of created VPNGatewayRoutePropagation",
+      "Value" : {
+        "Ref" : "VPNGatewayRoutePropagation"
+      }
+    }
+  },
   "Connections":{
         "Dependencies":[],
         "References":{},

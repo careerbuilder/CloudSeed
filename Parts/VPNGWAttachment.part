@@ -20,6 +20,14 @@
         }
     }
   },
+  "Outputs" : {
+    "VPNGWAttachmentID" : {
+      "Description" : "ID of created VPNGWAttachment",
+      "Value" : {
+        "Ref" : "VPNGWAttachment"
+      }
+    }
+  },
   "Connections":{
         "Dependencies":[],
         "References":{},
