@@ -72,7 +72,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
           break;
       }
     }
+    var connections = copy.Connections || {Substitutes:[]};
+    var subs = connections.Substitutes;
     var partstring = JSON.stringify(copy);
+    var subsString = JSON.strigify(subs);
     for(var cond in copy.Conditions){
       var re = new RegExp('"'+cond+'"', 'g');
       partstring = partstring.replace(re, '"'+cond+''+newcount+'"');
@@ -80,8 +83,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     for(var res in copy.Resources){
       var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(res) +'\s*\}', 'g');
       partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
+      subsString = subsString.replace('\"' + res + '\"', '\"' + res+""+newcount + '\"');
     }
     copy = JSON.parse(partstring);
+    copy.Connections.Substitutes = JSON.parse(subsString);
     copy.Resources = $scope.replaceNames(copy.Resources || {}, newcount);
     copy.Outputs = $scope.replaceNames(copy.Outputs || {}, newcount);
     for(var par in copy.Parameters){
