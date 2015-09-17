@@ -82,7 +82,7 @@ router.post('/', function(req, res){
           }
           else{
             var userstring = '"'+email.split('@')[0].replace('\.', ' ') +' <'+email+'>'+'"';
-            exec('../VersionControl.sh', [stacksrepo, userstring], function(err, stdout, stderr){
+            exec('./VersionControl.sh', [stacksrepo, userstring], {cwd:stacksrepo}, function(err, stdout, stderr){
               if(err){
                 console.log(err);
                 return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});

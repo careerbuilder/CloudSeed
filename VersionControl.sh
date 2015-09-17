@@ -2,11 +2,8 @@
 
 #This script checks in and pushes any stack changes to the configured Repo
 
-repopath=$1
-author=$2
+author=$1
 
-cd "$repopath"
-echo Changed to cwd: "$repopath"
 git add -A
 echo Added all new files
 git commit -a -m "Cloudseed stack update" --author "$author"
