@@ -1,0 +1,38 @@
+{
+  "Type": "VPNGatewayRoutePropagation",
+  "Description" : "Version 1.0. Enables a virtual private gateway (VGW) to propagate routes to the routing tables of a VPC.",
+  "Parameters" : {
+    "VPNGWId" : {
+      "Description" : "The ID of the virtual private gateway that is attached to a VPC.",
+      "Type" : "String"
+    },
+    "RouteTables" : {
+      "Description" : "A list of routing table IDs that are associated with a VPC",
+      "Type" : "List::String"
+    }
+  },
+  "Resources" : {
+    "VPNGatewayRoutePropagation":{
+      "Type" : "AWS::EC2::VPNGatewayRoutePropagation",
+      "Properties" : {
+        "RouteTableIds" : {"Ref":"RouteTables"},
+        "VpnGatewayId" : {"Ref":"VPNGWId"}
+      }
+    } 
+  },
+  "Connections":{
+        "Dependencies":[],
+        "References":{},
+        "Substitutes":[
+          {
+            "Parameter": "RouteTables",
+            "Type":"List::RouteTable"
+          },
+          {
+            "Parameter": "VPNGWId",
+            "Type":"VPNGateway",
+            "Dependent": "VPNGatewayRoutePropagation"
+          }
+        ]
+    }
+}

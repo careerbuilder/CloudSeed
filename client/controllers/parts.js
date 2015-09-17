@@ -285,6 +285,27 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     apart.Definition = JSON.parse(partstring);
+    if(apart.Definition.Connections && apart.Definition.Connections.Substitutes){
+      var subs = apart.Definition.Connections.Substitutes;
+      subs.forEach(function(sub, i){
+        var isList = (sub.Type.indexOf("List::")==0);
+        if(sub.Dependent){
+          if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
+            var dep;
+            if(isList){
+              dep = [];
+              sub.Reference.forEach(function(ref){
+                dep.push(ref.Ref);
+              });
+            }
+            else{
+              dep = sub.Reference.Ref;
+            }
+            apart.Definition.Resources[sub.Dependent] = dep;
+          }
+        }
+      });
+    }
     if(apart.subparts){
       for(var subp in apart.subparts){
         var models = apart.subparts[subp];
