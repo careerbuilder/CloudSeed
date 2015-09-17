@@ -13,7 +13,7 @@
 var express = require('express');
 var db = require('../tools/db_tool.js');
 var aws = require('aws-sdk');
-var exec = require('child_process').exec;
+var exec = require('child_process').execFile;
 var fs = require('fs');
 var aws_obj = {region:"us-east-1"};
 if('Amazon' in global.config){
@@ -82,27 +82,13 @@ router.post('/', function(req, res){
           }
           else{
             var userstring = '"'+email.split('@')[0].replace('\.', ' ') +' <'+email+'>'+'"';
-            exec('git add -A', {cwd:stacksrepo}, function(err, stdout, stderr){
+            exec('../VersionControl.sh', [stacksrepo, userstring], function(err, stdout, stderr){
               if(err){
                 console.log(err);
                 return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});
               }
               console.log(stdout, '\n', stderr);
-              exec('git commit -a -m "Cloudseed stack changes" --author ' + userstring, {cwd:stacksrepo}, function(err, stdout, stderr){
-                if(err){
-                  console.log(err);
-                  return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});
-                }
-                console.log(stdout, '\n', stderr);
-                exec('git push', {cwd:stacksrepo}, function(err, stdout, stderr){
-                  if(err){
-                    console.log(err);
-                    return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});
-                  }
-                  console.log(stdout, '\n', stderr);
-                  return res.send({Code: 400, Message: "Stack Saved!"});
-                });
-              });
+              return res.send({Code: 400, Message: "Stack Saved!"});
             });
           }
         });
