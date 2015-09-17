@@ -1,0 +1,48 @@
+{
+  "Type": "VPNConnection",
+  "Description" : "Version 1.0.  Creates a new VPN connection between an existing virtual private gateway and a VPN customer gateway.",
+  "Parameters" : {
+    "VPNType" : {
+      "Description" : "The type of VPN connection this virtual private gateway supports.",
+      "Type" : "String",
+      "Default": "ipsec.1"
+    },
+    "CustomerGatewayID" : {
+      "Description" : "ID of Gateway to attach",
+      "Type" : "String"
+    },
+    "StaticRoutes" : {
+      "Description" : "Indicates whether the VPN connection requires static routes.",
+      "Type" : "Boolean"
+    },
+    "VPNGatewayID" : {
+      "Description" : "ID of Gateway to attach",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "VPNConnection":{
+      "Type" : "AWS::EC2::VPNConnection",
+      "Properties" : {
+        "Type" : {"Ref": "VPNType"},
+        "CustomerGatewayId" : {"Ref": "CustomerGatewayID"},
+        "StaticRoutesOnly" : {"Ref": "StaticRoutes"},
+        "VpnGatewayId" : {"Ref": "VPNGatewayID"}
+      }
+    }
+  },
+  "Connections":{
+        "Dependencies":[],
+        "References":{},
+        "Substitutes":[            
+            {
+                "Parameter": "CustomerGatewayID",
+                "Type":"CustomerGateway"
+            },
+            {
+                "Parameter": "VPNGatewayID",
+                "Type":"VPNGateway"
+            }
+        ]
+    }
+}

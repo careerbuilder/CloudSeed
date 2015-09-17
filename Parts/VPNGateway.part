@@ -1,0 +1,24 @@
+{
+  "Type": "VPNGateway",
+  "Description" : "Version 1.0.  Creates a VPNGateway.",
+  "Parameters" : {
+    "VPNType" : {
+      "Description" : "The type of VPN connection this virtual private gateway supports. The only valid value is ipsec.1",
+      "Type" : "String",
+      "Default": "ipsec.1"
+    }
+  },
+  "Resources" : {
+    "VPNGateway":{
+      "Type" : "AWS::EC2::VPNGateway",
+      "Properties" : {
+        "Type" : {"Ref": "VPNType"}
+      }
+    }
+  },
+  "Connections":{
+        "Dependencies":[],
+        "References":{},
+        "Substitutes":[]
+    }
+}

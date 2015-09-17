@@ -1,0 +1,34 @@
+{
+  "Type": "CustomerGateway",
+  "Description" : "Version 1.0. Provides information to AWS about your VPN customer gateway device.",
+  "Parameters" : {
+    "VPNType" : {
+      "Description" : "The type of VPN connection this virtual private gateway supports.",
+      "Type" : "String",
+      "Default": "ipsec.1"
+    },
+    "BGPASN" : {
+      "Description" : "The customer gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN)",
+      "Type" : "Number"
+    },
+    "StaticIP" : {
+      "Description" : "The internet-routable IP address for the customer gateway's outside interface. The address must be static.",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "CustomerGateway":{
+      "Type" : "AWS::EC2::CustomerGateway",
+      "Properties" : {
+        "BgpAsn" : {"Ref": "BGPASN"},
+        "IpAddress" : {"Ref": "StaticIP"},
+        "Type" : {"Ref":"VPNType"}
+      }
+    } 
+  },
+  "Connections":{
+        "Dependencies":[],
+        "References":{},
+        "Substitutes":[]
+    }
+}
