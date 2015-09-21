@@ -69,12 +69,6 @@ def solve_template_functions(function):
             return outval
         elif funcname == 'Fn::Select':
             return args[1][args[0]]
-        #elif funcname == 'Fn::FindInMap':
-        #    refmap = new_template['Mappings'][args[0]]
-        #    if len(args) > 2:
-        #        return refmap[args[1]][args[2]]
-        #    else:
-        #        return refmap[args[1]]
         else:
             return function
 
@@ -83,15 +77,18 @@ def resolve_template_values():
     parameters = template['Parameters']
     temp_text = json.dumps(template)
     for parameter in parameters:
+        found = False
         if 'Default' in template['Parameters'][parameter]:
             parametervalue = template['Parameters'][parameter]['Default']
+            found = True
         if parameter in profile['parameters']:
             parametervalue = profile['parameters'][parameter]
-        else:
-            parametervalue = {'Ref': parameter}
+            found = True
         if 'List' in template['Parameters'][parameter]['Type']:
             parametervalue = re.split(r'\s*,\s*', str(parametervalue))
-        temp_text = re.sub(r'\{\s*"Ref"\s*:\s*"' + parameter + r'"\}', json.dumps(parametervalue), temp_text)
+            found = True
+        if found:
+            temp_text = re.sub(r'\{\s*"Ref"\s*:\s*"' + parameter + r'"\}', json.dumps(parametervalue), temp_text)
     temp_two = json.loads(temp_text, object_hook=OrderedDict)
     if 'Conditions' in temp_two:
         for cond in temp_two['Conditions']:
@@ -114,7 +111,6 @@ def gather_resources():
             condname = new_template['Resources'][resource]['Condition']
             include = solve_template_functions(new_template['Conditions'][condname])
             if not include:
-                # print("Skipping ", resource)
                 continue
         resources[resource] = new_template['Resources'][resource]
         resources[resource].pop('Condition', None)
@@ -138,7 +134,6 @@ def check_convertible(parts):
             if parts[part]['Type'] not in problems:
                 problems.append(parts[part]['Type'])
     return len(problems)==0, problems
-
 
 
 def convert_parts(parts):
@@ -261,8 +256,8 @@ def copy_old_fields(params, part, resource):
                 copy_old_fields(params, part[field], resource[field])
 
 
-def main(file_pointer):
-    pro_file = open(file_pointer)
+if __name__ == "__main__":
+    pro_file = open(sys.argv[1])
     profile = json.load(pro_file, object_hook=OrderedDict)
     pro_file.close()
     template_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[1])), '../', profile['template_location']))
@@ -280,73 +275,28 @@ def main(file_pointer):
     print('Done')
 
 
-
-
-
-if __name__ == "__main__":
-    main(sys.argv[1])
-
-'''
-def build_template(parts):
-    final_template = {}
-    for part in parts:
-        part_piece = {}
-        for key in part['Definition']:
-            if 'Parameters' != key and 'Connections' != key:
-                part_piece[key] = part['Definition'][key]
-        part_string = json.dumps(part_piece)
-        for param in part['Definition']['Parameters']:
-            hidden = False
-            if 'Hidden' in part['Definition']['Parameters'][param]:
-                hidden = part['Definition']['Parameters'][param]['Hidden']
-            if hidden:
-                continue
-            value = None
-            if 'Default' in part['Definition']['Parameters'][param]:
-                value = part['Definition']['Parameters'][param]['Default']
-            if 'Value' in part['Definition']['Parameters'][param]:
-                value = part['Definition']['Parameters'][param]['Value']
-            if value is None:
-                if 'name' in param or 'Name' in param:
-                    value = part['LogicalName']
-            part_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + param + r'"\s*\}', json.dumps(value), part_string)
-        if 'Connections' in part['Definition'] and 'Substitutes' in part['Definition']['Connections']:
-            subs = part['Definition']['Connections']['Substitutes']
-            for sub in subs:
-                if 'Reference' in sub:
-                    part_string = re.sub(r'\{\s*"Ref"\s*:\s*"' + sub['Parameter'] + r'"\s*\}', json.dumps({'Ref': sub['Reference']}), part_string)
-        rep_part = json.loads(part_string, object_hook=OrderedDict)
-        for key in rep_part:
-            if isinstance(rep_part[key], dict):
-                if key not in final_template:
-                    final_template[key] = {}
-                for subkey in rep_part[key]:
-                    final_template[key][subkey] = rep_part[key][subkey]
-    final_template['Description'] = template['Description']
-    return final_template
-'''
-
-'''def convert_parts(parts):
-    flat_parts = {}
-    for root, dirs, filenames in os.walk(os.path.join(script_location, 'Parts')):
-        for filename in filenames:
-            if '.part' in filename:
-                f = open(os.path.join(root, filename))
-                part_obj = json.load(f)
-                f.close()
-                for obj in part_obj['Resources']:
-                    flat_parts[part_obj['Resources'][obj]['Type']] = part_obj
-    mods = []
-    mod_map = {}
-    bad = 0
-    for part in parts:
-        if parts[part]['Type'] not in flat_parts:
-            print(parts[part]['Type'] + " does not have a part parallel")
-            bad += 1
-            #print("Cannot build CloudSeed template")
-        else:
-            print("We got a ", parts[part]['Type'])
-    if bad < 1:
-        print("all good bro")
-    exit(-1)
+''' # Uncomment this block to check which old-style stacks can be safely converted
+    good = []
+    bad = []
+    for root, dirs, files in os.walk(os.path.abspath(sys.argv[1])):
+        for file in files:
+            if file.endswith('.json') and file != 'aws_credentials.json':
+                fullpath = os.path.join(root, file)
+                pro_file = open(fullpath)
+                name = re.sub(r'(.*?[/\\])*(.*?)\.[Jj][Ss][Oo][Nn]', r'\2', fullpath)
+                profile = json.load(pro_file, object_hook=OrderedDict)
+                pro_file.close()
+                template_path = os.path.join('D:/repos/StackCreation_SiteDB/CloudFormation', re.sub(r'(.*?[/\\])*(.*?\.template)', r'\2', profile['template_location']))
+                temp_file = open(template_path)
+                template = json.load(temp_file, object_hook=OrderedDict)
+                temp_file.close()
+                new_template = resolve_template_values()
+                raw_parts = gather_resources()
+                convertible, objs = check_convertible(raw_parts)
+                if convertible:
+                    good.append(name)
+                else:
+                    bad.append({'Name': name, 'Problems': objs})
+    print("Good:\n\t", json.dumps(good, indent=2))
+    print("Bad:\n\t", json.dumps(bad, indent=2))
     '''
