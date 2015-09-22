@@ -1,5 +1,9 @@
 <div id="awsparts">
-  <h4 ng-click="awspartsExpanded=!awspartsExpanded">AWS Parts <span ng-hide="awspartsExpanded" class="glyphicon glyphicon-chevron-down"></span><span ng-show="awspartsExpanded" class="glyphicon glyphicon-chevron-up"></span></h4>
+  <h4 ng-click="awspartsExpanded=!awspartsExpanded" style="cursor:pointer;">
+    AWS Parts
+    <span ng-hide="awspartsExpanded" class="glyphicon glyphicon-chevron-down">
+    </span><span ng-show="awspartsExpanded" class="glyphicon glyphicon-chevron-up"></span>
+  </h4>
   <hr>
   <ul class="nav nav-stacked" ng-show="awspartsExpanded">
     <li ng-repeat="part in awsparts=(parts | filter:{SubAssembly:'!'+true} | orderBy: 'Type')" role="presentation">
@@ -8,7 +12,11 @@
   </ul>
 </div>
 <div id="subassemblies" ng-show="subassemblies.length">
-  <h4 ng-click="subassembliesExpanded = !subassembliesExpanded">Custom Parts <span ng-hide="subassembliesExpanded" class="glyphicon glyphicon-chevron-down"></span><span ng-show="subassembliesExpanded" class="glyphicon glyphicon-chevron-up"></span></h4>
+  <h4 ng-click="subassembliesExpanded = !subassembliesExpanded" style="cursor:pointer;">
+    Custom Parts
+    <span ng-hide="subassembliesExpanded" class="glyphicon glyphicon-chevron-down"></span>
+    <span ng-show="subassembliesExpanded" class="glyphicon glyphicon-chevron-up"></span>
+  </h4>
   <hr>
   <ul class="nav nav-stacked" ng-show="subassembliesExpanded">
     <li ng-repeat="part in subassemblies=(parts | filter:{SubAssembly:true} | orderBy: 'Type')" role="presentation">
