@@ -19,6 +19,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.parts = [];
   $scope.stacks = [];
   $scope.build = {};
+  $scope.awspartsExpanded = true;
+  $scope.subassembliesExpanded = false;
+
   $http.get('/api/parts').success(function(data){
     if(data.Success){
       $scope.parts = data.Data;
