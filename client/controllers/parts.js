@@ -76,7 +76,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     var connections = copy.Connections || {Substitutes:[]};
-    var subs = connections.Substitutes;
+    var subs = connections.Substitutes || [];
     var partstring = JSON.stringify(copy);
     var subsString = JSON.stringify(subs);
     for(var cond in copy.Conditions){
