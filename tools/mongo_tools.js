@@ -13,14 +13,11 @@
 var mongo = require('mongoskin');
 var conn = "mongodb://localhost:27017/cloudseed"
 if(global.config.DB.Type === 'mongo'){
-  conn = "mongodb://"+global.config.DB.Host+":"+global.config.DB.Port+"/"+global.config.DB.Database  
+  conn = "mongodb://"+global.config.DB.Host+":"+global.config.DB.Port+"/"+global.config.DB.Database
 }
 var db = mongo.db(conn);
 
 module.exports ={
-  to_object_id: function(id){
-    return mongo.helper.toObjectID(id);
-  },
   put_user: function(user, callback){
     db.collection('users').insert(user, callback);
   },
