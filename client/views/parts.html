@@ -14,23 +14,11 @@
   <div class="row">
     <!-- sidebar -->
     <div class="col-md-3 hidden-xs hidden-sm">
-      <ul class="nav nav-stacked">
-        <li role="presentation"><h4>Add a Part</h4></li>
-        <hr>
-        <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
-          <a ng-click="addPart(part.Type)" role="button">{{part.Type}}</a>
-        </li>
-      </ul>
+      <parts-sidebar></parts-sidebar>
     </div>
     <div class="col-xs-8 hidden-md hidden-lg overlay" ng-show="expand">
       <div class="col-xs-10">
-        <ul class="nav nav-stacked">
-          <li role="presentation"><h4>Add a Part</h4></li>
-          <hr>
-          <li ng-repeat="part in parts | orderBy: 'Type'" role="presentation">
-            <a ng-click="addPart(part.Type)" role="button">{{part.Type}}</a>
-          </li>
-        </ul>
+        <parts-sidebar></parts-sidebar>
       </div>
       <div class="col-xs-2 stick-right">
         <div class="stick-right">

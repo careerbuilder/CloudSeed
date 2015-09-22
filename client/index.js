@@ -61,6 +61,14 @@ app.controller('PageController', function($http, $scope, $location, toastr, auth
 
 });
 
+app.directive('partsSidebar', function() {
+  return {
+    restrict: 'E',
+    controller: 'PartsCtrl',
+		templateUrl: 'views/sidebar.html'
+	}
+});
+
 app.factory('httpRequestInterceptor', function ($cookieStore) {
   return {
     request: function(config){
