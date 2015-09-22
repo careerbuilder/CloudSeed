@@ -42,6 +42,10 @@ for root, dirs, files in os.walk(os.path.join(tld, 'Parts')):
             obj['Subpart'] = True
         else:
             obj['Subpart'] = False
+        if '.subassembly' in file:
+            obj['SubAssembly'] = True
+        else:
+            obj['SubAssembly'] = False
         parts.replace_one({'Type': obj['Type']}, obj, True)
         print("updated: ", file)
 
