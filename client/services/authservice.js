@@ -46,7 +46,6 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
     var cookie = $cookieStore.get('c_s66d');
     var c_promise = $q.defer();
     if(cookie){
-      console.log("found session in progress");
       $http.get('/api/users/'+cookie)
       .then(function(res){
         var data = res.data;
