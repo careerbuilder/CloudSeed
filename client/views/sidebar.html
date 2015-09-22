@@ -1,14 +1,14 @@
 <h4>AWS Parts</h4>
 <hr>
 <ul class="nav nav-stacked">
-  <li ng-repeat="part in parts | filter:{SubAssembly:'!'+true} orderBy: 'Type'" role="presentation">
+  <li ng-repeat="part in parts | filter:{SubAssembly:'!'+true} | orderBy: 'Type'" role="presentation">
     <a ng-click="addPart(part.Type)" role="button" style="padding: 3px 15px;">{{part.Type}}</a>
   </li>
 </ul>
 <h4>Custom Parts</h4>
 <hr>
 <ul class="nav nav-stacked">
-  <li ng-repeat="part in parts | filter:{SubAssembly:true} orderBy: 'Type'" role="presentation">
+  <li ng-repeat="part in parts | filter:{SubAssembly:true} | orderBy: 'Type'" role="presentation">
     <a ng-click="addPart(part.Type)" role="button" style="padding: 3px 15px;">{{part.Type}}</a>
   </li>
 </ul>
