@@ -246,9 +246,40 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     return required;
   }
 
-  $scope.checkRequiredParam=function(value){
-    var req = !value.Hidden && (value.Default === null || value.Default === undefined);
-    return(req);
+  $scope.checkRequiredParam=function(part, value){
+    var req;
+    if('Required' in value){
+      if(typeof value.Required === 'boolean' || value.Required instanceof Boolean){
+        req = value.Required;
+      }
+      else if(typeof value.Required === 'object' || value.Required instanceof Object){
+        var func = value.Required.Func;
+        var args = [];
+        value.Required.args.forEach(function(arg){
+          if((typeof arg === 'object' || arg instanceof Object) && 'Ref' in arg){
+            args.push(apart.Definition.Parameters[arg.Ref]);
+          }
+          else{
+            args.push(arg);
+          }
+        });
+        switch (func) {
+          case 'Only':
+            return req_only(args);
+            break;
+          default:
+            return false;
+        }
+      }
+      else{
+        console.log('Invalid Requirements');
+        req = false;
+      }
+    }
+    else{
+      req = !value.Hidden && (value.Default === null || value.Default === undefined);
+    }
+    return req;
   }
 
   $scope.visibleParams=function(part){

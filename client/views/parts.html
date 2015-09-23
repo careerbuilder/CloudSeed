@@ -105,10 +105,10 @@
                     <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, value)}}</strong></label>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                       parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
-                      ng-required="checkRequiredParam(value)">
+                      ng-required="checkRequiredParam(apart, value)">
                     <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
                       ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
-                      ng-required="!value.Hidden && !value.Default && value.AllowedValues">
+                      ng-required="checkRequiredParam(apart, value) && value.AllowedValues">
                       <option ng-repeat="av in value.AllowedValues">{{av}}</option>
                     </select>
                   </div><!--/input-->
