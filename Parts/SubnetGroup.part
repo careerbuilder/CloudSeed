@@ -4,38 +4,27 @@
   "Parameters" : {
     "TeamName" : {
       "Description" : "Name of the team to own this group",
-      "Type" : "String"
+      "Type" : "String",
+      "Default":"",
+      "Required": false
     },
-    "SubnetOne" : {
-      "Description" : "One of the subnets to use in the group",
-      "Type" : "String"
+    "Subnets" : {
+      "Description" : "Subnets which will make up the group",
+      "Type" : "List::String",
+      "Required": true
     },
-    "SubnetTwo" : {
-      "Description" : "One of the subnets to use in the group",
-      "Type" : "String"
-    },
-    "SubnetThree" : {
-      "Description" : "One of the subnets to use in the group",
-      "Type" : "String"
+    "GroupDescription":{
+      "Description" : "The description for the DB Subnet Group",
+      "Type" : "String",
+      "Required": true
     }
   },
   "Resources" : {
     "SubnetGroup" : {
       "Type" : "AWS::RDS::DBSubnetGroup",
       "Properties" : {
-        "DBSubnetGroupDescription" : {
-          "Fn::Join" : ["", [{
-                "Ref" : "TeamName"
-              }, " DBSubnetGroup"]]
-        },
-        "SubnetIds" : [{
-            "Ref" : "SubnetOne"
-          }, {
-            "Ref" : "SubnetTwo"
-          }, {
-            "Ref" : "SubnetThree"
-          }
-        ],
+        "DBSubnetGroupDescription" : {"Ref" : "GroupDescription"},
+        "SubnetIds" : {"Ref" : "Subnets"},
         "Tags" : [{
             "Key" : "Name",
             "Value" : {
@@ -55,9 +44,7 @@
   "Outputs" : {},
   "Connections":{
     "Substitutes":[
-      {"Type":"Subnet", "Parameter":"SubnetOne", "Unique": true},
-      {"Type":"Subnet", "Parameter":"SubnetTwo", "Unique": true},
-      {"Type":"Subnet", "Parameter":"SubnetThree", "Unique": true}
+      {"Type":"List::Subnet", "Parameter":"Subnets"}
     ]
   }
 

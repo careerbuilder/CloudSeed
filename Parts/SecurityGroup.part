@@ -1,1 +1,106 @@
-{"Type":"SecurityGroup","Parameters":{"VPC":{"Description":"VPC ID","Type":"AWS::EC2::VPC::Id"},"SGName":{"Description":"Name of the created SG","Type":"String"},"SGDescription":{"Description":"Describe the group","Type":"String"}},"Resources":{"SecurityGroup":{"Type":"AWS::EC2::SecurityGroup","Properties":{"GroupDescription":{"Ref":"SGDescription"},"VpcId":{"Ref":"VPC"},"Tags":[{"Key":"Name","Value":{"Ref":"SGName"}}],"SecurityGroupIngress":[],"SecurityGroupEgress":[]}}},"Outputs":{"SecurityGroupID":{"Description":"ID of created security group","Value":{"Ref":"SecurityGroup"}}},"Connections":{"SubParts":{"Properties|SecurityGroupIngress":{"Type":"List::SecurityGroupIngressRule","Model":{"IpProtocol":{"Type":"String","Description":"Protocol for rule","Default":"tcp"},"FromPort":{"Type":"Number","Description":"Lowest port in range","Default":"0"},"ToPort":{"Type":"Number","Description":"Top port in range","Default":"65535"},"CidrIp":{"Type":"String","Description":"Ip range to allow","Default":"0.0.0.0/0"}}},"Properties|SecurityGroupEgress":{"Type":"List::SecurityGroupEgressRule","Model":{"IpProtocol":{"Type":"String","Description":"Protocol for rule","Default":"tcp"},"FromPort":{"Type":"Number","Description":"Lowest port in range","Default":"0"},"ToPort":{"Type":"Number","Description":"Top port in range","Default":"65535"},"CidrIp":{"Type":"String","Description":"Ip range to allow","Default":"0.0.0.0/0"}}}},"Substitutes":[{"Parameter":"VPC","Type":"VPC"}]}}
+{
+  "Type" : "SecurityGroup",
+  "Parameters" : {
+    "VPC" : {
+      "Description" : "VPC ID",
+      "Type" : "AWS::EC2::VPC::Id",
+      "Required": true
+    },
+    "SGName" : {
+      "Description" : "Name of the created SG",
+      "Type" : "String",
+      "Default": "",
+      "Required": false
+    },
+    "SGDescription" : {
+      "Description" : "Describe the group",
+      "Type" : "String",
+      "Required": true
+    }
+  },
+  "Resources" : {
+    "SecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : {"Ref" : "SGDescription"},
+        "VpcId" : {"Ref" : "VPC"},
+        "Tags" : [{
+            "Key" : "Name",
+            "Value" : {
+              "Ref" : "SGName"
+            }
+          }
+        ],
+        "SecurityGroupIngress" : [],
+        "SecurityGroupEgress" : []
+      }
+    }
+  },
+  "Outputs" : {
+    "SecurityGroupID" : {
+      "Description" : "ID of created security group",
+      "Value" : {
+        "Ref" : "SecurityGroup"
+      }
+    }
+  },
+  "Connections" : {
+    "SubParts" : {
+      "Properties|SecurityGroupIngress" : {
+        "Type" : "List::SecurityGroupIngressRule",
+        "Model" : {
+          "IpProtocol" : {
+            "Type" : "String",
+            "Description" : "Protocol for rule",
+            "Default" : "tcp"
+          },
+          "FromPort" : {
+            "Type" : "Number",
+            "Description" : "Lowest port in range",
+            "Default" : "0"
+          },
+          "ToPort" : {
+            "Type" : "Number",
+            "Description" : "Top port in range",
+            "Default" : "65535"
+          },
+          "CidrIp" : {
+            "Type" : "String",
+            "Description" : "Ip range to allow",
+            "Default" : "0.0.0.0/0"
+          }
+        }
+      },
+      "Properties|SecurityGroupEgress" : {
+        "Type" : "List::SecurityGroupEgressRule",
+        "Model" : {
+          "IpProtocol" : {
+            "Type" : "String",
+            "Description" : "Protocol for rule",
+            "Default" : "tcp"
+          },
+          "FromPort" : {
+            "Type" : "Number",
+            "Description" : "Lowest port in range",
+            "Default" : "0"
+          },
+          "ToPort" : {
+            "Type" : "Number",
+            "Description" : "Top port in range",
+            "Default" : "65535"
+          },
+          "CidrIp" : {
+            "Type" : "String",
+            "Description" : "Ip range to allow",
+            "Default" : "0.0.0.0/0"
+          }
+        }
+      }
+    },
+    "Substitutes" : [{
+        "Parameter" : "VPC",
+        "Type" : "VPC"
+      }
+    ]
+  }
+}

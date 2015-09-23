@@ -4,11 +4,13 @@
   "Parameters" : {
     "ACL" : {
       "Description" : "ID of ACL",
-      "Type" : "String"
+      "Type" : "String",
+      "Required": true
     },
     "Subnet" : {
       "Description" : "ID of Associated Subnet",
-      "Type" : "String"
+      "Type" : "String",
+      "Required": true
     }
   },
   "Resources" : {
