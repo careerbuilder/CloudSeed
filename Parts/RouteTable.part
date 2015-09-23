@@ -4,11 +4,14 @@
   "Parameters" : {
     "VPC" : {
       "Description" : "ID of VPC to use",
-      "Type" : "String"
+      "Type" : "String",
+      "Required": true
     },
     "RouteTableName" : {
       "Description" : "Name of created Route Table",
-      "Type" : "String"
+      "Type" : "String",
+      "Default": "",
+      "Required": false
     }
   },
   "Resources" : {
@@ -35,9 +38,6 @@
     }
   },
   "Connections":{
-    "References":[
-        {"Type":"List::Route"}
-    ],
     "Substitutes":[            
         {
             "Parameter": "VPC",

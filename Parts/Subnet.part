@@ -1,73 +1,40 @@
 {
     "Type": "Subnet",
     "Parameters": {
-        "Region": {
-            "Description": "Name of regional footprint for the VPC",
-            "Type": "String",
-            "AllowedValues": [
-                "USEast",
-                "USEastTest",
-                "Ireland",
-                "Singapore"
-            ],
-            "Default": "USEast",
-            "ConstraintDescription": "Must specify USEast, USEastTest, Ireland, or Singapore."
-        },
         "AZ":{
           "Description": "AvailabilityZone in the provided region",
           "Type":"String",
-          "Default":"One",
-          "AllowedValues": ["One", "Two", "Three"]
+          "Default":"us-east-1b",
+          "Required": false,
+          "AllowedValues": ["us-east-1b","us-east-1c","us-east-1d","eu-west-1a","eu-west-1c","eu-west-1b","ap-southeast-1a","ap-southeast-1b"]
         },
-        "TeamName": {
-            "Description": "Name of the team that will have access to the server management within these subnets - must match Team tag value",
-            "Type": "String"
+        "SubnetCIDR": {
+            "Description": "CIDR block for the subnet in the first AZ",
+            "Type": "String",
+            "Required": true
+        },
+        "IsPublic": {
+            "Description": "Is the subnet Public ie do any instances need public IP resolution?",
+            "Type": "Boolean",
+            "Default": false,
+            "Required": true
+        },
+        "VPC": {
+            "Description": "VPC ID",
+            "Type": "String",
+            "Required": true
         },
         "SubnetName": {
             "Description": "Name of the public internet-facing subnet",
             "Type": "String",
-            "Default": ""
+            "Default": "",
+            "Required": false
         },
-        "Accessibility": {
-            "Description": "Is the subnet Public or Private, ie do any instances need public IP resolution?",
+        "TeamName": {
+            "Description": "Name of the team the subnet is being made for",
             "Type": "String",
-            "AllowedValues": [
-                "Private",
-                "Public"
-            ],
-            "Default": "Private",
-            "ConstraintDescription": "Must specify Public or Private."
-        },
-        "SubnetCIDR": {
-            "Description": "CIDR block for the subnet in the first AZ",
-            "Type": "String"
-        },
-        "VPC": {
-            "Description": "VPC ID",
-            "Type": "String"
-        }
-    },
-    "Mappings": {
-        "AZConfig": {
-            "USEast": {
-                "One": "us-east-1b",
-                "Two": "us-east-1c",
-                "Three": "us-east-1d"
-            },
-            "USEastTest": {
-                "One": "us-east-1b",
-                "Two": "us-east-1c",
-                "Three": "us-east-1d"
-            },
-            "Ireland": {
-                "One": "eu-west-1a",
-                "Two": "eu-west-1c",
-                "Three": "eu-west-1b"
-            },
-            "Singapore": {
-                "One": "ap-southeast-1a",
-                "Two": "ap-southeast-1b"
-            }
+            "Default": "",
+            "Required": false
         }
     },
     "Conditions": {},
@@ -75,19 +42,10 @@
         "Subnet": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
-                "CidrBlock": {
-                    "Ref": "SubnetCIDR"
-                },
-                "AvailabilityZone": {
-                    "Fn::FindInMap": [
-                        "AZConfig",
-                        {
-                            "Ref": "Region"
-                        },
-                        {"Ref":"AZ"}
-                    ]
-                },
+                "CidrBlock": {"Ref": "SubnetCIDR"},
+                "AvailabilityZone": {"Ref":"AZ"},
                 "VpcId": {"Ref": "VPC"},
+                "MapPublicIpOnLaunch":{"Ref": "IsPublic"},
                 "Tags": [
                     {
                         "Key": "Team",
