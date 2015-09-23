@@ -33,7 +33,8 @@
     "Action": {
       "Description" : "Action for rule",
       "Type" : "String",
-      "Default": "Allow"
+      "Default": "Allow",
+      "AllowedValues": ["Allow", "Deny"]
     },
     "RuleNum": {
       "Description" : "Rule Number",

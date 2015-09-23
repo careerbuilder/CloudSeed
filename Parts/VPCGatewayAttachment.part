@@ -26,7 +26,7 @@
       }
     }
   },
-  "Conditions:{
+  "Conditions":{
     "HasIGW":{
       "Fn::Not" :
         [
@@ -55,7 +55,6 @@
               "Fn:If":[
                 "HasVPNGW",
                 {"Ref":"VPNGW"},
-                {"Ref":"AWS::NoValue"}
                 {"Ref":"AWS::NoValue"}
               ]
             },
