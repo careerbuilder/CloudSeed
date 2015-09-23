@@ -12,7 +12,7 @@
 */
 "use strict";
 
-app.factory('requirementservice', [function(){
+app.factory('requirementsservice', [function(){
   function req_only(args){
     var only = args[0];
     var self = args[args.length-1];
@@ -20,7 +20,7 @@ app.factory('requirementservice', [function(){
     var good = [];
     for(var i=1; i<args.length-1; i++){
       var arg = args[i];
-      if(arg.Value && arg.Value !== ''){
+      if((arg.Value && arg.Value !== '') || (arg.Hidden)){
         current ++;
         good.push(i);
       }
@@ -71,6 +71,13 @@ app.factory('requirementservice', [function(){
         req = !value.Hidden && (value.Default === null || value.Default === undefined);
       }
       return req;
+    },
+    isSubDisabled: function(part, sub){
+      if(part.Definition.Parameters[sub.Parameter].Disabled){
+        return true;
+      }
+      return false;
     }
   }
+
 }]);

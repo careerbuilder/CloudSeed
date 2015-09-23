@@ -12,7 +12,7 @@
 */
 'use strict';
 
-app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice, requirementservice){
+app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice, requirementsservice){
   $scope.auth = authservice;
   $scope.regions = [];
   $scope.addedParts = [];
@@ -178,6 +178,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     }
   }
 
+  $scope.subdisabled=function(part, sub){
+    return requirementsservice.isSubDisabled(part, sub);
+  }
+
   $scope.setParam=function(part, sub, name){
     var param = sub.Parameter;
     var isList = (sub.Type.indexOf("List::") == 0);
@@ -249,7 +253,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
 
 
   $scope.checkRequiredParam=function(part, value){
-    return requirementservice.ResolveRequired(part, value);
+    return requirementsservice.ResolveRequired(part, value);
   }
 
   $scope.visibleParams=function(part){
