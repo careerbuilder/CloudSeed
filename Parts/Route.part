@@ -4,31 +4,49 @@
   "Parameters" : {
     "RouteTable" : {
       "Description" : "Host Route Table",
-      "Type" : "String"
+      "Type" : "String",
+      "Required": true
     },
     "DestinationCidr" : {
       "Description" : "Which traffic should be routed",
-      "Type" : "String"
+      "Type" : "String",
+      "Required": true
     },
     "Gateway" : {
       "Description" : "Id of Gateway",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "",
+      "Required": {
+        "Func": "Only",
+        "Args": [1, {"Ref": "Instance"}, {"Ref": "NetworkInterface"}, {"Ref": "VpcPeeringConnection"}]
+      }
     },
     "Instance" : {
       "Description" : "Id of EC2 instance",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "",
+      "Required": {
+        "Func": "Only",
+        "Args": [1, {"Ref": "Gateway"}, {"Ref": "NetworkInterface"}, {"Ref": "VpcPeeringConnection"}]
+      }
     },
     "NetworkInterface" : {
       "Description" : "Id of Network Interface",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "",
+      "Required": {
+        "Func": "Only",
+        "Args": [1, {"Ref": "Instance"}, {"Ref": "Gateway"}, {"Ref": "VpcPeeringConnection"}]
+      }
     },
     "VpcPeeringConnection" : {
       "Description" : "Id of peering connection",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "",
+      "Required": {
+        "Func": "Only",
+        "Args": [1, {"Ref": "Instance"}, {"Ref": "NetworkInterface"}, {"Ref": "Gateway"}]
+      }
     }
   },
   "Conditions": {
