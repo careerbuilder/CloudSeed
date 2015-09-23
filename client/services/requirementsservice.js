@@ -46,8 +46,8 @@ app.factory('requirementsservice', [function(){
           var func = value.Required.Func;
           var args = [];
           value.Required.Args.forEach(function(arg){
-            if((typeof arg === 'object' || arg instanceof Object) && 'Ref' in arg){
-              args.push(part.Definition.Parameters[arg.Ref]);
+            if((typeof arg === 'object' || arg instanceof Object) && 'Param' in arg){
+              args.push(part.Definition.Parameters[arg.Param]);
             }
             else{
               args.push(arg);

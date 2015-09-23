@@ -18,7 +18,7 @@
       "Default" : "",
       "Required": {
         "Func": "Only",
-        "Args": [1, {"Ref": "Instance"}, {"Ref": "NetworkInterface"}, {"Ref": "VpcPeeringConnection"}]
+        "Args": [1, {"Param": "Instance"}, {"Param": "NetworkInterface"}, {"Param": "VpcPeeringConnection"}]
       }
     },
     "Instance" : {
@@ -27,7 +27,7 @@
       "Default" : "",
       "Required": {
         "Func": "Only",
-        "Args": [1, {"Ref": "Gateway"}, {"Ref": "NetworkInterface"}, {"Ref": "VpcPeeringConnection"}]
+        "Args": [1, {"Param": "Gateway"}, {"Param": "NetworkInterface"}, {"Param": "VpcPeeringConnection"}]
       }
     },
     "NetworkInterface" : {
@@ -36,7 +36,7 @@
       "Default" : "",
       "Required": {
         "Func": "Only",
-        "Args": [1, {"Ref": "Instance"}, {"Ref": "Gateway"}, {"Ref": "VpcPeeringConnection"}]
+        "Args": [1, {"Param": "Instance"}, {"Param": "Gateway"}, {"Param": "VpcPeeringConnection"}]
       }
     },
     "VpcPeeringConnection" : {
@@ -45,7 +45,7 @@
       "Default" : "",
       "Required": {
         "Func": "Only",
-        "Args": [1, {"Ref": "Instance"}, {"Ref": "NetworkInterface"}, {"Ref": "Gateway"}]
+        "Args": [1, {"Param": "Instance"}, {"Param": "NetworkInterface"}, {"Param": "Gateway"}]
       }
     }
   },
