@@ -1,0 +1,82 @@
+{
+  "Type": "VPCGatewayAttachment",
+  "Description" : "Version 1.0.  Attaches a Gateway to a VPC.",
+  "Parameters" : {
+    "VPC" : {
+      "Description" : "VPC to which the IGW will attach",
+      "Type" : "String",
+      "Required":true
+    },
+    "IGW" : {
+      "Description" : "Internet Gateway to attach",
+      "Type" : "String",
+      "Default": "",
+      "Required":{
+        "Func": "Only",
+        "Args": [1, {"Param":"VPNGW"}]
+      }
+    },
+    "VPNGW" : {
+      "Description" : "VPN Gateway to attach",
+      "Type" : "String",
+      "Default": "",
+      "Required":{
+        "Func": "Only",
+        "Args": [1, {"Param":"IGW"}]
+      }
+    }
+  },
+  "Conditions:{
+    "HasIGW":{
+      "Fn::Not" :
+        [
+          {"Fn::Equals" : [{"Ref" : "IGW"}, ""]}
+        ]
+    },
+    "HasVPNGW":{
+      "Fn::Not" :
+        [
+          {"Fn::Equals" : [{"Ref" : "VPNGW"}, ""]}
+        ]
+    }
+  },
+  "Resources" : {
+    "VPCGatewayAttachment":{
+        "Type" : "AWS::EC2::VPCGatewayAttachment",
+        "Properties" : {
+            "InternetGatewayId" :{
+              "Fn:If":[
+                "HasIGW",
+                {"Ref":"IGW"},
+                {"Ref":"AWS::NoValue"}
+              ]
+            },
+            "VpnGatewayId" :{
+              "Fn:If":[
+                "HasVPNGW",
+                {"Ref":"VPNGW"},
+                {"Ref":"AWS::NoValue"}
+                {"Ref":"AWS::NoValue"}
+              ]
+            },
+            "VpcId" : {"Ref":"VPC"}
+        }
+    }
+  },
+  "Connections":{
+        "Substitutes":[            
+            {
+                "Parameter": "VPC",
+                "Type":"VPC"
+            },
+            {
+                "Parameter": "IGW",
+                "Type":"InternetGateway"
+            },
+            {
+                "Parameter": "VPNGW",
+                "Type":"VPNGateway"
+            }
+        ]
+    }
+}

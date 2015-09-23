@@ -3,27 +3,116 @@
   "Description" : "Version 1.0.  Associates an EIP.",
   "Parameters" : {
     "ElasticIP":{
-        "Description": "ElasticIP. Blank for new",
-        "Type": "String"
+      "Description": "Elastic IP address that you want to associate with the Amazon EC2 instance specified by the InstanceId",
+      "Type": "String",
+      "Default":"",
+      "Required": false
     },
     "Instance":{
       "Description": "Instance to associate",
-      "Type": "String"
+      "Type": "String",
+      "Default":"",
+      "Required": false
+    },
+    "AllocationID":{
+      "Type": "String",
+      "Default":"",
+      "Description":"Allocation ID for the VPC Elastic IP address you want to associate with an Amazon EC2 instance in your VPC.",
+      "Required": false
+    },
+    "NetworkInterfaceID":{
+      "Type": "String",
+      "Default":"",
+      "Description":"The ID of the network interface to associate with the Elastic IP address (VPC only).",
+      "Required": false
+    },
+    "PrivateIP":{
+      "Type": "String",
+      "Default":"",
+      "Description":"The private IP address that you want to associate with the Elastic IP address.",
+      "Required": false
+    }
+  },
+  "Conditions":{
+    "HasEIP":{
+      "Fn::Not":[
+        {"Fn:Equals":["", {"Ref":"ElasticIP"}]}
+      ]
+    },
+    "HasInstance":{
+      "Fn::Not":[
+        {"Fn:Equals":["", {"Ref":"Instance"}]}
+      ]
+    },
+    "HasAllocationID":{
+      "Fn::Not":[
+        {"Fn:Equals":["", {"Ref":"AllocationID"}]}
+      ]
+    },
+    "HasNetworkInterfaceID":{
+      "Fn::Not":[
+        {"Fn:Equals":["", {"Ref":"NetworkInterfaceID"}]}
+      ]
+    },
+    "HasPrivateIP":{
+      "Fn::Not":[
+        {"Fn:Equals":["", {"Ref":"PrivateIP"}]}
+      ]
     }
   },
   "Resources" : {
     "EIPAssociation":{
-        "Type": "AWS::EC2::EIPAssociation",
-        "Properties": {
-            "EIP": {"Ref":"ElasticIP"},
-            "InstanceId": {"Ref":"Instance"}
+      "Type": "AWS::EC2::EIPAssociation",
+      "Properties": {
+        "AllocationId": {
+          "Fn::If":[
+            "HasAllocationID",
+            {"Ref":"AllocationID"},
+            {"Ref": "AWS::NoValue"}
+          ]
+        },
+        "NetworkInterfaceId": {
+          "Fn::If":[
+            "HasAllocationID",
+            {"Ref":"NetworkInterfaceID"},
+            {"Ref": "AWS::NoValue"}
+          ]
+        },
+        "PrivateIpAddress": {
+          "Fn::If":[
+            "HasAllocationID",
+            {"Ref":"PrivateIP"},
+            {"Ref": "AWS::NoValue"}
+          ]
+        },
+        "EIP": {
+          "Fn::If":[
+            "HasAllocationID",
+            {"Ref":"ElasticIP"},
+            {"Ref": "AWS::NoValue"}
+          ]
+        },
+        "InstanceId": {
+          "Fn::If":[
+            "HasAllocationID",
+            {"Ref":"Instance"},
+            {"Ref": "AWS::NoValue"}
+          ]
         }
+      }
+    }
+  },
+  "Outputs":{
+    "EIPAssociationID":{
+      "Description": "ID of created EIPAssociation",
+      "Value": {"Ref":"EIPAssociation"}
     }
   },
   "Connections":{
     "Substitutes": [
       {"Type":"EIP", "Parameter":"ElasticIP"},
-      {"Type":"EC2", "Parameter":"Instance"}
+      {"Type":"EC2Instance", "Parameter":"Instance"},
+      {"Type":"NetworkInterface", "Parameter":"NetworkInterfaceID"}
     ]
   }
 }
