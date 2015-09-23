@@ -101,8 +101,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     $scope.addedParts.push(mod);
   }
 
-  $scope.requiredName=function(param, value){
-    if($scope.checkRequiredParam(value)){
+  $scope.requiredName=function(param, part, value){
+    if($scope.checkRequiredParam(part, value)){
       return param+" *";
     }
     else{
@@ -246,58 +246,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     return required;
   }
 
-  function req_only(args){
-    var only = args[0];
-    var self = args[args.length-1];
-    var current = 0;
-    for(var i=1, i<args.length-1; i++){
-      if(arg.Value != ''){
-        current ++;
-      }
-    }
-    if(current >= only){
-      return false;
-    }
-    else{
-      return true;
-    }
-  }
+
 
   $scope.checkRequiredParam=function(part, value){
-    var req;
-    if('Required' in value){
-      if(typeof value.Required === 'boolean' || value.Required instanceof Boolean){
-        req = value.Required;
-      }
-      else if(typeof value.Required === 'object' || value.Required instanceof Object){
-        var func = value.Required.Func;
-        var args = [];
-        value.Required.args.forEach(function(arg){
-          if((typeof arg === 'object' || arg instanceof Object) && 'Ref' in arg){
-            args.push(apart.Definition.Parameters[arg.Ref]);
-          }
-          else{
-            args.push(arg);
-          }
-        });
-        switch (func) {
-          case 'Only':
-            args.push(value);
-            return req_only(args);
-            break;
-          default:
-            return false;
-        }
-      }
-      else{
-        console.log('Invalid Requirements');
-        req = false;
-      }
-    }
-    else{
-      req = !value.Hidden && (value.Default === null || value.Default === undefined);
-    }
-    return req;
+    return requirementservice.ResolveRequired(part, value);
   }
 
   $scope.visibleParams=function(part){

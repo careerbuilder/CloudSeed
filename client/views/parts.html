@@ -102,13 +102,13 @@
               <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-hide="value.Hidden">
                 <ng-form name="parametersForm">
                   <div class="form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
-                    <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, value)}}</strong></label>
+                    <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, apart, value)}}</strong></label>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                       parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
-                      ng-required="checkRequiredParam(apart, value)">
+                      ng-required="checkRequiredParam(apart, value)" ng-disabled="value.Disabled">
                     <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
                       ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
-                      ng-required="checkRequiredParam(apart, value) && value.AllowedValues">
+                      ng-required="checkRequiredParam(apart, value) && value.AllowedValues" ng-disabled="value.Disabled">
                       <option ng-repeat="av in value.AllowedValues">{{av}}</option>
                     </select>
                   </div><!--/input-->
