@@ -246,6 +246,23 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     return required;
   }
 
+  function req_only(args){
+    var only = args[0];
+    var self = args[args.length-1];
+    var current = 0;
+    for(var i=1, i<args.length-1; i++){
+      if(arg.Value != ''){
+        current ++;
+      }
+    }
+    if(current >= only){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
   $scope.checkRequiredParam=function(part, value){
     var req;
     if('Required' in value){
@@ -265,6 +282,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         });
         switch (func) {
           case 'Only':
+            args.push(value);
             return req_only(args);
             break;
           default:
