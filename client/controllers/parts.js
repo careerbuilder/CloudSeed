@@ -12,7 +12,7 @@
 */
 'use strict';
 
-app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice){
+app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice, requirementservice){
   $scope.auth = authservice;
   $scope.regions = [];
   $scope.addedParts = [];
