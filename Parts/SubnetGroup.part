@@ -10,7 +10,7 @@
     },
     "Subnets" : {
       "Description" : "Subnets which will make up the group",
-      "Type" : "List::String",
+      "Type" : "CommaDelimitedList",
       "Required": true
     },
     "GroupDescription":{
