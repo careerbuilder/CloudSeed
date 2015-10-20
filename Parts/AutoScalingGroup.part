@@ -28,7 +28,7 @@
       "Description" : "A list of load balancers associated with this Auto Scaling group.",
       "Type" : "CommaDelimitedList",
       "Default" : "",
-      "Required" : true
+      "Required" : false
     },
     "Max" : {
       "Description" : "The maximum size of the Auto Scaling group.",
@@ -46,7 +46,7 @@
       "Description" : "A list of subnet identifiers of Amazon VPCs.",
       "Type" : "CommaDelimitedList",
       "Default" : "",
-      "Required" : true
+      "Required" : false
     }
   },
   "Conditions" : {

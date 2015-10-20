@@ -36,7 +36,8 @@
     "DBVersion" : {
       "Description" : "Version of the DBEngine",
       "Type" : "String",
-      "Required" : true
+      "Default":"",
+      "Required" : false
     },
     "ParameterGroup" : {
       "Description" : "Name of the ParameterGroup",
