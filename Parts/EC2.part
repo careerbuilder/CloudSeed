@@ -1,6 +1,11 @@
 {
-  "Type": "EC2",
+  "Type": "EC2Instance",
   "Parameters" : {
+    "AvailabilityZoneName":{
+      "Description" : "Name of the resident AZ",
+      "Type" : "String",
+      "Required": false
+    },
     "Subnet" : {
       "Description" : "ID for the home subnet",
       "Type" : "String"
@@ -29,7 +34,7 @@
     }
   },
   "Resources" : {
-    "EC2" : {
+    "EC2Instance" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
         "ImageId" : {"Ref" : "AMI"},

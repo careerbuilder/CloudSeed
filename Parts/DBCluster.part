@@ -1,0 +1,169 @@
+{
+  "Type" : "DBCluster",
+  "Parameters" : {
+    "TeamName" : {
+      "Description" : "Name of the team who owns the cluster",
+      "Type" : "String",
+      "Required" : true
+    },
+    "RDSName" : {
+      "Description" : "Name of the created RDS Instance",
+      "Type" : "String",
+      "Required" : true
+    },
+    "RDSSG" : {
+      "Description" : "IDs of security groups to use for new RDS",
+      "Type" : "CommaDelimitedList",
+      "Required" : true
+    },
+    "SubnetGroup" : {
+      "Description" : "name of subnet group to use for new RDS",
+      "Type" : "String",
+      "Required" : true
+    },
+    "SnapshotID" : {
+      "Description" : "ID of snapshot to use (if any)",
+      "Type" : "String",
+      "Default" : "",
+      "Required" : false
+    },
+    "BackupDays" : {
+      "Description" : "Days to backup",
+      "Type" : "Number",
+      "Default" : 14,
+      "Required" : true
+    },
+    "DBVersion" : {
+      "Description" : "Version of the DBEngine",
+      "Type" : "String",
+      "Required" : true
+    },
+    "ParameterGroup" : {
+      "Description" : "Name of the ParameterGroup",
+      "Type" : "String",
+      "Default" : "",
+      "Required" : false
+    },
+    "SAUserName" : {
+      "Description" : "Username of SA user",
+      "Type" : "String",
+      "Required" : true
+    },
+    "Portnum" : {
+      "Description" : "Port",
+      "Type" : "Number",
+      "Default" : 3633,
+      "Required" : true
+    }
+  },
+  "Conditions" : {
+    "HasParamGroup" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "ParameterGroup"
+            }
+          ]
+        }
+      ]
+    },
+    "HasSnapshot" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "SnapshotID"
+            }
+          ]
+        }
+      ]
+    },
+    "HasVersion" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "DBVersion"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Resources" : {
+    "DBCluster" : {
+      "Type" : "AWS::RDS::DBCluster",
+      "Properties" : {
+        "AvailabilityZones" : {
+          "Fn::GetAZs" : {
+            "Ref" : "AWS::Region"
+          }
+        },
+        "BackupRetentionPeriod" : {
+          "Ref" : "BackupDays"
+        },
+        "DatabaseName" : {
+          "Ref" : "RDSName"
+        },
+        "DBClusterParameterGroupName" : {
+          "Ref" : "ParameterGroup"
+        },
+        "DBSubnetGroupName" : {
+          "Ref" : "SubnetGroup"
+        },
+        "Engine" : "aurora",
+        "EngineVersion" : {
+          "Fn::If" : ["HasVersion", {
+              "Ref" : "DBVersion"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "MasterUsername" : {
+          "Ref" : "SAUserName"
+        },
+        "MasterUserPassword" : "changemeNOW",
+        "Port" : {
+          "Ref" : "Portnum"
+        },
+        "SnapshotIdentifier" : {
+          "Fn::If" : ["HasSnapshot", {
+              "Ref" : "SnapshotID"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "Tags" : [{
+            "Key" : "Name",
+            "Value" : {
+              "Ref" : "RDSName"
+            }
+          }, {
+            "Key" : "Team",
+            "Value" : {
+              "Ref" : "TeamName"
+            }
+          }
+        ],
+        "VpcSecurityGroupIds" : {
+          "Ref" : "RDSSG"
+        }
+      }
+    }
+  },
+  "Outputs" : {
+    "RDSID" : {
+      "Description" : "ID of created cluster",
+      "Value" : {
+        "Ref" : "DBCluster"
+      }
+    }
+  },
+  "Connections" : {
+    "Substitutes" : [{
+        "Type" : "SubnetGroup",
+        "Parameter" : "SubnetGroup"
+      }, {
+        "Type" : "List::SecurityGroup",
+        "Parameter" : "RDSSG"
+      }
+    ]
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "Type" : "AutoScalingGroup",
+  "Parameters" : {
+    "CooldownSeconds" : {
+      "Description" : "The number of seconds after a scaling activity is completed before any further scaling activities can start.",
+      "Type" : "String",
+      "Default" : "60",
+      "Required" : true
+    },
+    "DesiredInstances" : {
+      "Description" : "Specifies the desired capacity for the Auto Scaling group.",
+      "Type" : "String",
+      "Default" : "1",
+      "Required" : true
+    },
+    "HealthGracePeriod" : {
+      "Description" : "The length of time in seconds after a new EC2 instance comes into service that Auto Scaling starts checking its health.",
+      "Type" : "String",
+      "Default" : "15",
+      "Required" : true
+    },
+    "LaunchConfiguration" : {
+      "Description" : "Specifies the name of the associated LaunchConfiguration.",
+      "Type" : "String",
+      "Required" : true
+    },
+    "LoadBalancers" : {
+      "Description" : "A list of load balancers associated with this Auto Scaling group.",
+      "Type" : "CommaDelimitedList",
+      "Default" : "",
+      "Required" : true
+    },
+    "Max" : {
+      "Description" : "The maximum size of the Auto Scaling group.",
+      "Type" : "String",
+      "Default" : "1",
+      "Required" : true
+    },
+    "Min" : {
+      "Description" : "The minimum size of the Auto Scaling group.",
+      "Type" : "String",
+      "Default" : "1",
+      "Required" : true
+    },
+    "Subnets" : {
+      "Description" : "A list of subnet identifiers of Amazon VPCs.",
+      "Type" : "CommaDelimitedList",
+      "Default" : "",
+      "Required" : true
+    }
+  },
+  "Conditions" : {
+    "HasSubnets" : {
+      "Fn::Not" : [{
+          "Fn:Equals" : ["", {
+              "Ref" : "Subnets"
+            }
+          ]
+        }
+      ]
+    },
+    "HasLoadBalancer" : {
+      "Fn::Not" : [{
+          "Fn:Equals" : ["", {
+              "Ref" : "LoadBalancers"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Resources" : {
+    "ASG" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : {
+          "Fn:If" : ["HasSubnets", {
+              "Ref" : "AWS::NoValue"
+            }, {
+              "Fn::GetAZs" : {
+                "Ref" : "AWS::Region"
+              }
+            }
+          ]
+        },
+        "Cooldown" : {
+          "Ref" : "CooldownSeconds"
+        },
+        "DesiredCapacity" : {
+          "Ref" : "DesiredInstances"
+        },
+        "HealthCheckGracePeriod" : {
+          "Ref" : "HealthGracePeriod"
+        },
+        "HealthCheckType" : {
+          "Fn::If" : ["HasLoadBalancer", "ELB", "EC2"]
+        },
+        "LaunchConfigurationName" : {
+          "Ref" : "LaunchConfiguration"
+        },
+        "LoadBalancerNames" : {
+          "Fn::If" : ["HasLoadBalancer", {
+              "Ref" : "LoadBalancerNames"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "MaxSize" : {
+          "Ref" : "Max"
+        },
+        "MinSize" : {
+          "Ref" : "Min"
+        },
+        "Tags" : [{
+            "Key" : "ASG",
+            "Value" : {
+              "Ref" : "ASG"
+            }
+          }
+        ],
+        "VPCZoneIdentifier" : {
+          "Fn:If" : ["HasSubnets", {
+              "Ref" : "Subnets"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+      }
+    }
+  },
+  "Outputs" : {
+    "ASGName" : {
+      "Description" : "Name of the created ASG",
+      "Value" : {
+        "Ref" : "ASG"
+      }
+    }
+  },
+  "Connections" : {
+    "Dependencies" : [],
+    "References" : [],
+    "Substitutes" : [{
+        "Parameter" : "Subnets",
+        "Type" : "List::Subnet"
+      },
+      {
+        "Parameter" : "LoadBalancerNames",
+        "Type" : "List::LoadBalancer"
+      },
+      {
+        "Parameter" : "LaunchConfiguration",
+        "Type" : "LaunchConfiguration"
+      }
+    ]
+  }
+}

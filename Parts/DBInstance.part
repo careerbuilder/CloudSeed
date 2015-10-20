@@ -22,7 +22,11 @@
     "GBAllocated" : {
       "Description" : "GB of allocated storage",
       "Type" : "Number",
-      "Default" : 1000
+      "Default" : 1000,
+      "Required":{
+        "Func":"Only",
+        "Args": [1, {"Param":"DBCluster"}]
+      }
     },
     "BackupDays" : {
       "Description" : "Days to backup",
@@ -38,11 +42,19 @@
     "DBEngine" : {
       "Description" : "DBEngine",
       "Type" : "String",
-      "AllowedValues" : ["MySQL", "oracle-se1", "oracle-se", "oracle-ee", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web", "postgres"]
+      "AllowedValues" : ["aurora", "MySQL", "oracle-se1", "oracle-se", "oracle-ee", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web", "postgres"]
     },
     "DBVersion" : {
       "Description" : "Version of the DBEngine",
       "Type" : "String"
+    },
+    "DBCluster":{
+      "Description": "Cluster for the Aurora Instance",
+      "Type":"String",
+      "Required":{
+        "Func":"Only",
+        "Args": [1, {"Param":"GBAllocated"}]
+      }
     },
     "numIOPS" : {
       "Description" : "Must be 10x the GBAllocated",
@@ -82,15 +94,16 @@
           ]
         }
       ]
+    },
+    "IsAurora":{
+      "Fn::Not":[{"Fn:Equals":["aurora", {"Ref":"DBEngine"}]}]
     }
   },
   "Resources" : {
     "DBInstance" : {
       "Type" : "AWS::RDS::DBInstance",
       "Properties" : {
-        "AllocatedStorage" : {
-          "Ref" : "GBAllocated"
-        },
+        "AllocatedStorage" : {"Fn::If":["IsAurora",{"Ref":"AWS::NoValue"},{"Ref" : "GBAllocated"}]},
         "AllowMajorVersionUpgrade" : false,
         "AutoMinorVersionUpgrade" : false,
         "BackupRetentionPeriod" : {
@@ -120,7 +133,7 @@
           "Ref" : "DBVersion"
         },
         "Iops" : {
-          "Ref" : "numIOPS"
+          "Fn::If":["IsAurora", {"Ref":"AWS::NoValue"},{"Ref" : "numIOPS"}]
         },
         "LicenseModel" : {
           "Ref" : "licensetype"
@@ -136,7 +149,7 @@
           "Ref" : "Portnum"
         },
         "PubliclyAccessible" : false,
-        "StorageType" : "io1",
+        "StorageType" : {"Fn::If":["IsAurora", {"Ref":"AWS::NoValue"}, "io1"]},
         "VPCSecurityGroups" : {
           "Ref" : "RDSSG"
         }
@@ -158,6 +171,9 @@
       }, {
         "Type" : "List::SecurityGroup",
         "Parameter" : "RDSSG"
+      }, {
+        "Type" : "DBCluster",
+        "Parameter" : "DBCluster"
       }
     ]
   }

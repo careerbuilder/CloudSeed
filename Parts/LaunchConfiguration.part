@@ -1,0 +1,118 @@
+{
+  "Type" : "LaunchConfiguration",
+  "Parameters" : {
+    "AMI" : {
+      "Description" : "ID of AMI",
+      "Type" : "String",
+      "Required" : true
+    },
+    "Size" : {
+      "Description" : "Size of the Instance",
+      "Type" : "String",
+      "AllowedPattern" : "[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)",
+      "Required" : true
+    },
+    "RSAKeyName" : {
+      "Description" : "Name of private key",
+      "Type" : "String",
+      "Required" : true
+    },
+    "SecurityGroupIDs" : {
+      "Description" : "SecurityGroups which govern the Instance",
+      "Type" : "CommaDelimitedList",
+      "Default" : "",
+      "Required" : false
+    },
+    "Tenancy" : {
+      "Description" : "Describes the hardware tenancy of the instance",
+      "Type" : "String",
+      "Default" : "",
+      "AllowedValues" : ["", "dedicated"],
+      "Required" : false
+    },
+    "AddPublicIpAddress" : {
+      "Description" : "Should the instance have a public IP",
+      "Type" : "Boolean",
+      "Default" : false,
+      "Required" : true
+    },
+    "EBSOptimized" : {
+      "Description" : "Should the instance be optimized for ebs",
+      "Type" : "Boolean",
+      "Default" : false,
+      "Required" : true
+    },
+    "UserDataScript" : {
+      "Description" : "Script to run at instance launch",
+      "Type" : "String",
+      "Default" : "exit 0",
+      "Required" : true
+    }
+  },
+  "Conditions" : {
+    "HasTenancy" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "Tenancy"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Resources" : {
+    "LaunchConfiguration" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+        "AssociatePublicIpAddress" : {
+          "Ref" : "AddPublicIpAddress"
+        },
+        "EbsOptimized" : {
+          "Ref" : "EBSOptimized"
+        },
+        "ImageId" : {
+          "Ref" : "AMI"
+        },
+        "InstanceType" : {
+          "Ref" : "Size"
+        },
+        "KeyName" : {
+          "Ref" : "RSAKeyName"
+        },
+        "PlacementTenancy" : {
+          "Fn::If" : ["HasTenancy", {
+              "Ref" : "Tenancy"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "SecurityGroups" : {
+          "Ref" : "SecurityGroupIDs"
+        },
+        "UserData" : {
+          "Fn::Base64" : {
+            "Ref" : "UserDataScript"
+          }
+        }
+      }
+    }
+  },
+  "Outputs" : {
+    "LaunchConfigurationName" : {
+      "Description" : "Name of created Configuration",
+      "Value" : {
+        "Ref" : "LaunchConfiguration"
+      }
+    }
+  },
+  "Connections" : {
+    "Dependencies" : [],
+    "References" : [],
+    "Substitutes" : [{
+        "Parameter" : "SecurityGroupIDs",
+        "Type" : "List::SecurityGroup"
+      }
+    ]
+  }
+}

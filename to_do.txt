@@ -4,14 +4,16 @@ VPNGatewayRoutePropagation	-DependsOn
 EIP				-DependsOn
 DHCPOptions			-Conditional requirements
 Role				-Complex Parameters, may be better to create subpart 
-AutoScalingGroup
-ScalingPolicy
 InstanceProfile
-LaunchConfiguration
 VPCGatewayAttachment
 VPCDHCPOptionsAssociation
 VPNConnectionRoute
 
+-- Aurora
+-- LaunchConfiguration
+-- AutoScalingGroup
+LoadBalancer
+ScalingPolicy
 
 
 Metadata - Allow for CFN-INIT configurations by allowing file/script upload. Split the file on new line and use FN::Join to fill the file.

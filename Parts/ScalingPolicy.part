@@ -1,0 +1,54 @@
+{
+  "Type" : "ScalingPolicy",
+  "Parameters" : {
+    "CooldownSeconds" : {
+      "Description" : "The number of seconds after a scaling activity is completed before any further scaling activities can start.",
+      "Type" : "String",
+      "Default" : "60",
+      "Required" : true
+    },
+    "ASG":{
+      "Description" : "The name or Amazon Resource Name (ARN) of the Auto Scaling Group that you want to attach the policy to.",
+      "Type" : "String",
+      "Required" : true
+    },
+    "AdjustmentKind":{
+      "Description" : "Specifies whether the ScalingAdjustment is an absolute number or a percentage of the current capacity.",
+      "Type" : "String",
+      "AllowedValues":["ChangeInCapacity", "ExactCapacity", "PercentChangeInCapacity"],
+      "Required" : true
+    },
+    "Adjustment":{
+      "Description" : "The number of instances by which to scale.",
+      "Type" : "String",
+      "Default":"1",
+      "Required" : true
+    }
+  },
+  "Resources" : {
+    "ScalingPolicy" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : {"Ref":"AdjustmentKind"},
+        "AutoScalingGroupName" : {"Ref":"ASG"},
+        "Cooldown" : {"Ref":"CooldownSeconds"},
+        "ScalingAdjustment" : {"Ref":"Adjustment"}
+      }
+    }
+  },
+  "Outputs" : {
+    "ScalingPolicyName" : {
+      "Description" : "Name of the created ScalingPolicy",
+      "Value" : {
+        "Ref" : "ScalingPolicy"
+      }
+    }
+  },
+  "Connections" : {
+    "Substitutes" : [{
+        "Parameter" : "ASG",
+        "Type" : "AutoScalingGroup"
+      }
+    ]
+  }
+}

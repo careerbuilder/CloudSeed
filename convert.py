@@ -63,9 +63,9 @@ def solve_template_functions(function):
         elif funcname == 'Fn::Join':
             outval = ""
             for i in range(1, len(args)):
-                outval += args[i]
+                outval += str(args[i])
                 if i < len(args)-1:
-                    outval += args[0]
+                    outval += str(args[0])
             return outval
         elif funcname == 'Fn::Select':
             return args[1][args[0]]
