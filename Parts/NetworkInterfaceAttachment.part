@@ -1,0 +1,59 @@
+{
+  "Type" : "NetworkInterfaceAttachment",
+  "Parameters" : {
+    "AttachmentOrder" : {
+      "Description" : "The network interface's position in the attachment order.",
+      "Type" : "String",
+      "Default":"0",
+      "Required" : true
+    },
+    "TerminationDelete" : {
+      "Description" : "Whether to delete the network interface when the instance terminates.",
+      "Type" : "Boolean",
+      "Default" : false,
+      "Required" : true
+    },
+    "Instance" : {
+      "Description" : "ID of the Instance to attach",
+      "Type" : "String",
+      "Required" : true
+    },
+    "ENIID" : {
+      "Description" : "ID of the ENI",
+      "Type" : "String",
+      "Required" : true
+    }
+  },
+  "Conditions" : {},
+  "Resources" : {
+    "NetworkInterfaceAttachment" : {
+      "Type" : "AWS::EC2::NetworkInterfaceAttachment",
+      "Properties" : {
+        "DeleteOnTermination" : {"Ref":"TerminationDelete"},
+        "DeviceIndex" : {"Ref":"AttachmentOrder"},
+        "InstanceId" : {"Ref":"Instance"},
+        "NetworkInterfaceId" : {"Ref":"ENIID"}
+      }
+    }
+  },
+  "Outputs" : {
+    "NetworkInterfaceAttachmentID" : {
+      "Description" : "created NetworkInterfaceAttachment",
+      "Value" : {
+        "Ref" : "NetworkInterfaceAttachment"
+      }
+    }
+  },
+  "Connections" : {
+    "Dependencies" : [],
+    "References" : {},
+    "Substitutes" : [{
+        "Type" : "EC2Instance",
+        "Parameter" : "Instance"
+      }, {
+        "Type" : "NetworkInterface",
+        "Parameter" : "ENIID"
+      }
+    ]
+  }
+}

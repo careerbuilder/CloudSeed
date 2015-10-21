@@ -1,0 +1,68 @@
+{
+  "Type" : "NetworkInterface",
+  "Parameters" : {
+    "SecurityGroups" : {
+      "Description" : "The IDs of the Security Groups attached",
+      "Type" : "CommaDelimitedList",
+      "Default" : "",
+      "Required" : false
+    },
+    "PrivateIP" : {
+      "Description" : "The Private IP of the ENI",
+      "Type" : "String",
+      "Required" : true
+    },
+    "ValidateTraffic" : {
+      "Description" : "Should SourceDestCheck be enabled",
+      "Type" : "Boolean",
+      "Default":false,
+      "Required" : true
+    },
+    "Subnet" : {
+      "Description" : "ID of the resident Subnet",
+      "Type" : "String",
+      "Required" : true
+    },
+    "TeamName" : {
+      "Description" : "Name of the owning team",
+      "Type" : "String",
+      "Required" : true
+    }
+  },
+  "Conditions" : {},
+  "Resources" : {
+    "NetworkInterface" : {
+      "Type" : "AWS::EC2::NetworkInterface",
+      "Properties" : {
+        "GroupSet" : {"Ref":"SecurityGroups"},
+        "PrivateIpAddress" : {"Ref":"PrivateIP"},
+        "SourceDestCheck" : {"Ref":"ValidateTraffic"},
+        "SubnetId" : {"Ref":"Subnet"},
+        "Tags" : [
+          {"Key":"Team", "Value":{"Ref":"TeamName"}}
+        ]
+      }
+    }
+  },
+  "Outputs" : {
+    "NetworkInterfaceID" : {
+      "Description" : "created NetworkInterface",
+      "Value" : {
+        "Ref" : "NetworkInterface"
+      }
+    }
+  },
+  "Connections" : {
+    "Dependencies" : [],
+    "References" : {},
+    "Substitutes" : [{
+        "Type" : "Subnet",
+        "Parameter" : "Subnet"
+      },
+      {
+        "Type" : "List::SecurityGroup",
+        "Parameter" : "SecurityGroups"
+      }
+    ]
+  }
+}
