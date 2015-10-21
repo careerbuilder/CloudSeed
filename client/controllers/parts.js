@@ -84,8 +84,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       partstring = partstring.replace(re, '"'+cond+''+newcount+'"');
     }
     for(var res in copy.Resources){
-      var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(res) +'\s*\}', 'g');
-      var re2 = new RegExp('\{\s*"Fn::GetAtt"\s*:\s*\['+ JSON.stringify(res) +',\s*', 'g');
+      var re = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(res) +'\\s*\\}', 'g');
+      var re2 = new RegExp('\\{\\s*"Fn::GetAtt"\\s*:\\s*\\['+ JSON.stringify(res) +',\\s*', 'g');
       partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
       partstring = partstring.replace(re2, '{"Fn::GetAtt":['+JSON.stringify(res+""+newcount)+',');
       subsString = subsString.replace('\"' + res + '\"', '\"' + res+""+newcount + '\"');
@@ -290,7 +290,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
             return;
           }
         }
-        var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
+        var re = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(param) +'\\s*\\}', 'g');
         if(apart.Definition.Parameters[param].Type === 'CommaDelimitedList'){
           paramValue = paramValue.split(/\s*,\s*/g);
         }
