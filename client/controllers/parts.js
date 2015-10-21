@@ -296,10 +296,14 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         partstring = partstring.replace(re, JSON.stringify(paramValue));
       }
     }
+    var replace_conds = [];
     if(apart.Definition.Connections){
       var subs = apart.Definition.Connections.Substitutes || [];
       for(var i=0; i<subs.length; i++){
         var sub = subs[i];
+        if(apart.Definition.Conditions){
+          replace_conds.push(sub.Reference.Ref);
+        }
         var isList = (sub.Type.indexOf("List::")==0);
         if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
@@ -308,6 +312,15 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     apart.Definition = JSON.parse(partstring);
+    if(apart.Definition.Conditions){
+      var condstring = JSON.stringify(apart.Definition.Conditions);
+      replace_conds.forEach(function(rc){
+        var rcname = JSON.stringify(rc);
+        var cre = new RegExp('\{\s*"Ref"\s*:\s*'+ rcname +'\s*\}', 'g');
+        condstring = condstring.replace(cre, rcname);
+      });
+      apart.Definition.Conditions = JSON.parse(condstring);
+    }
     if(apart.Definition.Connections && apart.Definition.Connections.Substitutes){
       var subs = apart.Definition.Connections.Substitutes;
       subs.forEach(function(sub, i){
@@ -399,9 +412,11 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
           }
           else if(data['Code'] === 388){
             toastr.warning('Stack Saved with Errors', data['Message']);
+            console.log(data);
           }
           else{
             toastr.error(data['Message'], data['Error']||"");
+            console.log(data);
           }
           $scope.refreshStacks();
       });
