@@ -9,17 +9,17 @@
     }
   },
   "Resources" : {
+  "ElasticIP" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "Domain" : "vpc"
+      }
+    },
     "EIPAttach":{
       "Type": "AWS::EC2::EIPAssociation",
       "Properties": {
         "AllocationId": {"Fn::GetAtt":["ElasticIP", "AllocationID"]},
         "NetworkInterfaceId": {"Ref":"NetworkInterfaceID"}
-      }
-    },
-    "ElasticIP" : {
-      "Type" : "AWS::EC2::EIP",
-      "Properties" : {
-        "Domain" : "vpc"
       }
     }
   },
