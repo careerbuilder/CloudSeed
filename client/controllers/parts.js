@@ -280,7 +280,6 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       if(!apart.Definition.Parameters[param].Hidden){
         var paramValue = apart.Definition.Parameters[param].Value;
         if(!paramValue || apart.Definition.Parameters[param].Disabled){
-          console.log(apart.Definition.Parameters[param]);
           if('Default' in apart.Definition.Parameters[param]){
             paramValue = apart.Definition.Parameters[param].Default;
           }
