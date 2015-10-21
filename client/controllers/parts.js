@@ -87,7 +87,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(res) +'\s*\}', 'g');
       var re2 = new RegExp('\{\s*"Fn::GetAtt"\s*:\s*\['+ JSON.stringify(res) +',\s*', 'g');
       partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
-      partstring = partstring.replace(re2, '{"Fn::GetAtt":['+JSON.stringify(res+""+newcount)+','));
+      partstring = partstring.replace(re2, '{"Fn::GetAtt":['+JSON.stringify(res+""+newcount)+',');
       subsString = subsString.replace('\"' + res + '\"', '\"' + res+""+newcount + '\"');
     }
     copy = JSON.parse(partstring);
