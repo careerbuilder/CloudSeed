@@ -1,0 +1,43 @@
+{
+  "Type" : "EIP",
+  "Parameters" : {
+    "InstanceID" : {
+      "Description" : "The ID of the instance to which the EIP will associate",
+      "Type" : "String",
+      "Default":"",
+      "Required":false
+    }
+  },
+  "Conditions":{
+    "HasInstanceID":{
+      "Fn::Not":[{"Fn::Equals":["",{"Ref":"InstanceID"}]}]
+    }
+  },
+  "Resources" : {
+    "EIP" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : {"Fn::If":["HasInstanceID", {"Ref":"InstanceID"}, {"Ref":"AWS::NoValue"}]},
+        "Domain" : {"Fn::If":["HasInstanceID", {"Ref":"AWS::NoValue"}, "vpc"]}
+      }
+    }
+  },
+  "Outputs" : {
+    "EIPID" : {
+      "Description" : "created EIP",
+      "Value" : {
+        "Ref" : "EIP"
+      }
+    }
+  },
+  "Connections" : {
+    "Dependencies" : [],
+    "References" : {},
+    "Substitutes" : [
+      {
+        "Type" : "EC2Instance",
+        "Parameter" : "InstanceID"
+      }
+    ]
+  }
+}
