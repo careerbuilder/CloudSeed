@@ -36,27 +36,27 @@
   "Conditions":{
     "HasEIP":{
       "Fn::Not":[
-        {"Fn:Equals":["", {"Ref":"ElasticIP"}]}
+        {"Fn::Equals":["", {"Ref":"ElasticIP"}]}
       ]
     },
     "HasInstance":{
       "Fn::Not":[
-        {"Fn:Equals":["", {"Ref":"Instance"}]}
+        {"Fn::Equals":["", {"Ref":"Instance"}]}
       ]
     },
     "HasAllocationID":{
       "Fn::Not":[
-        {"Fn:Equals":["", {"Ref":"AllocationID"}]}
+        {"Fn::Equals":["", {"Ref":"AllocationID"}]}
       ]
     },
     "HasNetworkInterfaceID":{
       "Fn::Not":[
-        {"Fn:Equals":["", {"Ref":"NetworkInterfaceID"}]}
+        {"Fn::Equals":["", {"Ref":"NetworkInterfaceID"}]}
       ]
     },
     "HasPrivateIP":{
       "Fn::Not":[
-        {"Fn:Equals":["", {"Ref":"PrivateIP"}]}
+        {"Fn::Equals":["", {"Ref":"PrivateIP"}]}
       ]
     }
   },

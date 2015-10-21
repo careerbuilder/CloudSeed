@@ -279,6 +279,15 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     for(var param in apart.Definition.Parameters){
       if(!apart.Definition.Parameters[param].Hidden){
         var paramValue = apart.Definition.Parameters[param].Value;
+        if(!paramValue || apart.Definition.Parameters[param].Disabled){
+          if(apart.Definition.Parameters[param].Default){
+            paramValue = apart.Definition.Parameters[param].Default;
+          }
+          else{
+            console.log('No default on excluded value!', apart);
+            return;
+          }
+        }
         var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(param) +'\s*\}', 'g');
         if(apart.Definition.Parameters[param].Type === 'CommaDelimitedList'){
           paramValue = paramValue.split(/\s*,\s*/g);

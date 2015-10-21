@@ -95,7 +95,7 @@
       ]
     },
     "IsAurora":{
-      "Fn::Not":[{"Fn:Equals":["aurora", {"Ref":"DBEngine"}]}]
+      "Fn::Not":[{"Fn::Equals":["aurora", {"Ref":"DBEngine"}]}]
     }
   },
   "Resources" : {

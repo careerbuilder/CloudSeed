@@ -52,7 +52,7 @@
   "Conditions" : {
     "HasSubnets" : {
       "Fn::Not" : [{
-          "Fn:Equals" : ["", {
+          "Fn::Equals" : ["", {
               "Ref" : "Subnets"
             }
           ]
@@ -61,7 +61,7 @@
     },
     "HasLoadBalancer" : {
       "Fn::Not" : [{
-          "Fn:Equals" : ["", {
+          "Fn::Equals" : ["", {
               "Ref" : "LoadBalancers"
             }
           ]
