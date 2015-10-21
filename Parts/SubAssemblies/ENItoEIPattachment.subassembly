@@ -1,0 +1,50 @@
+{
+  "Type": "ENItoEIPattachment",
+  "Parameters" : {
+    "EIP":{
+      "Description": "Elastic IP address that you want to associate with the Amazon EC2 instance specified by the InstanceId",
+      "Type": "String",
+      "Default":"",
+      "Required": false
+    },
+    "NetworkInterfaceID":{
+      "Type": "String",
+      "Default":"",
+      "Description":"The ID of the network interface to associate with the Elastic IP address (VPC only).",
+      "Required": false
+    }
+  },
+  "Resources" : {
+    "EIPAttach":{
+      "Type": "AWS::EC2::EIPAssociation",
+      "Properties": {
+        "AllocationId": {"Fn::GetAtt":["ElasticIP", "AllocationID"]},
+        "NetworkInterfaceId": {"Ref":"NetworkInterfaceID"}
+      }
+    },
+    "ElasticIP" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "Domain" : "vpc"
+      }
+    }
+  },
+  "Outputs":{
+    "EIPAssociationID":{
+      "Description": "ID of created EIPAssociation",
+      "Value": {"Ref":"EIPAttach"}
+    },
+    "EIPID" : {
+      "Description" : "created EIP",
+      "Value" : {
+        "Ref" : "ElasticIP"
+      }
+    }
+  },
+  "Connections":{
+    "Substitutes": [
+      {"Type":"EIP", "Parameter":"EIP"},
+      {"Type":"NetworkInterface", "Parameter":"NetworkInterfaceID"}
+    ]
+  }
+}
