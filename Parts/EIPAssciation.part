@@ -73,28 +73,28 @@
         },
         "NetworkInterfaceId": {
           "Fn::If":[
-            "HasAllocationID",
+            "HasNetworkInterfaceID",
             {"Ref":"NetworkInterfaceID"},
             {"Ref": "AWS::NoValue"}
           ]
         },
         "PrivateIpAddress": {
           "Fn::If":[
-            "HasAllocationID",
+            "HasPrivateIP",
             {"Ref":"PrivateIP"},
             {"Ref": "AWS::NoValue"}
           ]
         },
         "EIP": {
           "Fn::If":[
-            "HasAllocationID",
+            "HasEIP",
             {"Ref":"ElasticIP"},
             {"Ref": "AWS::NoValue"}
           ]
         },
         "InstanceId": {
           "Fn::If":[
-            "HasAllocationID",
+            "HasInstance",
             {"Ref":"Instance"},
             {"Ref": "AWS::NoValue"}
           ]
