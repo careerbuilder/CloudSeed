@@ -5,7 +5,19 @@
       "Description" : "The ID of the instance to which the EIP will associate",
       "Type" : "String",
       "Default":"",
-      "Required":false
+      "Required":{
+        "Func":"Only",
+        "Args":[1,"DomainType"]
+      }
+    },
+    "DomainType":{
+      "Description" : "The type of domain to assign the EIP",
+      "Type" : "String",
+      "Default":"vpc",
+      "Required":{
+        "Func":"Only",
+        "Args":[1,"InstanceID"]
+      }
     }
   },
   "Conditions":{
@@ -18,7 +30,7 @@
       "Type" : "AWS::EC2::EIP",
       "Properties" : {
         "InstanceId" : {"Fn::If":["HasInstanceID", {"Ref":"InstanceID"}, {"Ref":"AWS::NoValue"}]},
-        "Domain" : {"Fn::If":["HasInstanceID", {"Ref":"AWS::NoValue"}, "vpc"]}
+        "Domain" : {"Fn::If":["HasInstanceID", {"Ref":"AWS::NoValue"}, {"Ref":"DomainType"}]}
       }
     }
   },
