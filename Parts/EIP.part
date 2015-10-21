@@ -7,7 +7,7 @@
       "Default":"",
       "Required":{
         "Func":"Only",
-        "Args":[1,"DomainType"]
+        "Args":[1,{"Param":"DomainType"}]
       }
     },
     "DomainType":{
@@ -16,7 +16,7 @@
       "Default":"vpc",
       "Required":{
         "Func":"Only",
-        "Args":[1,"InstanceID"]
+        "Args":[1,{"Param":"InstanceID"}]
       }
     }
   },
