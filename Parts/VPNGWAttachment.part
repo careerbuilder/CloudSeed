@@ -1,0 +1,45 @@
+{
+  "Type": "VPNGWAttachment",
+  "Description" : "Version 1.0.  Attaches a VPNGateway to a VPC.",
+  "Parameters" : {
+    "VPC" : {
+      "Description" : "VPC to which the VPNGW will attach",
+      "Type" : "String"
+    },
+    "VPNGW" : {
+      "Description" : "VPN Gateway to attach",
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "VPNGWAttachment":{
+        "Type" : "AWS::EC2::VPCGatewayAttachment",
+        "Properties" : {
+            "VpnGatewayId": {"Ref":"VPNGW"},
+            "VpcId" : {"Ref":"VPC"}
+        }
+    }
+  },
+  "Outputs" : {
+    "VPNGWAttachmentID" : {
+      "Description" : "ID of created VPNGWAttachment",
+      "Value" : {
+        "Ref" : "VPNGWAttachment"
+      }
+    }
+  },
+  "Connections":{
+        "Dependencies":[],
+        "References":{},
+        "Substitutes":[            
+            {
+                "Parameter": "VPC",
+                "Type":"VPC"
+            },
+            {
+                "Parameter": "VPNGW",
+                "Type":"VPNGW"
+            }
+        ]
+    }
+}
