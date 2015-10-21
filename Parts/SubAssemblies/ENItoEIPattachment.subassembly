@@ -1,12 +1,6 @@
 {
   "Type": "ENItoEIPattachment",
   "Parameters" : {
-    "EIP":{
-      "Description": "Elastic IP address that you want to associate with the Amazon EC2 instance specified by the InstanceId",
-      "Type": "String",
-      "Default":"",
-      "Required": false
-    },
     "NetworkInterfaceID":{
       "Type": "String",
       "Default":"",
@@ -43,7 +37,6 @@
   },
   "Connections":{
     "Substitutes": [
-      {"Type":"EIP", "Parameter":"EIP"},
       {"Type":"NetworkInterface", "Parameter":"NetworkInterfaceID"}
     ]
   }
