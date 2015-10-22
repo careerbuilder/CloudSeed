@@ -1,0 +1,233 @@
+{
+  "Type" : "SelfHealingNAT",
+  "Parameters" : {
+    "AMI" : {
+      "Description" : "ID of AMI",
+      "Type" : "String",
+      "Required" : true
+    },
+    "Size" : {
+      "Description" : "Size of the Instance",
+      "Type" : "String",
+      "AllowedPattern" : "[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)",
+      "Required" : true
+    },
+    "RSAKeyName" : {
+      "Description" : "Name of private key",
+      "Type" : "String",
+      "Required" : true
+    },
+    "SecurityGroupIDs" : {
+      "Description" : "SecurityGroups which govern the Instance",
+      "Type" : "CommaDelimitedList",
+      "Default" : "",
+      "Required" : false
+    },
+    "EBSOptimized" : {
+      "Description" : "Should the instance be optimized for ebs",
+      "Type" : "Boolean",
+      "Default" : false,
+      "Required" : true
+    },
+    "UserDataScript" : {
+      "Description" : "Script to run at instance launch",
+      "Type" : "String",
+      "Default" : "exit 0",
+      "Required" : true
+    },
+    "CooldownSeconds" : {
+      "Description" : "The number of seconds after a scaling activity is completed before any further scaling activities can start.",
+      "Type" : "String",
+      "Default" : "60",
+      "Required" : true
+    },
+    "DesiredInstances" : {
+      "Description" : "Specifies the desired capacity for the Auto Scaling group.",
+      "Type" : "String",
+      "Default" : "1",
+      "Required" : true
+    },
+    "HealthGracePeriod" : {
+      "Description" : "The length of time in seconds after a new EC2 instance comes into service that Auto Scaling starts checking its health.",
+      "Type" : "String",
+      "Default" : "15",
+      "Required" : true
+    },
+    "LoadBalancers" : {
+      "Description" : "A list of load balancers associated with this Auto Scaling group.",
+      "Type" : "CommaDelimitedList",
+      "Default" : "",
+      "Required" : false
+    },
+    "Max" : {
+      "Description" : "The maximum size of the Auto Scaling group.",
+      "Type" : "String",
+      "Default" : "1",
+      "Required" : true
+    },
+    "Min" : {
+      "Description" : "The minimum size of the Auto Scaling group.",
+      "Type" : "String",
+      "Default" : "1",
+      "Required" : true
+    },
+    "Subnets" : {
+      "Description" : "A list of subnet identifiers of Amazon VPCs.",
+      "Type" : "CommaDelimitedList",
+      "Default" : "",
+      "Required" : false
+    }
+  },
+  "Conditions" : {
+    "HasLoadBalancer" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "LoadBalancers"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Resources" : {
+    "IAMRole" : {
+      "Type" : "AWS::IAM::Role",
+      "Properties" : {
+        "AssumeRolePolicyDocument" : {
+          "Statement" : [{
+              "Effect" : "Allow",
+              "Principal" : {
+                "Service" : ["ec2.amazonaws.com"]
+              },
+              "Action" : ["sts:AssumeRole"]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies" : [{
+            "PolicyName" : "ENIAttachRole",
+            "PolicyDocument" : {
+              "Statement" : [{
+                  "Effect" : "Allow",
+                  "Action" : ["ec2:AttachNetworkInterface"],
+                  "Resource" : ["*"]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "InstanceProfile":{
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ {
+           "Ref": "IAMRole"
+        } ]
+      }
+    },
+    "LaunchConfiguration" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+        "AssociatePublicIpAddress" : false,
+        "EbsOptimized" : {
+          "Ref" : "EBSOptimized"
+        },
+        "ImageId" : {
+          "Ref" : "AMI"
+        },
+        "IamInstanceProfile" : {"Ref":"InstanceProfile"},
+        "InstanceType" : {
+          "Ref" : "Size"
+        },
+        "KeyName" : {
+          "Ref" : "RSAKeyName"
+        },
+        "SecurityGroups" : {
+          "Ref" : "SecurityGroupIDs"
+        },
+        "UserData" : {
+          "Fn::Base64" : {
+            "Ref" : "UserDataScript"
+          }
+        }
+      }
+    },
+    "ASG" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "Cooldown" : {
+          "Ref" : "CooldownSeconds"
+        },
+        "DesiredCapacity" : {
+          "Ref" : "DesiredInstances"
+        },
+        "HealthCheckGracePeriod" : {
+          "Ref" : "HealthGracePeriod"
+        },
+        "HealthCheckType" : {
+          "Fn::If" : ["HasLoadBalancer", "ELB", "EC2"]
+        },
+        "LaunchConfigurationName" : {
+          "Ref" : "LaunchConfiguration"
+        },
+        "LoadBalancerNames" : {
+          "Fn::If" : ["HasLoadBalancer", {
+              "Ref" : "LoadBalancerNames"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "MaxSize" : {
+          "Ref" : "Max"
+        },
+        "MinSize" : {
+          "Ref" : "Min"
+        },
+        "Tags" : [{
+            "Key" : "ASG",
+            "Value" : {
+              "Ref" : "ASG"
+            }
+          }
+        ],
+        "VPCZoneIdentifier" : {"Ref" : "Subnets"}
+      }
+    }
+  },
+  "Outputs" : {
+    "LaunchConfigurationName" : {
+      "Description" : "Name of created Configuration",
+      "Value" : {
+        "Ref" : "LaunchConfiguration"
+      }
+    },
+    "ASGName" : {
+      "Description" : "Name of the created ASG",
+      "Value" : {
+        "Ref" : "ASG"
+      }
+    }
+  },
+  "Connections" : {
+    "Substitutes" : [{
+        "Parameter" : "SecurityGroupIDs",
+        "Type" : "List::SecurityGroup"
+      },
+      {
+        "Parameter" : "Subnets",
+        "Type" : "List::Subnet"
+      },
+      {
+        "Parameter" : "LoadBalancerNames",
+        "Type" : "List::LoadBalancer"
+      },
+      {
+        "Parameter" : "LaunchConfiguration",
+        "Type" : "LaunchConfiguration"
+      }
+    ]
+  }
+}
