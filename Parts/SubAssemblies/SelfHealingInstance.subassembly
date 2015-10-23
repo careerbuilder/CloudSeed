@@ -32,8 +32,7 @@
     "NetworkInterfaceID":{
       "Type": "String",
       "Default":"",
-      "Description":"The ID of the network interface to associate",
-      "Required": true
+      "Description":"The ID of the network interface to associate"
     },
     "CooldownSeconds" : {
       "Description" : "The number of seconds after a scaling activity is completed before any further scaling activities can start.",
