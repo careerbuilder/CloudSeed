@@ -134,7 +134,7 @@
           "Fn::Base64" : {"Fn::Join" :[
             "",
             {"Fn::Join":["", "echo ", {"Ref":"NetworkInterfaceID"}, " > /var/tmp/eni-id.txt\n"]},
-            "/usr/local/bin/attach_eth1_eni.sh\s",
+            "/usr/local/bin/attach_eth1_eni.sh\n",
             "sleep 60\n",
             "ifdown eth0\n",
             "iptables -t nat -A POSTROUTING -j MASQUERADE\n",
