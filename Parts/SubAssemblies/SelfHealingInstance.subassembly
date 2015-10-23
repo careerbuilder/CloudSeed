@@ -1,5 +1,5 @@
 {
-  "Type" : "SelfHealingNAT",
+  "Type" : "SelfHealingInstance",
   "Parameters" : {
     "AMI" : {
       "Description" : "ID of AMI",
