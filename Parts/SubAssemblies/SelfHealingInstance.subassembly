@@ -29,11 +29,11 @@
       "Default" : false,
       "Required" : true
     },
-    "UserDataScript" : {
-      "Description" : "Script to run at instance launch",
-      "Type" : "String",
-      "Default" : "exit 0",
-      "Required" : true
+    "NetworkInterfaceID":{
+      "Type": "String",
+      "Default":"",
+      "Description":"The ID of the network interface to associate",
+      "Required": true
     },
     "CooldownSeconds" : {
       "Description" : "The number of seconds after a scaling activity is completed before any further scaling activities can start.",
@@ -131,9 +131,17 @@
           "Ref" : "SecurityGroupIDs"
         },
         "UserData" : {
-          "Fn::Base64" : {
-            "Ref" : "UserDataScript"
-          }
+          "Fn::Base64" : {"Fn::Join" :[
+            "",
+            {"Fn::Join":["", "echo ", {"Ref":"NetworkInterfaceID"}, " > /var/tmp/eni-id.txt\n"]}
+            "echo eni-70531d51 > ",
+            "/usr/local/bin/attach_eth1_eni.sh\s",
+            "sleep 60\n",
+            "ifdown eth0\n",
+            "iptables -t nat -A POSTROUTING -j MASQUERADE\n",
+            "iptables -A FORWARD -j ACCEPT\n",
+            "echo 1 > /proc/sys/net/ipv4/ip_forward\n"
+          ]}
         }
       }
     },
@@ -185,7 +193,8 @@
       {
         "Parameter" : "Subnets",
         "Type" : "List::Subnet"
-      }
+      },
+      {"Type":"NetworkInterface", "Parameter":"NetworkInterfaceID"}
     ]
   }
 }
