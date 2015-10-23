@@ -149,9 +149,7 @@
         "HealthCheckGracePeriod" : {
           "Ref" : "HealthGracePeriod"
         },
-        "HealthCheckType" : {
-          "Fn::If" : ["HasLoadBalancer", "ELB", "EC2"]
-        },
+        "HealthCheckType" : "EC2",
         "LaunchConfigurationName" : {
           "Ref" : "LaunchConfiguration"
         },
