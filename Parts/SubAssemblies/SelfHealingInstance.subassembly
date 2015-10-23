@@ -161,13 +161,6 @@
         "MinSize" : {
           "Ref" : "Min"
         },
-        "Tags" : [{
-            "Key" : "ASG",
-            "Value" : {
-              "Ref" : "ASG"
-            }
-          }
-        ],
         "VPCZoneIdentifier" : {"Ref" : "Subnets"}
       }
     }
