@@ -53,12 +53,6 @@
       "Default" : "15",
       "Required" : true
     },
-    "LoadBalancers" : {
-      "Description" : "A list of load balancers associated with this Auto Scaling group.",
-      "Type" : "CommaDelimitedList",
-      "Default" : "",
-      "Required" : false
-    },
     "Max" : {
       "Description" : "The maximum size of the Auto Scaling group.",
       "Type" : "String",
@@ -76,17 +70,6 @@
       "Type" : "CommaDelimitedList",
       "Default" : "",
       "Required" : false
-    }
-  },
-  "Conditions" : {
-    "HasLoadBalancer" : {
-      "Fn::Not" : [{
-          "Fn::Equals" : ["", {
-              "Ref" : "LoadBalancers"
-            }
-          ]
-        }
-      ]
     }
   },
   "Resources" : {
@@ -172,14 +155,6 @@
         "LaunchConfigurationName" : {
           "Ref" : "LaunchConfiguration"
         },
-        "LoadBalancerNames" : {
-          "Fn::If" : ["HasLoadBalancer", {
-              "Ref" : "LoadBalancerNames"
-            }, {
-              "Ref" : "AWS::NoValue"
-            }
-          ]
-        },
         "MaxSize" : {
           "Ref" : "Max"
         },
@@ -219,14 +194,6 @@
       {
         "Parameter" : "Subnets",
         "Type" : "List::Subnet"
-      },
-      {
-        "Parameter" : "LoadBalancerNames",
-        "Type" : "List::LoadBalancer"
-      },
-      {
-        "Parameter" : "LaunchConfiguration",
-        "Type" : "LaunchConfiguration"
       }
     ]
   }
