@@ -112,7 +112,7 @@
     "LaunchConfiguration" : {
       "Type" : "AWS::AutoScaling::LaunchConfiguration",
       "Properties" : {
-        "AssociatePublicIpAddress" : false,
+        "AssociatePublicIpAddress" : true,
         "EbsOptimized" : {
           "Ref" : "EBSOptimized"
         },
