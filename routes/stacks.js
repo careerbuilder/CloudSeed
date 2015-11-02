@@ -78,11 +78,11 @@ router.post('/', function(req, res){
         fs.writeFile(stackspath, JSON.stringify(template), function(err){
           if(err){
             console.log(err);
-            return res.send({Code: 399, Message: "Stack saved to datastore, but not git"});
+            return res.send({Code: 399, Message: "Stack not saved!", Error:err});
           }
           else{
             var userstring = '"'+email.split('@')[0].replace('\.', ' ') +' <'+email+'>'+'"';
-            exec('./VersionControl.sh', [userstring], {cwd:stacksrepo}, function(err, stdout, stderr){
+            exec('./VersionControl.sh', [userstring, stacksrepo], function(err, stdout, stderr){
               if(err){
                 console.log(err);
                 return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});
