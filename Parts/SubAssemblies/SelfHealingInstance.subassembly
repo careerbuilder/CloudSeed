@@ -174,11 +174,13 @@
           "Ref" : "Min"
         },
         "VPCZoneIdentifier" : {"Ref" : "Subnets"},
-        "Tags":{
-          "Key" : "Name",
-          "Value" : {"Ref":"InstanceName"},
-          "PropagateAtLaunch" : true
-        }  
+        "Tags":[
+          {
+            "Key" : "Name",
+            "Value" : {"Ref":"InstanceName"},
+            "PropagateAtLaunch" : true
+          }
+        ]
       }
     }
   },
