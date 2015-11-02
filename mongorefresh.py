@@ -35,6 +35,7 @@ parts = db.parts
 
 for root, dirs, files in os.walk(os.path.join(tld, 'Parts')):
     for file in files:
+	print(file)
         f = open(os.path.abspath(os.path.join(root, file)))
         obj = json.load(f, object_pairs_hook=OrderedDict)
         f.close()
