@@ -1,6 +1,11 @@
 {
   "Type" : "SelfHealingInstance",
   "Parameters" : {
+    "InstanceName":{
+      "Description":"Name tag to be displayed on created instances",
+      "Type":"String",
+      "Required":true
+    },
     "AMI" : {
       "Description" : "ID of AMI",
       "Type" : "String",
@@ -168,7 +173,12 @@
         "MinSize" : {
           "Ref" : "Min"
         },
-        "VPCZoneIdentifier" : {"Ref" : "Subnets"}
+        "VPCZoneIdentifier" : {"Ref" : "Subnets"},
+        "Tags":{
+          "Key" : "Name",
+          "Value" : {"Ref":"InstanceName"},
+          "PropagateAtLaunch" : true
+        }  
       }
     }
   },
