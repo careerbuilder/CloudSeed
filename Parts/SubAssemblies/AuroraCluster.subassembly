@@ -142,6 +142,9 @@
           "Ref" : "SubnetGroup"
         },
         "Engine" : "aurora",
+        "EngineVersion" : {
+          "Ref" : "DBVersion"
+        },
         "MasterUsername" : {
           "Ref" : "SAUserName"
         },
@@ -213,6 +216,9 @@
           "Ref" : "SubnetGroup"
         },
         "Engine" : "aurora",
+        "EngineVersion" : {
+          "Ref" : "DBVersion"
+        },
         "MasterUsername" : {
           "Ref" : "SAUserName"
         },
@@ -268,6 +274,9 @@
           "Ref" : "SubnetGroup"
         },
         "Engine" : "aurora",
+        "EngineVersion" : {
+          "Ref" : "DBVersion"
+        },
         "MasterUsername" : {
           "Ref" : "SAUserName"
         },
