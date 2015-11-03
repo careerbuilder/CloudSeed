@@ -51,6 +51,11 @@
       "Default" : "",
       "Required" : false
     },
+    "OptionGroup" : {
+      "Description" : "Name of OptionGroup",
+      "Type" : "String",
+      "Required":true
+    },
     "SAUserName" : {
       "Description" : "Username of SA user",
       "Type" : "String",
@@ -201,7 +206,7 @@
         },
         "DBParameterGroupName" : {
           "Fn::If" : ["HasParamGroup", {
-              "Ref" : "ParameterGroup"
+              "Ref" : "InstanceParameterGroup"
             }, {
               "Ref" : "AWS::NoValue"
             }
