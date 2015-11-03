@@ -106,8 +106,8 @@
   "Mappings" : {
     "ConfigMap" : {
       "us-east-1" : {
-        "AZ" : ["us-east-1b", "us-east-1c", "us-east-1e"],
-        "Append" : ["b", "c", "e"]
+        "AZ" : ["us-east-1b", "us-east-1c"],
+        "Append" : ["b", "c"]
       },
       "eu-west-1" : {
         "AZ" : ["eu-west-1a", "eu-west-1b", "eu-west-1c"],
