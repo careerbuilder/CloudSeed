@@ -145,35 +145,4 @@ router.post('/build/:name', function(req, res){
   });
 });
 
-router.post('/verify/:name', function(req, res){
-  var auth = req.body.userid;
-  db.get_user({"confirm":auth}, function(err, result){
-    if(err){
-      console.log(err);
-      return res.send({Success:false, Error: err});
-    }
-    var auth = {
-      accesskey: result.accesskey,
-      secretkey: result.secretkey
-    };
-    db.get_stack({"Name":req.params.name}, function(err, results){
-      if(err){
-        console.log(err);
-        return res.send({Success: false, Error:err});
-      }
-      var stack = results;
-      var cf = new aws.CloudFormation({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
-      var stackname = stack['Name'];
-      cf.validateTemplate({"TemplateBody":JSON.stringify(stack['Template'],null,2)}, function(err, data) {
-        if(err){
-          console.log("Invalid stack");
-          return res.send({Success: false, Error:err});
-        }
-        return res.send({Success: true, Data: data});
-      });
-    });
-  });
-});
-
-
 module.exports = router;

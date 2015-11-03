@@ -451,23 +451,6 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     });
   }
 
-  $scope.verifyTemplate=function(stackname){
-    $http.post('/api/stacks/verify/' + stackname, {userid:$scope.auth.userinfo().confirm}).then(function(data){
-      if(data.Success){
-        toastr.success("Template Verified!");
-        return true;
-      }
-      else{
-        toastr.error(data.Error, "Something went wrong...");
-        console.log(data.Error);
-        return false;
-      }
-    },function(err){
-      toastr.error(err, "Something went wrong...");
-      return false;
-    });
-  }
-
   $scope.discardStack = function(){
     $scope.build ={};
     $scope.addedParts =[];
