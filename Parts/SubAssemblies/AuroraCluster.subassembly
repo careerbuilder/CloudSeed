@@ -182,9 +182,6 @@
       "Properties" : {
         "AllowMajorVersionUpgrade" : false,
         "AutoMinorVersionUpgrade" : false,
-        "BackupRetentionPeriod" : {
-          "Ref" : "BackupDays"
-        },
         "DBClusterIdentifier" : {
           "Ref" : "DBCluster"
         },
@@ -212,17 +209,11 @@
             }
           ]
         },
-        "DBSubnetGroupName" : {
-          "Ref" : "SubnetGroup"
-        },
         "Engine" : "aurora",
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
-        "PubliclyAccessible" : false,
-        "VPCSecurityGroups" : {
-          "Ref" : "RDSSG"
-        }
+        "PubliclyAccessible" : false
       }
     },
     "BNode" : {
@@ -230,9 +221,6 @@
       "Properties" : {
         "AllowMajorVersionUpgrade" : false,
         "AutoMinorVersionUpgrade" : false,
-        "BackupRetentionPeriod" : {
-          "Ref" : "BackupDays"
-        },
         "DBClusterIdentifier" : {
           "Ref" : "DBCluster"
         },
@@ -260,17 +248,11 @@
             }
           ]
         },
-        "DBSubnetGroupName" : {
-          "Ref" : "SubnetGroup"
-        },
         "Engine" : "aurora",
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
-        "PubliclyAccessible" : false,
-        "VPCSecurityGroups" : {
-          "Ref" : "RDSSG"
-        }
+        "PubliclyAccessible" : false
       }
     }
   },
