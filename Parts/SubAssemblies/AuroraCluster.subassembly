@@ -177,7 +177,7 @@
         }
       }
     },
-    "Node1" : {
+    "ANode" : {
       "Type" : "AWS::RDS::DBInstance",
       "Properties" : {
         "AllowMajorVersionUpgrade" : false,
@@ -225,7 +225,7 @@
         }
       }
     },
-    "Node2" : {
+    "BNode" : {
       "Type" : "AWS::RDS::DBInstance",
       "Properties" : {
         "AllowMajorVersionUpgrade" : false,
@@ -284,13 +284,13 @@
     "Node1ID" : {
       "Description" : "ID of created Instance",
       "Value" : {
-        "Ref" : "Node1"
+        "Ref" : "ANode"
       }
     },
     "Node2ID" : {
       "Description" : "ID of created Instance",
       "Value" : {
-        "Ref" : "Node2"
+        "Ref" : "BNode"
       }
     }
   },
