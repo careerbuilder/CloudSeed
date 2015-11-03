@@ -264,7 +264,7 @@
         },
         "DBParameterGroupName" : {
           "Fn::If" : ["HasParamGroup", {
-              "Ref" : "ParameterGroup"
+              "Ref" : "InstanceParameterGroup"
             }, {
               "Ref" : "AWS::NoValue"
             }
