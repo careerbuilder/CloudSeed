@@ -39,7 +39,7 @@
     </div>
     <div id="stage" class="col-xs-10 col-md-8">
       <div class="row well" id="stackcontrols">
-        <div class="col-xs-4">
+        <div class="col-xs-3">
           <div class="btn-group">
             <button type="button" class="btn btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Load <span class="caret"></span>
@@ -49,7 +49,17 @@
             </ul>
           </div>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-3">
+          <div class="btn-group">
+            <button type="button" class="btn btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Verify <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu scrollable-menu">
+              <li class="pointer" ng-repeat="stack in stacks track by $index" ng-click="verifyTemplate(stack.Name)"><a>{{stack.Name}}</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-xs-3">
           <div class="btn-group">
             <button type="button" class="btn btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Build <span class="caret"></span>
@@ -59,7 +69,7 @@
             </ul>
           </div>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-3">
           <button type="button" class="btn btn-danger pull-right" ng-click="discardStack()" ng-disabled="addedParts<1">Discard</button>
         </div>
       </div>
