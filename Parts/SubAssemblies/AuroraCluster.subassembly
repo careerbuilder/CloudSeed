@@ -216,14 +216,8 @@
           "Ref" : "SubnetGroup"
         },
         "Engine" : "aurora",
-        "EngineVersion" : {
-          "Ref" : "DBVersion"
-        },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
-        },
-        "Port" : {
-          "Ref" : "Portnum"
         },
         "PubliclyAccessible" : false,
         "VPCSecurityGroups" : {
@@ -270,14 +264,8 @@
           "Ref" : "SubnetGroup"
         },
         "Engine" : "aurora",
-        "EngineVersion" : {
-          "Ref" : "DBVersion"
-        },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
-        },
-        "Port" : {
-          "Ref" : "Portnum"
         },
         "PubliclyAccessible" : false,
         "VPCSecurityGroups" : {
