@@ -106,8 +106,8 @@
   "Mappings" : {
     "ConfigMap" : {
       "us-east-1" : {
-        "AZ" : ["us-east-1b", "us-east-1c", "us-east-1d"],
-        "Append" : ["b", "c", "d"]
+        "AZ" : ["us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e"],
+        "Append" : ["b", "c", "d", "e"]
       },
       "eu-west-1" : {
         "AZ" : ["eu-west-1a", "eu-west-1b", "eu-west-1c"],
@@ -119,11 +119,11 @@
     "DBCluster" : {
       "Type" : "AWS::RDS::DBCluster",
       "Properties" : {
-        "AvailabilityZones" : {
-          "Fn::FindInMap" : ["ConfigMap", {
-              "Ref" : "AWS::Region"
-            }, "AZ"]
-        },
+        "AvailabilityZones" : [
+          {"Fn::Select" : [0, {"Fn::FindInMap" : ["ConfigMap", {"Ref" : "AWS::Region"}, "AZ"]}]},
+          {"Fn::Select" : [1, {"Fn::FindInMap" : ["ConfigMap", {"Ref" : "AWS::Region"}, "AZ"]}]},
+          {"Fn::Select" : [2, {"Fn::FindInMap" : ["ConfigMap", {"Ref" : "AWS::Region"}, "AZ"]}]}
+        ],
         "BackupRetentionPeriod" : {
           "Ref" : "BackupDays"
         },
