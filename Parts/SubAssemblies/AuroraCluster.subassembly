@@ -1,0 +1,322 @@
+{
+  "Type" : "AuroraCluster",
+  "Parameters" : {
+    "TeamName" : {
+      "Description" : "Name of the team who owns the cluster",
+      "Type" : "String",
+      "Required" : true
+    },
+    "RDSName" : {
+      "Description" : "Name of the created aurora cluster",
+      "Type" : "String",
+      "Required" : true
+    },
+    "RDSSG" : {
+      "Description" : "IDs of security groups to use for new RDS",
+      "Type" : "CommaDelimitedList",
+      "Required" : true
+    },
+    "SubnetGroup" : {
+      "Description" : "name of subnet group to use for new RDS",
+      "Type" : "String",
+      "Required" : true
+    },
+    "SnapshotID" : {
+      "Description" : "ID of snapshot to use (if any)",
+      "Type" : "String",
+      "Default" : "",
+      "Required" : false
+    },
+    "BackupDays" : {
+      "Description" : "Days to backup",
+      "Type" : "Number",
+      "Default" : 14,
+      "Required" : true
+    },
+    "DBVersion" : {
+      "Description" : "Version of the DBEngine",
+      "Type" : "String",
+      "Default" : "Aurora 5.6.10a",
+      "Required" : false
+    },
+    "ClusterParameterGroup" : {
+      "Description" : "Name of the ParameterGroup for the cluster",
+      "Type" : "String",
+      "Default" : "",
+      "Required" : false
+    },
+    "InstanceParameterGroup" : {
+      "Description" : "Name of the ParameterGroup for the Instances",
+      "Type" : "String",
+      "Default" : "",
+      "Required" : false
+    },
+    "SAUserName" : {
+      "Description" : "Username of SA user",
+      "Type" : "String",
+      "Required" : true
+    },
+    "Portnum" : {
+      "Description" : "Port",
+      "Type" : "Number",
+      "Default" : 3633,
+      "Required" : true
+    },
+    "InstanceSize" : {
+      "Description" : "Size and type of DBInstance",
+      "Type" : "String",
+      "Default" : "db.r3.xlarge",
+      "AllowedPattern" : "db.[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
+    }
+  },
+  "Conditions" : {
+    "HasClusterParamGroup" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "ClusterParameterGroup"
+            }
+          ]
+        }
+      ]
+    },
+    "HasParamGroup" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "InstanceParameterGroup"
+            }
+          ]
+        }
+      ]
+    },
+    "HasSnapshot" : {
+      "Fn::Not" : [{
+          "Fn::Equals" : ["", {
+              "Ref" : "SnapshotID"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Mappings" : {
+    "ConfigMap" : {
+      "us-east-1" : {
+        "AZ" : ["us-east-1b", "us-east-1c", "us-east-1d"],
+        "Append" : ["b", "c", "d"]
+      },
+      "eu-west-1" : {
+        "AZ" : ["eu-west-1a", "eu-west-1b", "eu-west-1c"],
+        "Append" : ["a", "b", "c"]
+      }
+    }
+  },
+  "Resources" : {
+    "DBCluster" : {
+      "Type" : "AWS::RDS::DBCluster",
+      "Properties" : {
+        "AvailabilityZones" : {
+          "Fn::FindInMap" : ["ConfigMap", {
+              "Ref" : "AWS::Region"
+            }, "AZ"]
+        },
+        "BackupRetentionPeriod" : {
+          "Ref" : "BackupDays"
+        },
+        "DatabaseName" : {
+          "Ref" : "RDSName"
+        },
+        "DBClusterParameterGroupName" : {
+          "Fn::If" : ["HasClusterParamGroup", {
+              "Ref" : "ClusterParameterGroup"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "DBSubnetGroupName" : {
+          "Ref" : "SubnetGroup"
+        },
+        "Engine" : "aurora",
+        "EngineVersion" : {
+          "Ref" : "DBVersion"
+        },
+        "MasterUsername" : {
+          "Ref" : "SAUserName"
+        },
+        "MasterUserPassword" : "changemeNOW",
+        "Port" : {
+          "Ref" : "Portnum"
+        },
+        "SnapshotIdentifier" : {
+          "Fn::If" : ["HasSnapshot", {
+              "Ref" : "SnapshotID"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "Tags" : [{
+            "Key" : "Name",
+            "Value" : {
+              "Ref" : "RDSName"
+            }
+          }, {
+            "Key" : "Team",
+            "Value" : {
+              "Ref" : "TeamName"
+            }
+          }
+        ],
+        "VpcSecurityGroupIds" : {
+          "Ref" : "RDSSG"
+        }
+      }
+    },
+    "Node1" : {
+      "Type" : "AWS::RDS::DBInstance",
+      "Properties" : {
+        "AllowMajorVersionUpgrade" : false,
+        "AutoMinorVersionUpgrade" : false,
+        "BackupRetentionPeriod" : {
+          "Ref" : "BackupDays"
+        },
+        "DBClusterIdentifier" : {
+          "Ref" : "DBCluster"
+        },
+        "DBInstanceClass" : {
+          "Ref" : "InstanceSize"
+        },
+        "DBInstanceIdentifier" : {
+          "Fn::Join" : ["", [{
+                "Ref" : "RDSName"
+              }, "-", {
+                "Fn::Select" : [0, {
+                    "Fn::FindInMap" : ["ConfigMap", {
+                        "Ref" : "AWS::Region"
+                      }, "Append"]
+                  }
+                ]
+              }
+            ]]
+        },
+        "DBParameterGroupName" : {
+          "Fn::If" : ["HasParamGroup", {
+              "Ref" : "ParameterGroup"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "DBSubnetGroupName" : {
+          "Ref" : "SubnetGroup"
+        },
+        "Engine" : "aurora",
+        "EngineVersion" : {
+          "Ref" : "DBVersion"
+        },
+        "MasterUsername" : {
+          "Ref" : "SAUserName"
+        },
+        "MasterUserPassword" : "changemeNOW",
+        "OptionGroupName" : {
+          "Ref" : "OptionGroup"
+        },
+        "Port" : {
+          "Ref" : "Portnum"
+        },
+        "PubliclyAccessible" : false,
+        "VPCSecurityGroups" : {
+          "Ref" : "RDSSG"
+        }
+      }
+    },
+    "Node2" : {
+      "Type" : "AWS::RDS::DBInstance",
+      "Properties" : {
+        "AllowMajorVersionUpgrade" : false,
+        "AutoMinorVersionUpgrade" : false,
+        "BackupRetentionPeriod" : {
+          "Ref" : "BackupDays"
+        },
+        "DBClusterIdentifier" : {
+          "Ref" : "DBCluster"
+        },
+        "DBInstanceClass" : {
+          "Ref" : "InstanceSize"
+        },
+        "DBInstanceIdentifier" : {
+          "Fn::Join" : ["", [{
+                "Ref" : "RDSName"
+              }, "-", {
+                "Fn::Select" : [1, {
+                    "Fn::FindInMap" : ["ConfigMap", {
+                        "Ref" : "AWS::Region"
+                      }, "Append"]
+                  }
+                ]
+              }
+            ]]
+        },
+        "DBParameterGroupName" : {
+          "Fn::If" : ["HasParamGroup", {
+              "Ref" : "ParameterGroup"
+            }, {
+              "Ref" : "AWS::NoValue"
+            }
+          ]
+        },
+        "DBSubnetGroupName" : {
+          "Ref" : "SubnetGroup"
+        },
+        "Engine" : "aurora",
+        "EngineVersion" : {
+          "Ref" : "DBVersion"
+        },
+        "MasterUsername" : {
+          "Ref" : "SAUserName"
+        },
+        "MasterUserPassword" : "changemeNOW",
+        "OptionGroupName" : {
+          "Ref" : "OptionGroup"
+        },
+        "Port" : {
+          "Ref" : "Portnum"
+        },
+        "PubliclyAccessible" : false,
+        "VPCSecurityGroups" : {
+          "Ref" : "RDSSG"
+        }
+      }
+    }
+  },
+  "Outputs" : {
+    "ClusterID" : {
+      "Description" : "ID of created cluster",
+      "Value" : {
+        "Ref" : "DBCluster"
+      }
+    },
+    "Node1ID" : {
+      "Description" : "ID of created Instance",
+      "Value" : {
+        "Ref" : "Node1"
+      }
+    },
+    "Node2ID" : {
+      "Description" : "ID of created Instance",
+      "Value" : {
+        "Ref" : "Node2"
+      }
+    }
+  },
+  "Connections" : {
+    "Substitutes" : [{
+        "Type" : "SubnetGroup",
+        "Parameter" : "SubnetGroup"
+      }, {
+        "Type" : "List::SecurityGroup",
+        "Parameter" : "RDSSG"
+      }
+    ]
+  }
+}
