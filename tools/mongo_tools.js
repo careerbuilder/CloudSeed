@@ -30,14 +30,14 @@ module.exports ={
   },
   get_parts: function(parts, callback){
     var criteria = parts || {};
-    db.collection('parts').find(criteria).toArray(callback);
+    db.collection('parts').find(criteria).sort({Type:1}).toArray(callback);
   },
   get_part: function(part, callback){
     db.collection('parts').findOne(part, callback);
   },
   get_stacks: function(stacks, callback){
     var criteria = stacks || {};
-    db.collection('stacks').find(criteria).toArray(callback);
+    db.collection('stacks').find(criteria).sort({Name:1}).toArray(callback);
   },
   get_stack: function(stack, callback){
     db.collection('stacks').findOne(stack, callback);
