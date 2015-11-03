@@ -201,6 +201,9 @@
               }
             ]]
         },
+        "DBSubnetGroupName" : {
+          "Ref" : "SubnetGroup"
+        },
         "DBParameterGroupName" : {
           "Fn::If" : ["HasParamGroup", {
               "Ref" : "InstanceParameterGroup"
@@ -226,6 +229,9 @@
         },
         "DBInstanceClass" : {
           "Ref" : "InstanceSize"
+        },
+        "DBSubnetGroupName" : {
+          "Ref" : "SubnetGroup"
         },
         "DBInstanceIdentifier" : {
           "Fn::Join" : ["", [{
