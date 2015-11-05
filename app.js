@@ -3,7 +3,7 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,8 @@ app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'client')));
 app.set('views', __dirname + '/client/views');
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(favicon(__dirname + '/favicon.ico'));
 
 var port = 3000;
