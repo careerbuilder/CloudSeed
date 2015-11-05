@@ -13,7 +13,7 @@ def parse_params(template, paramlist):
         if 'Default' in parameters[parameter]:
             param_values[parameter] = parameters[parameter]['Default']
         else:
-            param_values[parameter] = None
+            param_values[parameter] = ''
     for param in paramlist:
         param_values[param['ParameterKey']] = param['ParameterValue']
     return replace_params(template, param_values)
@@ -118,6 +118,13 @@ def export_parts(parts):
 def prepare_part(csp, part, key):
     csp_copy = json.loads(json.dumps(csp))
     newparams = {}
+    if 'Connections' in csp_copy and 'Substitutes' in csp_copy['Connections']:
+        for sub in csp_copy['Connections']['Substitutes']:
+            if 'Reference' not in sub:
+                if sub['Type'].startswith('List::'):
+                    sub['Reference'] = []
+                else:
+                    sub['Reference'] = 'None'
     for param in csp_copy['Parameters']:
         newparams[param] = csp_copy['Parameters'][param]
         if 'Default' in csp_copy['Parameters'][param]:
@@ -195,8 +202,16 @@ def find_param(prop, params):
 def fill_substitute(part, param, value):
     if 'Connections' in part and 'Substitutes' in part['Connections']:
         for sub in part['Connections']['Substitutes']:
+            if 'Reference' not in sub:
+                if sub['Type'].startswith('List::'):
+                    sub['Reference'] = []
+                else:
+                    sub['Reference'] = 'None'
             if sub['Parameter'] == param:
-                sub['Reference'] = {'Ref': value}
+                if sub['Type'].startswith('List::'):
+                    sub['Reference'].push({'Ref':value})
+                else:
+                    sub['Reference'] = {'Ref': value}
 
 
 def solve_functions(block, mappings):
@@ -256,21 +271,45 @@ def solve_functions(block, mappings):
     else:
         return block
 
-if __name__ == '__main__':
-    cfn = boto3.client('cloudformation')
-    stackname = sys.argv[1]
-    pl = cfn.describe_stacks(StackName=stackname)['Stacks'][0]['Parameters']
-    t = cfn.get_template(StackName=stackname)['TemplateBody']
+
+def main(stackname, isFile):
+    pl = []
+    t = {}
+    if not isFile:
+        cfn = boto3.client('cloudformation')
+        pl = cfn.describe_stacks(StackName=stackname)['Stacks'][0]['Parameters']
+        t = cfn.get_template(StackName=stackname)['TemplateBody']
+    else:
+        pro_file = open(sys.argv[1])
+        profile = json.load(pro_file, object_hook=OrderedDict)
+        pro_file.close()
+        for key in profile['parameters']:
+            pl.append({'ParameterKey': key, 'ParameterValue': profile['parameters'][key]})
+        template_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(stackname)), '../', profile['template_location']))
+        temp_file = open(template_path)
+        t = json.load(temp_file, object_hook=OrderedDict)
+        temp_file.close()
     finishedparts = parse_params(t, pl)
     region = 'us-east-1'
-    if stackname.startswith('US'):
+    cleanname = re.sub(r'.*?[/\\]([^/\\]*?)(\.[Jj][Ss][Oo][Nn])', r'\1', stackname)
+    if cleanname.startswith('US'):
         region = 'us-east-1'
-    elif stackname.startswith('Ireland'):
+    elif cleanname.startswith('Ireland'):
         region = 'eu-west-1'
-    build = {'Name': stackname, 'Region': region, 'Template': {}, 'Parts': finishedparts, 'Ready': False}
-    outpath = os.path.join(os.path.curdir, stackname+'.json')
-    fout = open(outpath,'w')
+    build = {'Name': cleanname, 'Region': region, 'Template': {}, 'Parts': finishedparts, 'Ready': False}
+    outpath = os.path.join(os.path.curdir, cleanname + '.json')
+    fout = open(outpath, 'w')
     json.dump(build, fout)
     fout.close()
     print('DONE!')
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print('Need name of stack or file name')
+        exit(1)
+    stackdesc = sys.argv[1]
+    isjson = re.search(r'\.json$', stackdesc, re.IGNORECASE) is not None
+    main(stackdesc, isjson)
+
+
 
