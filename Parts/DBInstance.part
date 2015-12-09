@@ -149,6 +149,7 @@
         },
         "PubliclyAccessible" : false,
         "StorageType" : {"Fn::If":["IsAurora", {"Ref":"AWS::NoValue"}, "io1"]},
+        "StorageEncrypted":true,
         "VPCSecurityGroups" : {
           "Ref" : "RDSSG"
         }

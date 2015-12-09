@@ -216,6 +216,7 @@
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
+        "StorageEncrypted":true,
         "PubliclyAccessible" : false
       }
     },
@@ -258,6 +259,7 @@
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
+        "StorageEncrypted":true,
         "PubliclyAccessible" : false
       }
     }
