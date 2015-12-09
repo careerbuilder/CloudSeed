@@ -154,6 +154,13 @@ def prepare_part(csp, part, key):
                         for pkey in part['Properties'][prop]:
                             if pkey in csr['Properties'][prop] and 'Ref' in csr['Properties'][prop][pkey]:
                                 csp_copy['Parameters'][csr['Properties'][prop][pkey]['Ref']]['Value'] = part['Properties'][prop][pkey]
+                elif isinstance(part['Properties'][prop], list):
+                    for item in part['Properties'][prop]:
+                        if isinstance(item, dict) and 'Ref' in item:
+                            if reference:
+                                csp_copy['Parameters'][rep_param]['Hidden'] = True
+                                csp_copy['Parameters'][rep_param]['Value'] = item['Ref']
+                                fill_substitute(csp_copy, rep_param, item['Ref'])
                 else:
                     if 'AllowedValues' in csp_copy['Parameters'][rep_param]:
                         for av in csp_copy['Parameters'][rep_param]['AllowedValues']:
@@ -177,7 +184,12 @@ def prepare_part(csp, part, key):
     csp_copy['Resources'][key] = csr
     csp_string = json.dumps(csp_copy)
     csp_string = re.sub(r'\s*\{\s*"Ref"\s*:\s*"' + replace_name + r'"\s*\}', json.dumps({'Ref': key}), csp_string)
-    return json.loads(csp_string)
+    new_res_copy = json.loads(csp_string, object_hook=OrderedDict)
+    if 'Connections' in new_res_copy:
+        csp_conn_string = json.dumps(new_res_copy['Connections'])
+        csp_conn_string = re.sub(r'"'+replace_name+r'"', json.dumps(key), csp_conn_string)
+        new_res_copy['Connections'] = json.loads(csp_conn_string, object_hook=OrderedDict)
+    return new_res_copy
 
 
 def find_param(prop, params):
@@ -209,7 +221,7 @@ def fill_substitute(part, param, value):
                     sub['Reference'] = 'None'
             if sub['Parameter'] == param:
                 if sub['Type'].startswith('List::'):
-                    sub['Reference'].push({'Ref':value})
+                    sub['Reference'].append({'Ref':value})
                 else:
                     sub['Reference'] = {'Ref': value}
 
@@ -275,12 +287,18 @@ def solve_functions(block, mappings):
 def main(stackname, isFile):
     pl = []
     t = {}
+    region = 'us-east-1'
+    cleanname = re.sub(r'.*?[/\\]([^/\\]*?)(\.[Jj][Ss][Oo][Nn])', r'\1', stackname)
+    if cleanname.startswith('US'):
+        region = 'us-east-1'
+    elif cleanname.startswith('Ireland'):
+        region = 'eu-west-1'
     if not isFile:
-        cfn = boto3.client('cloudformation')
+        cfn = boto3.client('cloudformation', region_name=region)
         pl = cfn.describe_stacks(StackName=stackname)['Stacks'][0]['Parameters']
         t = cfn.get_template(StackName=stackname)['TemplateBody']
     else:
-        pro_file = open(sys.argv[1])
+        pro_file = open(stackname)
         profile = json.load(pro_file, object_hook=OrderedDict)
         pro_file.close()
         for key in profile['parameters']:
@@ -290,12 +308,6 @@ def main(stackname, isFile):
         t = json.load(temp_file, object_hook=OrderedDict)
         temp_file.close()
     finishedparts = parse_params(t, pl)
-    region = 'us-east-1'
-    cleanname = re.sub(r'.*?[/\\]([^/\\]*?)(\.[Jj][Ss][Oo][Nn])', r'\1', stackname)
-    if cleanname.startswith('US'):
-        region = 'us-east-1'
-    elif cleanname.startswith('Ireland'):
-        region = 'eu-west-1'
     build = {'Name': cleanname, 'Region': region, 'Template': {}, 'Parts': finishedparts, 'Ready': False}
     outpath = os.path.join(os.path.curdir, cleanname + '.json')
     fout = open(outpath, 'w')
