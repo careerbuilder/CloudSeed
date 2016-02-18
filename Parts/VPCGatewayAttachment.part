@@ -45,14 +45,14 @@
         "Type" : "AWS::EC2::VPCGatewayAttachment",
         "Properties" : {
             "InternetGatewayId" :{
-              "Fn:If":[
+              "Fn::If":[
                 "HasIGW",
                 {"Ref":"IGW"},
                 {"Ref":"AWS::NoValue"}
               ]
             },
             "VpnGatewayId" :{
-              "Fn:If":[
+              "Fn::If":[
                 "HasVPNGW",
                 {"Ref":"VPNGW"},
                 {"Ref":"AWS::NoValue"}
