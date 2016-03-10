@@ -48,7 +48,7 @@
     "InstanceParameterGroup" : {
       "Description" : "Name of the ParameterGroup for the Instances",
       "Type" : "String",
-      "Default" : "",
+      "Default" : "pg-aurora-sitedb",
       "Required" : false
     },
     "OptionGroup" : {
