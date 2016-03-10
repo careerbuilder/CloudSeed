@@ -160,6 +160,7 @@
             }
           ]
         },
+        "StorageEncrypted":{"Fn::If" : ["HasSnapshot", false, true]},
         "Tags" : [{
             "Key" : "Name",
             "Value" : {
