@@ -270,6 +270,7 @@
         "HostedZoneId" : "Z2NSUT0O5XSS2J",
         "Name" : {"Fn::Join":["",[{"Ref":"DBCluster"},".cbsitedb.net."]]},
         "ResourceRecords":[{"Fn::GetAtt":["DBCluster","Endpoint.Address"]}],
+        "TTL": "300",
         "Type" : "CNAME"
       }
     }
