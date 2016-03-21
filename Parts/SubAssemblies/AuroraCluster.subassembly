@@ -263,6 +263,15 @@
         "StorageEncrypted":true,
         "PubliclyAccessible" : false
       }
+    },
+    "R53Alias":{
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "AliasTarget" : {"Fn::GetAtt":["DBCluster","Endpoint.Address"]},
+        "HostedZoneId" : "Z2NSUT0O5XSS2J",
+        "Name" : {"Fn::Join":["",[{"Ref":"DBCluster"},".cbsitedb.net."]]},
+        "Type" : "CNAME"
+      }
     }
   },
   "Outputs" : {
@@ -282,6 +291,12 @@
       "Description" : "ID of created Instance",
       "Value" : {
         "Ref" : "BNode"
+      }
+    },
+    "R53Domain":{
+      "Description" : "Aliased domain of the cluster",
+      "Value" : {
+        "Ref" : "R53Alias"
       }
     }
   },

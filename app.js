@@ -19,9 +19,6 @@ var favicon    = require('serve-favicon');
 global.config  = require('./config.json');
 var app        = express(); 			// define our app using express
 
-
-
-
 app.set('view engine','html');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'client')));
@@ -51,7 +48,7 @@ app.use(function(req, res, next){
   }
   // respond with json
   if (req.accepts('json')) {
-    return res.send({error: 'Not a valid endpoint'});
+    return res.send({Error: 'Not a valid endpoint'});
   }
   // default to plain-text. send()
   return res.type('txt').send('Not found');
