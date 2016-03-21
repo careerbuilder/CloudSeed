@@ -267,9 +267,9 @@
     "R53Alias":{
       "Type" : "AWS::Route53::RecordSet",
       "Properties" : {
-        "AliasTarget" : {"Fn::GetAtt":["DBCluster","Endpoint.Address"]},
         "HostedZoneId" : "Z2NSUT0O5XSS2J",
         "Name" : {"Fn::Join":["",[{"Ref":"DBCluster"},".cbsitedb.net."]]},
+        "ResourceRecords":[{"Fn::GetAtt":["DBCluster","Endpoint.Address"]}],
         "Type" : "CNAME"
       }
     }
