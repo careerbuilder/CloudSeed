@@ -27,8 +27,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(favicon(__dirname + '/favicon.ico'));
 
-var httpport = 3000;
-var httpsport = 3001;
+var port = 3000;
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -60,15 +59,9 @@ if('SSL' in global.config){
     key: fs.readFileSync(global.config.SSL.keyfile),
    cert: fs.readFileSync(global.config.SSL.certfile)
   };
-  https.createServer(config, app).listen(httpsport);
-  console.log('Magic happens on port ' + httpsport);
-  var redir = express();
-  redir.use(function(req, res, next){
-    return res.redirect('https://'+req.hostname+req.url);
-  });
-  redir.listen(httpport);
+  https.createServer(config, app).listen(port);
 }
 else{
-  app.listen(httpport);
-  console.log('Magic happens on port ' + httpport);
+  app.listen(port);
 }
+console.log('Magic happens on port ' + port);
