@@ -36,7 +36,7 @@
     "DBVersion" : {
       "Description" : "Version of the DBEngine",
       "Type" : "String",
-      "Default" : "Aurora 5.6.10a",
+      "Default" : "5.6.10a",
       "Required" : false
     },
     "ClusterParameterGroup" : {
