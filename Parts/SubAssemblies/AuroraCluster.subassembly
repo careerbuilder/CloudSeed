@@ -268,7 +268,7 @@
       "Type" : "AWS::Route53::RecordSet",
       "Properties" : {
         "HostedZoneId" : "Z2NSUT0O5XSS2J",
-        "Name" : {"Fn::Join":["",[{"Ref":"DBCluster"},".cbsitedb.net."]]},
+        "Name" : {"Fn::Join":["",[{"Ref":"RDSName"},".cbsitedb.net."]]},
         "ResourceRecords":[{"Fn::GetAtt":["DBCluster","Endpoint.Address"]}],
         "TTL": "300",
         "Type" : "CNAME"
