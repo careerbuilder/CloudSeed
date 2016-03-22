@@ -293,7 +293,7 @@
           "ResourcePath": {"Fn::Join":["",["/healthcheck/rds/secondary/", {"Ref":"AWS::Region"}, "/", {"Ref":"BNode"}]]},
           "RequestInterval": "30",
           "FailureThreshold": "1"
-        }
+        },
         "HealthCheckTags" : [
           {
             "Key": "Name",
