@@ -264,7 +264,7 @@
         "PubliclyAccessible" : false
       }
     },
-    "Healthcheck-A":{
+    "HealthcheckA":{
       "Type": "AWS::Route53::HealthCheck",
       "Properties": {
         "HealthCheckConfig": {
@@ -283,7 +283,7 @@
         ]
       }
     },
-    "Healthcheck-B":{
+    "HealthcheckB":{
       "Type": "AWS::Route53::HealthCheck",
       "Properties": {
         "HealthCheckConfig": {
@@ -302,11 +302,11 @@
         ]
       }
     },
-    "R53-RR-Primary":{
+    "R53RRPrimary":{
       "Type" : "AWS::Route53::RecordSet",
       "Properties" : {
         "Failover" : "PRIMARY",
-        "HealthCheckId" : {"Ref":"Healthcheck-A"},
+        "HealthCheckId" : {"Ref":"HealthcheckA"},
         "HostedZoneId" : "Z2NSUT0O5XSS2J",
         "Name" : {"Fn::Join":["",[{"Ref":"ANode"},"-rr.cbsitedb.net."]]},
         "Region" : {"Ref":"AWS::Region"},
@@ -316,11 +316,11 @@
         "Type" : "CNAME"
       }
     },
-    "R53-RR-Secondary":{
+    "R53RRSecondary":{
       "Type" : "AWS::Route53::RecordSet",
       "Properties" : {
         "Failover" : "SECONDARY",
-        "HealthCheckId" : {"Ref":"Healthcheck-B"},
+        "HealthCheckId" : {"Ref":"HealthcheckB"},
         "HostedZoneId" : "Z2NSUT0O5XSS2J",
         "Name" : {"Fn::Join":["",[{"Ref":"BNode"},"-rr.cbsitedb.net."]]},
         "Region" : {"Ref":"AWS::Region"},
@@ -369,13 +369,13 @@
     "R53rrPri":{
       "Description" : "Primary RR", 
       "Value" : {
-        "Ref" : "R53-RR-Primary"
+        "Ref" : "R53RRPrimary"
       }
     },
     "R53rrSec":{
       "Description" : "Secondary RR", 
       "Value" : {
-        "Ref" : "R53-RR-Secondary"
+        "Ref" : "R53RRSecondary"
       }
     }
   },
