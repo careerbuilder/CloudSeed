@@ -64,7 +64,7 @@
     "Portnum" : {
       "Description" : "Port",
       "Type" : "Number",
-      "Default" : 3633,
+      "Default" : 3306,
       "Required" : true
     },
     "InstanceSize" : {
