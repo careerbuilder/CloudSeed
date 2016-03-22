@@ -311,7 +311,7 @@
         "Name" : {"Fn::Join":["",[{"Ref":"ANode"},"-rr.cbsitedb.net."]]},
         "Region" : {"Ref":"AWS::Region"},
         "ResourceRecords" : [ {"Fn::GetAtt":["ANode","Endpoint.Address"]} ],
-        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-RR-Set"]]},
+        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr-Primary"]]},
         "TTL" : "60",
         "Type" : "CNAME"
       }
@@ -325,7 +325,7 @@
         "Name" : {"Fn::Join":["",[{"Ref":"BNode"},"-rr.cbsitedb.net."]]},
         "Region" : {"Ref":"AWS::Region"},
         "ResourceRecords" : [ {"Fn::GetAtt":["BNode","Endpoint.Address"]} ],
-        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-RR-Set"]]},
+        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr-Secondary"]]},
         "TTL" : "60",
         "Type" : "CNAME"
       }
