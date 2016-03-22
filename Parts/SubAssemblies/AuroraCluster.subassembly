@@ -302,6 +302,32 @@
         ]
       }
     },
+    "R53RRPrimary":{
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "Failover" : "PRIMARY",
+        "HealthCheckId" : {"Ref":"HealthcheckA"},
+        "HostedZoneId" : "Z2NSUT0O5XSS2J",
+        "Name" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr.cbsitedb.net."]]},
+        "ResourceRecords" : [ {"Fn::GetAtt":["ANode","Endpoint.Address"]} ],
+        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr-Primary"]]},
+        "TTL" : "60",
+        "Type" : "CNAME"
+      }
+    },
+    "R53RRSecondary":{
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "Failover" : "SECONDARY",
+        "HealthCheckId" : {"Ref":"HealthcheckB"},
+        "HostedZoneId" : "Z2NSUT0O5XSS2J",
+        "Name" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr.cbsitedb.net."]]},
+        "ResourceRecords" : [ {"Fn::GetAtt":["BNode","Endpoint.Address"]} ],
+        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr-Secondary"]]},
+        "TTL" : "60",
+        "Type" : "CNAME"
+      }
+    },
     "R53Alias":{
       "Type" : "AWS::Route53::RecordSet",
       "Properties" : {
@@ -348,6 +374,18 @@
       "Description" : "Healthcheck B ID", 
       "Value" : {
         "Ref" : "HealthcheckB"
+      }
+    },
+    "R53rrPri":{
+      "Description" : "Primary RR", 
+      "Value" : {
+        "Ref" : "R53RRPrimary"
+      }
+    },
+    "R53rrSec":{
+      "Description" : "Secondary RR", 
+      "Value" : {
+        "Ref" : "R53RRSecondary"
       }
     }
   },
