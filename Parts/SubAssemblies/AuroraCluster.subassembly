@@ -152,6 +152,7 @@
         "Port" : {
           "Ref" : "Portnum"
         },
+        "PreferredMaintenanceWindow": "Sat:01:00-Sat:01:30",
         "SnapshotIdentifier" : {
           "Fn::If" : ["HasSnapshot", {
               "Ref" : "SnapshotID"
@@ -217,6 +218,7 @@
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
+        "PreferredMaintenanceWindow": "Sat:01:00-Sat:01:30",
         "StorageEncrypted":true,
         "PubliclyAccessible" : false
       }
@@ -260,6 +262,7 @@
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
+        "PreferredMaintenanceWindow": "Sun:01:00-Sun:01:30",
         "StorageEncrypted":true,
         "PubliclyAccessible" : false
       }
