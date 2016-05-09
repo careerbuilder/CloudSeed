@@ -30,7 +30,7 @@
     "BackupDays" : {
       "Description" : "Days to backup",
       "Type" : "Number",
-      "Default" : 14,
+      "Default" : 30,
       "Required" : true
     },
     "DBVersion" : {
