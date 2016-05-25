@@ -1,0 +1,251 @@
+/*
+* Copyright 2015 CareerBuilder, LLC
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
+*/
+var mysql = require('mysql');
+var pool;
+if(global.config.DB.Type === 'mysql'|| global.config.DB.Type === 'aurora'){
+  var pool = mysql.createPool(global.config.DB);
+}
+
+module.exports ={
+  put_user: function(user, callback){
+    pool.getConnection(function(err, connection) {
+    	if(err) {
+				console.log('Error connecting to database');
+				return callback(err);
+			}
+	    connection.query('Insert into users SET ?;', [user], function(err, result) {
+	      connection.release();
+	      if(err){
+					console.log('Error inserting user');
+					return callback(err);
+				}
+	      return callback(null, result);
+	    });
+		});
+  },
+  update_user: function(user, k_v, callback){
+    pool.getConnection(function(err, connection) {
+      if(err) {
+        console.log('Error connecting to database');
+        return callback(err);
+      }
+      var where = "";
+      for(var key in user){
+        if(where.length>0){
+          where +=" AND ";
+        }
+        else{
+          where =" WHERE ";
+        }
+        where+= mysql.escapeId(key)+'='+mysql.escape(user[key]);
+      }
+      connection.query('Update users SET ? '+where+';', [k_v], function(err, result) {
+        connection.release();
+        if(err){
+          console.log('Error updating user');
+          return callback(err);
+        }
+        return callback(null, result);
+      });
+    });
+  },
+  get_user: function(user_args, callback){
+    pool.getConnection(function(err, connection) {
+      if(err) {
+        console.log('Error connecting to database');
+        return callback(err);
+      }
+      var where = "";
+      for(var key in user_args){
+        if(where.length>0){
+          where +=" AND ";
+        }
+        else{
+          where =" WHERE ";
+        }
+        where+= mysql.escapeId(key)+'='+mysql.escape(user_args[key]);
+      }
+      connection.query('Select * from users '+where+' LIMIT 1;', function(err, results) {
+        connection.release();
+        if(err){
+          console.log('Error getting user');
+          return callback(err);
+        }
+        if(results.length<1){
+          return callback("No such user");
+        }
+        return callback(null, results[0]);
+      });
+    });
+  },
+  get_parts: function(parts, callback){
+    var criteria = parts || {};
+    pool.getConnection(function(err, connection) {
+      if(err) {
+        console.log('Error connecting to database');
+        return callback(err);
+      }
+      var where = "";
+      for(var key in criteria){
+        if(where.length>0){
+          where +=" AND ";
+        }
+        else{
+          where =" WHERE ";
+        }
+        where+= mysql.escapeId(key)+'='+mysql.escape(criteria[key]);
+      }
+      connection.query('Select * from parts '+where+' ORDER BY Type;', function(err, results) {
+        connection.release();
+        if(err){
+          console.log('Error getting parts');
+          return callback(err);
+        }
+        if(results.length<1){
+          return callback("No parts found");
+        }
+        return callback(null, results.map(function(x){
+          var part = JSON.parse(x.Part);
+          part.SubAssembly = x.SubAssembly===1;
+          part.Subpart = x.Subpart === 1;
+          return part;
+        }));
+      });
+    });
+  },
+  get_part: function(part, callback){
+    pool.getConnection(function(err, connection) {
+      if(err) {
+        console.log('Error connecting to database');
+        return callback(err);
+      }
+      var where = "";
+      for(var key in part){
+        if(where.length>0){
+          where +=" AND ";
+        }
+        else{
+          where =" WHERE ";
+        }
+        where+= mysql.escapeId(key)+'='+mysql.escape(part[key]);
+      }
+      connection.query('Select * from parts '+where+' LIMIT 1;', function(err, results) {
+        connection.release();
+        if(err){
+          console.log('Error getting parts');
+          return callback(err);
+        }
+        if(results.length<1){
+          return callback("No parts found");
+        }
+        var part = JSON.parse(results[0].Part);
+        part.SubAssembly = results[0].SubAssembly===1;
+        part.Subpart = results[0].Subpart === 1;
+        return callback(null, part);
+      });
+    });
+  },
+  get_stacks: function(stacks, callback){
+    var criteria = stacks || {};
+    pool.getConnection(function(err, connection) {
+      if(err) {
+        console.log('Error connecting to database');
+        return callback(err);
+      }
+      var where = "";
+      for(var key in criteria){
+        if(where.length>0){
+          where +=" AND ";
+        }
+        else{
+          where =" WHERE ";
+        }
+        where+= mysql.escapeId(key)+'='+mysql.escape(criteria[key]);
+      }
+      connection.query('Select * from stacks '+where+' ORDER BY Name;', function(err, results) {
+        connection.release();
+        if(err){
+          console.log('Error getting stacks');
+          return callback(err);
+        }
+        if(results.length<1){
+          return callback("No stacks found");
+        }
+        return callback(null, results.map(function(obj){
+          obj.Template = JSON.parse(obj.Template);
+          obj.Parts = JSON.parse(obj.Parts);
+          return obj;
+        }));
+      });
+    });
+  },
+  get_stack: function(stack, callback){
+    pool.getConnection(function(err, connection) {
+      if(err) {
+        console.log('Error connecting to database');
+        return callback(err);
+      }
+      var where = "";
+      for(var key in stack){
+        if(where.length>0){
+          where +=" AND ";
+        }
+        else{
+          where =" WHERE ";
+        }
+        where+= mysql.escapeId(key)+'='+mysql.escape(stack[key]);
+      }
+      connection.query('Select * from `stacks` '+where+' LIMIT 1;', function(err, results) {
+        connection.release();
+        if(err){
+          console.log('Error getting stacks');
+          return callback(err);
+        }
+        if(results.length<1){
+          return callback("No stacks found");
+        }
+        var obj = result[0];
+        obj.Template = JSON.parse(obj.Template);
+        obj.Parts = JSON.parse(obj.Parts);
+        return callback(null, obj);
+      });
+    });
+  },
+  put_stack: function(stack, k_v, callback){
+    if(k_v._id){
+      delete k_v._id;
+    }
+    pool.getConnection(function(err, connection) {
+      if(err) {
+        console.log('Error connecting to database');
+        return callback(err);
+      }
+      var update = "";
+      for(var col in k_v){
+        if(update.length>0){
+          update+=', ';
+        }
+        update += mysql.escapeId(col)+'=VALUES('+mysql.escapeId(col)+')';
+      }
+      var q ='INSERT INTO `stacks` (`Name`, `Region`, `Ready`, `Template`, `Parts`) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE '+update+';';
+      connection.query(q, [k_v.Name, k_v.Region, k_v.Ready||false, JSON.stringify(k_v.Template), JSON.stringify(k_v.Parts)], function(err, result) {
+        connection.release();
+        if(err){
+          console.log('Error adding stack');
+          return callback(err);
+        }
+        return callback(null, result);
+      });
+    });
+  }
+};
