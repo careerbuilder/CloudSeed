@@ -3,7 +3,7 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@ var express = require('express');
 var uuid = require('node-uuid');
 var nodemailer = require('nodemailer');
 var sesTransport = require('nodemailer-ses-transport');
-var transporter = nodemailer.createTransport(sesTransport())
+var transporter = nodemailer.createTransport(sesTransport());
 var crypto = require('crypto');
 var db = require('../tools/db_tool.js');
 var router = express.Router();
@@ -66,7 +66,7 @@ router.post('/register', function(req, res){
   db.put_user({email: b.email.toLowerCase(), password: passhash, salt: salt, accesskey: b.accesskey, secretkey: b.secretkey, active:false, confirm:emailconfirm}, function(err, results){
     if(err){
       if(err.err.indexOf('duplicate') >= 0){
-        return res.send({Success: false, Error: "User with that email already exists!"})
+        return res.send({Success: false, Error: "User with that email already exists!"});
       }
       return res.send({Success: false, Error: err});
     } else{
