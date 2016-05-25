@@ -74,22 +74,26 @@ router.post('/', function(req, res){
     }
     else{
       if(stacksrepo){
-        var stackspath = stacksrepo + "/" + name +".stack"
+        var stackspath = stacksrepo + "/" + name +".stack";
         fs.writeFile(stackspath, JSON.stringify(template), function(err){
           if(err){
             console.log(err);
             return res.send({Code: 399, Message: "Stack not saved!", Error:err});
           }
           else{
-            var userstring = '"'+email.split('@')[0].replace('\.', ' ') +' <'+email+'>'+'"';
-            exec('./VersionControl.sh', [userstring, stacksrepo], function(err, stdout, stderr){
-              if(err){
-                console.log(err);
-                return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});
-              }
-              console.log(stdout, '\n', stderr);
-              return res.send({Code: 400, Message: "Stack Saved!"});
-            });
+            try{
+              var userstring = '"'+email.split('@')[0].replace('\.', ' ') +' <'+email+'>'+'"';
+              exec('./VersionControl.sh', [userstring, stacksrepo], function(err, stdout, stderr){
+                if(err){
+                  console.log(err);
+                  return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});
+                }
+                console.log(stdout, '\n', stderr);
+                return res.send({Code: 400, Message: "Stack Saved!"});
+              });
+            } catch(e){
+              return res.send({Code: 399, Message: "Stack saved to datastore, but not git", Error: err});
+            }
           }
         });
       }
