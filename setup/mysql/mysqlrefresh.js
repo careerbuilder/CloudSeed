@@ -17,7 +17,7 @@ var path = require('path');
 var async = require('async');
 var numcpus = require('os').cpus().length;
 
-var config = require('./config.json');
+var config = require('../../config.json');
 
 var pool;
 if(config.DB.Type == 'mysql'|| config.DB.Type == 'aurora'){
@@ -28,7 +28,7 @@ else{
   process.exit(1);
 }
 
-var partsdir = path.join(__dirname, 'Parts');
+var partsdir = path.join(__dirname, '../../', 'Parts');
 var parts = fs.readdirSync(partsdir);
 var allparts = [];
 async.each(parts, function(f, cb){

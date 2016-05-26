@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `cloudseed`.`users` (
 CREATE TABLE IF NOT EXISTS `cloudseed`.`parts` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Type` varchar(200) NOT NULL,
-  `Description` varchar(45) DEFAULT NULL,
+  `Description` varchar(200) DEFAULT NULL,
   `Part` longtext,
   `Subpart` tinyint(1) NOT NULL DEFAULT '0',
   `SubAssembly` tinyint(1) NOT NULL DEFAULT '0',
@@ -48,4 +48,3 @@ CREATE TABLE IF NOT EXISTS `cloudseed`.`stacks` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Name_UNIQUE` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
