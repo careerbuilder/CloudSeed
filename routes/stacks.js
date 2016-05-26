@@ -34,7 +34,7 @@ router.get('/regions', function(req, res){
       console.log(err);
       return res.send({Success:false, Error: err});
     }
-    var regions = []
+    var regions = [];
     for(var i=0; i<data.Regions.length; i++){
       regions.push(data.Regions[i].RegionName);
     }
@@ -65,9 +65,9 @@ router.get('/:name', function(req, res){
 router.post('/', function(req, res){
   var build = req.body.build;
   var email = req.body.user;
-  var name = build['Name'].trim();
-  var template = build['Template'];
-  db.put_stack({Name:build['Name']}, build, function(err, result){
+  var name = build.Name.trim();
+  var template = build.Template;
+  db.put_stack({Name:build.Name}, build, function(err, result){
     if(err){
       console.log(err);
       return res.send({Code: -1, Error:err});
@@ -99,7 +99,7 @@ router.post('/', function(req, res){
       }
       else{
         console.log("Added stack without git hook");
-        return res.send({Code: 388, Message: "No Stack Repo configured"})
+        return res.send({Code: 388, Message: "No Stack Repo configured"});
       }
     }
   });
@@ -122,12 +122,12 @@ router.post('/build/:name', function(req, res){
         return res.send({Success: false, Error:err});
       }
       var stack = results;
-      var cf = new aws.CloudFormation({accessKeyId: auth['accesskey'], secretAccessKey: auth['secretkey'], region: stack['Region']});
-      var stackname = stack['Name'];
+      var cf = new aws.CloudFormation({accessKeyId: auth.accesskey, secretAccessKey: auth.secretkey, region: stack.Region});
+      var stackname = stack.Name;
       cf.describeStacks({"StackName": stackname}, function(err, data){
         if(err){
           console.log("Creating stack");
-          cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2)}, function(err, data){
+          cf.createStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack.Template,null,2)}, function(err, data){
             if(err){
               console.log(err);
               return res.send({Success: false, Error:err.message});
@@ -136,7 +136,7 @@ router.post('/build/:name', function(req, res){
           });
         }
         else{
-          cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack['Template'],null,2), "UsePreviousTemplate":false}, function(err, data){
+          cf.updateStack({"StackName": stackname, "Capabilities":['CAPABILITY_IAM'], "TemplateBody":JSON.stringify(stack.Template,null,2), "UsePreviousTemplate":false}, function(err, data){
             if(err){
               console.log(err);
               return res.send({Success: false, Error:err.message});

@@ -10,8 +10,6 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 */
-"use strict";
-
 app.factory('requirementsservice', [function(){
   function req_only(args){
     var only = args[0];
@@ -57,7 +55,6 @@ app.factory('requirementsservice', [function(){
             case 'Only':
               args.push(value);
               return req_only(args);
-              break;
             default:
               return false;
           }
@@ -78,6 +75,6 @@ app.factory('requirementsservice', [function(){
       }
       return false;
     }
-  }
+  };
 
 }]);

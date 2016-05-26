@@ -10,8 +10,6 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 */
-"use strict";
-
 app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $cookieStore){
 
   var auth_ID;
@@ -61,10 +59,10 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
           c_promise.reject(data);
         }
       },
-      function(res){
+      function(err){
         user = null;
         auth_ID = null;
-        c_promise.reject(data);
+        c_promise.reject(err);
       });
     }
     else{
@@ -77,20 +75,20 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
     $cookieStore.put('c_s66d', userinfo._id);
     auth_ID = userinfo.confirm;
     user = userinfo;
-  }
+  };
 
   authservice.clearAuth = function(){
     auth_ID = null;
     user = null;
     cookie= null;
     $cookieStore.remove('c_s66d');
-  }
+  };
   authservice.authid = function(){
     return auth_ID;
-  }
+  };
   authservice.userinfo = function(){
     return user;
-  }
+  };
   authservice.hasAccess=  function(){
     var deferred = $q.defer();
     load_cookie().then(
@@ -107,7 +105,7 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
       }
     );
     return deferred.promise;
-  }
+  };
   return authservice;
 
 }]);

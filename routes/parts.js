@@ -31,7 +31,7 @@ router.get('/awsvalues/:awstype', function(req, res){
         return res.send({Success: false, Error: err, Values:[]});
       }
       else{
-        var rval = []
+        var rval = [];
         for(var i=0; i<data.AvailabilityZones.length; i++){
           rval.push(data.AvailabilityZones[i].ZoneName);
         }
@@ -51,22 +51,22 @@ router.get('/awsvalues/:awstype', function(req, res){
         for(var i=0; i<reserves.length; i++){
           var instances =reserves[i].Instances;
           for(var j=0; j<instances.length; j++){
-            var tags = instances[j].Tags
-            var name = ""
+            var tags = instances[j].Tags;
+            var name = "";
             for(var k=0; k<tags.length; k++){
               if(tags[k].Key === 'Name'){
                 name = tags[k].Value;
               }
             }
-            rval.push({Value: instances[j].InstanceId, Name: name})
+            rval.push({Value: instances[j].InstanceId, Name: name});
           }
         }
         return res.send({Success:true, Values:rval});
       }
     });
   }
-  else if(ptype==='AWS::EC2::Image::Id'){return res.send({Success:true, Values:[]})}
-  else if(ptype==='AWS::EC2::KeyPair::KeyName'){return res.send({Success:true, Values:[]})}
+  else if(ptype==='AWS::EC2::Image::Id'){return res.send({Success:true, Values:[]});}
+  else if(ptype==='AWS::EC2::KeyPair::KeyName'){return res.send({Success:true, Values:[]});}
   else if(ptype==='AWS::EC2::SecurityGroup::GroupName' || ptype==='AWS::EC2::SecurityGroup::Id'){
     ec2.describeSecurityGroups(params, function(err, data) {
       if (err){
@@ -74,7 +74,7 @@ router.get('/awsvalues/:awstype', function(req, res){
         return res.send({Success: false, Error: err, Values:[]});
       }
       else{
-        var rval = []
+        var rval = [];
         for(var i=0; i<data.SecurityGroups.length; i++){
           rval.push(data.Reservations.Instances[i].Tags);
         }
@@ -82,10 +82,10 @@ router.get('/awsvalues/:awstype', function(req, res){
       }
     });
   }
-  else if(ptype==='AWS::EC2::Subnet::Id'){return res.send({Success:true, Values:[]})}
-  else if(ptype==='AWS::EC2::Volume::Id'){return res.send({Success:true, Values:[]})}
-  else if(ptype==='AWS::EC2::VPC::Id'){return res.send({Success:true, Values:[]})}
-  else{return res.send({Success:true, Values:[]})}
+  else if(ptype==='AWS::EC2::Subnet::Id'){return res.send({Success:true, Values:[]});}
+  else if(ptype==='AWS::EC2::Volume::Id'){return res.send({Success:true, Values:[]});}
+  else if(ptype==='AWS::EC2::VPC::Id'){return res.send({Success:true, Values:[]});}
+  else{return res.send({Success:true, Values:[]});}
 });
 
 router.get('/', function(req, res){

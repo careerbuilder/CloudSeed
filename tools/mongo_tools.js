@@ -11,9 +11,9 @@
 * See the License for the specific language governing permissions and limitations under the License.
 */
 var mongo = require('mongoskin');
-var conn = "mongodb://localhost:27017/cloudseed"
+var conn = "mongodb://localhost:27017/cloudseed";
 if(global.config.DB.Type === 'mongo'){
-  conn = "mongodb://"+global.config.DB.Host+":"+global.config.DB.Port+"/"+global.config.DB.Database
+  conn = "mongodb://"+global.config.DB.Host+":"+global.config.DB.Port+"/"+global.config.DB.Database;
 }
 var db = mongo.db(conn);
 
@@ -48,4 +48,4 @@ module.exports ={
     }
     db.collection('stacks').update(stack, k_v, {upsert:true}, callback);
   }
-}
+};

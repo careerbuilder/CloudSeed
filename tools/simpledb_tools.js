@@ -35,7 +35,7 @@ module.exports ={
           Value: user[field].toString(),
           Replace: false
         }
-      )
+      );
     }
     console.log(params);
     db.putAttributes(params, function(err, data) {
@@ -103,4 +103,4 @@ module.exports ={
       else     console.log(data);           // successful response
     });
   }
-}
+};

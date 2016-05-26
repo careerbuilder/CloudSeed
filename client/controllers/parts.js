@@ -10,6 +10,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 */
+
 app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice, requirementsservice){
   $scope.auth = authservice;
   $scope.regions = [];
@@ -20,15 +21,21 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.awspartsExpanded = true;
   $scope.subassembliesExpanded = false;
 
-  $http.get('/api/parts').success(function(data){
+  $http.get('/api/parts').then(function(res){
+    var data = res.data;
     if(data.Success){
       $scope.parts = data.Data;
     }
     else{
       console.log(data.Error);
     }
+  }, function(err){
+    console.log(err);
+    toastr.error('Error fetching parts');
   });
-  $http.get('/api/stacks').success(function(data){
+
+  $http.get('/api/stacks').then(function(res){
+    var data = res.data;
     if(data.Success){
       $scope.stacks = data.Data;
       $scope.$emit('stacksUpdated', data.Data);
@@ -36,14 +43,22 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     else{
       console.log(data.Error);
     }
+  }, function(err){
+    console.log(err);
+    toastr.error('Error fetching stacks');
   });
-  $http.get('/api/stacks/regions').success(function(data){
+
+  $http.get('/api/stacks/regions').then(function(res){
+    var data = res.data;
     if(data.Success){
       $scope.regions = data.Regions;
     }
     else{
       console.log(data.Error);
     }
+  }, function(err){
+    console.log(err);
+    toastr.error('Error fetching regions');
   });
 
   $scope.addPart=function(type){
@@ -78,8 +93,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     var partstring = JSON.stringify(copy);
     var subsString = JSON.stringify(subs);
     for(var cond in copy.Conditions){
-      var re = new RegExp('"'+cond+'"', 'g');
-      partstring = partstring.replace(re, '"'+cond+''+newcount+'"');
+      var cre = new RegExp('"'+cond+'"', 'g');
+      partstring = partstring.replace(cre, '"'+cond+''+newcount+'"');
     }
     for(var res in copy.Resources){
       var re = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(res) +'\\s*\\}', 'g');
@@ -97,9 +112,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
-    var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy}
+    var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy};
     $scope.addedParts.push(mod);
-  }
+  };
 
   $scope.requiredName=function(param, part, value){
     if($scope.checkRequiredParam(part, value)){
@@ -108,7 +123,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     else{
       return param;
     }
-  }
+  };
 
   $scope.removePart=function(name){
     for(var i=0; i<$scope.addedParts.length; i++){
@@ -131,14 +146,15 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     if($scope.addedParts.length === 0){
       $scope.build = {};
     }
-  }
+  };
 
   $scope.getSubs=function(subtype){
+    var ct;
     if(subtype.lastIndexOf('List::',0) === 0){
-      var ct = subtype.replace('List::', '');
+      ct = subtype.replace('List::', '');
     }
     else{
-      var ct = subtype;
+      ct = subtype;
     }
     var subs = [];
     for(var i=0; i<$scope.addedParts.length; i++){
@@ -148,7 +164,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     return subs;
-  }
+  };
 
   $scope.getReferences=function(sub){
     var refstring = "";
@@ -165,7 +181,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     else{
       return sub.Reference.Ref;
     }
-  }
+  };
 
   $scope.RefInit=function(sub){
     if(!sub.Reference){
@@ -176,15 +192,15 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         sub.Reference = {Ref:'None'};
       }
     }
-  }
+  };
 
   $scope.subdisabled=function(part, sub){
     return requirementsservice.isSubDisabled(part, sub);
-  }
+  };
 
   $scope.setParam=function(part, sub, name){
     var param = sub.Parameter;
-    var isList = (sub.Type.indexOf("List::") == 0);
+    var isList = (sub.Type.indexOf("List::") === 0);
     if(!isList){
       sub.Reference = {Ref: name};
     }
@@ -206,7 +222,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     part.Definition.Parameters[param].Hidden=((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None'));
-  }
+  };
 
   $scope.canAddSubPart=function(part, name, index){
     if(index != part.subparts[name].length-1){
@@ -220,7 +236,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     return complete;
-  }
+  };
 
   $scope.addSubPart=function(part,key){
     var subpart = part.Definition.Connections.SubParts[key];
@@ -233,28 +249,27 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     if($scope.canAddSubPart(part, key, part.subparts[key].length-1)){
       var isList = (subpart.Type.lastIndexOf('List::', 0) === 0);
       if(isList){
-        part.subparts[key].push(JSON.parse(JSON.stringify(subpart['Model'])));
+        part.subparts[key].push(JSON.parse(JSON.stringify(subpart.Model)));
       }
       else{
-        part.subparts[key] = [JSON.parse(JSON.stringify(subpart['Model']))];
+        part.subparts[key] = [JSON.parse(JSON.stringify(subpart.Model))];
       }
     }
-  }
+  };
 
   $scope.removeSubPart=function(part, key, index){
     part.subparts[key].splice(index, 1);
-  }
+  };
 
   $scope.checkRequired=function(part, key, index){
-    var required = (index != part.subparts[key].length-1);
-    return required;
-  }
+    return (index != part.subparts[key].length-1);
+  };
 
 
 
   $scope.checkRequiredParam=function(part, value){
     return requirementsservice.ResolveRequired(part, value);
-  }
+  };
 
   $scope.visibleParams=function(part){
     var num = 0;
@@ -264,7 +279,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     return num;
-  }
+  };
 
   $scope.replaceNames = function(obj, append){
     var newobj = {};
@@ -272,7 +287,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       newobj[key+""+append] = obj[key];
     }
     return newobj;
-  }
+  };
 
   $scope.replaceRefs = function(apart){
     var partstring = JSON.stringify(apart.Definition);
@@ -288,22 +303,22 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
             return;
           }
         }
-        var re = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(param) +'\\s*\\}', 'g');
+        var pre = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(param) +'\\s*\\}', 'g');
         if(apart.Definition.Parameters[param].Type === 'CommaDelimitedList'){
           paramValue = paramValue.split(/\s*,\s*/g);
         }
-        partstring = partstring.replace(re, JSON.stringify(paramValue));
+        partstring = partstring.replace(pre, JSON.stringify(paramValue));
       }
     }
     var replace_conds = [];
     if(apart.Definition.Connections){
-      var subs = apart.Definition.Connections.Substitutes || [];
-      for(var i=0; i<subs.length; i++){
-        var sub = subs[i];
+      var csubs = apart.Definition.Connections.Substitutes || [];
+      for(var i=0; i<csubs.length; i++){
+        var sub = csubs[i];
         if(apart.Definition.Conditions){
           replace_conds.push(sub.Reference.Ref);
         }
-        var isList = (sub.Type.indexOf("List::")==0);
+        var isList = (sub.Type.indexOf("List::")===0);
         if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
           var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
           partstring = partstring.replace(re, JSON.stringify(sub.Reference));
@@ -323,7 +338,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     if(apart.Definition.Connections && apart.Definition.Connections.Substitutes){
       var subs = apart.Definition.Connections.Substitutes;
       subs.forEach(function(sub, i){
-        var isList = (sub.Type.indexOf("List::")==0);
+        var isList = (sub.Type.indexOf("List::")===0);
         if(sub.Dependent){
           if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
             var dep;
@@ -346,8 +361,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         var models = apart.subparts[subp];
         var path = subp.split('|');
         var res = apart.Definition.Resources[apart.LogicalName];
-        for(var i=0; i<path.length; i++){
-          res = res[path[i]];
+        for(var x=0; x<path.length; x++){
+          res = res[path[x]];
         }
         for(var j=0; j<models.length; j++){
           var sm = {};
@@ -366,16 +381,20 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         }
       }
     }
-  }
+  };
 
   $scope.refreshStacks=function(){
-    $http.get('/api/stacks/').success(function(data){
+    $http.get('/api/stacks/').then(function(res){
+      var data = res.data;
       if(data.Success){
         $scope.stacks = data.Data;
         $scope.$emit('stacksUpdated', data.Data);
       }
+    }, function(err){
+      console.log(err);
+      toastr.error('Error refreshing stacks');
     });
-  }
+  };
 
   $scope.saveTemplate=function(){
     if($scope.build.Name){
@@ -405,35 +424,44 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
       $scope.build.Template = template;
       $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
-      $http.post('/api/stacks', {build: $scope.build, user: $scope.auth.userinfo().email}).success(function(data){
-          if(data['Code'] === 400){
-            toastr.success('Stack Saved', 'Your stack was saved successfully!');
-          }
-          else if(data['Code'] === 388){
-            toastr.warning('Stack Saved with Errors', data['Message']);
-            console.log(data);
-          }
-          else{
-            toastr.error(data['Message'], data['Error']||"");
-            console.log(data);
-          }
-          $scope.refreshStacks();
+      $http.post('/api/stacks', {build: $scope.build, user: $scope.auth.userinfo().email}).then(function(res){
+        var data = res.data;
+        if(data.Code === 400){
+          toastr.success('Stack Saved', 'Your stack was saved successfully!');
+        }
+        else if(data.Code === 388){
+          toastr.warning('Stack Saved with Errors', data.Message);
+          console.log(data);
+        }
+        else{
+          toastr.error(data.Message, data.Error||"");
+          console.log(data);
+        }
+        $scope.refreshStacks();
+      }, function(err){
+        console.log(err);
+        toastr.error('Error building stack');
       });
     }
-  }
+  };
 
   $scope.loadTemplate=function(name){
     console.log("parts loading " + name);
-    $http.get('/api/stacks/'+name).success(function(data){
+    $http.get('/api/stacks/'+name).then(function(res){
+      var data = res.data;
       if(data.Success){
         $scope.build = JSON.parse(JSON.stringify(data.Data));
         $scope.addedParts = JSON.parse(JSON.stringify(data.Data.Parts));
       }
+    }, function(err){
+      console.log(err);
+      toastr.error('Error loading template');
     });
-  }
+  };
 
   $scope.buildTemplate=function(stackname){
-    $http.post('/api/stacks/build/' + stackname, {userid:$scope.auth.userinfo().confirm}).success(function(data){
+    $http.post('/api/stacks/build/' + stackname, {userid:$scope.auth.userinfo().confirm}).then(function(res){
+      var data = res.data;
       if(data.Success){
         toastr.success("Template Built!");
         return true;
@@ -442,17 +470,16 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         toastr.error(data.Error, "Something went wrong...");
         return false;
       }
-    }).
-    error(function(err){
+    }, function(err){
       toastr.error(err, "Something went wrong...");
       return false;
     });
-  }
+  };
 
   $scope.discardStack = function(){
     $scope.build ={};
     $scope.addedParts =[];
-  }
+  };
 });
 
 app.directive("compareTo", function() {
@@ -501,7 +528,7 @@ app.directive('parameter', function(){
         //types
         if(info.Type === "Number"){
           var intval = parseInt(typedvalue);
-          ok &= (intval != null && intval != undefined);
+          ok &= (intval !== null && intval !== undefined);
           if(info.MaxValue){
             ok &= (intval <= parseInt(info.MaxValue));
           }

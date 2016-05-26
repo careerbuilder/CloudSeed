@@ -10,8 +10,6 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 */
-"use strict";
-
 var app = angular.module('cloudseed', ['ngRoute', 'ngCookies', 'toastr']);
 
 app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
@@ -51,13 +49,13 @@ app.controller('PageController', function($http, $scope, $location, toastr, auth
 			return true;
 		}
 		return false;
-	}
+	};
 
 	$scope.logOut=function(){
 		$scope.user={};
 		authservice.clearAuth();
 		$location.path('/login');
-	}
+	};
 
 });
 
@@ -66,14 +64,14 @@ app.directive('partsSidebar', function() {
     restrict: 'E',
     controller: 'PartCtrl',
 		templateUrl: 'views/sidebar.html'
-	}
+	};
 });
 
 app.factory('httpRequestInterceptor', function ($cookieStore) {
   return {
     request: function(config){
       var auth_token = $cookieStore.get('c_s66d') || "";
-      config.headers['Authorization'] = auth_token;
+      config.headers.Authorization = auth_token;
       return config;
     }
   };
