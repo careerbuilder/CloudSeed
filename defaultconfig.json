@@ -1,0 +1,17 @@
+{
+  "DB":{
+    "Type": "mysql",
+    "host" : "localhost",
+    "port": 3306,
+    "database": "cloudseed",
+    "user": "root",
+    "password": "admin"
+  },
+  "AmazonCreds":{
+    "AccessKey": "f4k3k3y5ftw",
+    "SecretKey": "THISISCLEARLYAFAKEKEY"
+  },
+  "STACKREPO": "/path/to/Stacks/folder",
+  "APIHost": "http://localhost:3000/",
+  "EmailAccount": "CloudSeed@yourdomain.com"
+}
