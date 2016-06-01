@@ -17,8 +17,13 @@ var exec = require('child_process').execFile;
 var fs = require('fs');
 var aws_obj = {region:"us-east-1"};
 if('Amazon' in global.config){
-  aws_obj.accessKeyId = global.config.AccessKey;
-  aws_obj.secretAccessKey = global.config.SecretKey;
+  if (global.config.AccessKey && global.config.SecretKey){
+    aws_obj.accessKeyId = global.config.AccessKey;
+    aws_obj.secretAccessKey = global.config.SecretKey;
+  }else{
+    console.log('Cant find keys in config');
+  }
+
 }
 var ec2 = new aws.EC2(aws_obj);
 var router = express.Router();
@@ -31,7 +36,7 @@ if(!stacksrepo){
 router.get('/regions', function(req, res){
   ec2.describeRegions({}, function(err, data){
     if(err){
-      console.log(err);
+      console.log('Error describing regions: ', err);
       return res.send({Success:false, Error: err});
     }
     var regions = [];

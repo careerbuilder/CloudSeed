@@ -19,6 +19,7 @@ var numcpus = require('os').cpus().length;
 
 var config = require('../../config.json');
 
+var dbName = config.DB.Database;
 var pool;
 if(config.DB.Type == 'mysql'|| config.DB.Type == 'aurora'){
   var pool = mysql.createPool(config.DB);
@@ -54,7 +55,7 @@ async.each(parts, function(f, cb){
         console.log('Error connecting to database', err);
         return cb2(err);
       }
-      var q = 'Insert into `parts` (`Type`, `Description`, `Subpart`, `SubAssembly`, `Part`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `Description`=VALUES(`Description`), `Subpart`=VALUES(`Subpart`), `SubAssembly`=VALUES(`SubAssembly`), `Part`=VALUES(`Part`);';
+      var q = 'Insert into ' + dbName + '.parts (`Type`, `Description`, `Subpart`, `SubAssembly`, `Part`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `Description`=VALUES(`Description`), `Subpart`=VALUES(`Subpart`), `SubAssembly`=VALUES(`SubAssembly`), `Part`=VALUES(`Part`);';
       connection.query(q, [part.Type, part.Description||'', part.Subpart||false, part.SubAssembly||false, JSON.stringify(part)], function(err, result) {
         connection.release();
         if(err){

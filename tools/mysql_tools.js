@@ -12,6 +12,7 @@
 */
 var mysql = require('mysql');
 var pool;
+var dbName = global.config.DB.Database;
 if(global.config.DB.Type === 'mysql'|| global.config.DB.Type === 'aurora'){
   var pool = mysql.createPool(global.config.DB);
 }
@@ -23,7 +24,8 @@ module.exports ={
 				console.log('Error connecting to database');
 				return callback(err);
 			}
-	    connection.query('Insert into users SET ?;', [user], function(err, result) {
+      var q = 'Insert into ' + dbName + '.users SET ?;';
+	    connection.query(q, [user], function(err, result) {
 	      connection.release();
 	      if(err){
 					console.log('Error inserting user');
@@ -49,7 +51,8 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(user[key]);
       }
-      connection.query('Update users SET ? '+where+';', [k_v], function(err, result) {
+      var q = 'Update ' + dbName + '.users SET ? ' + where + ';';
+      connection.query(q, [k_v], function(err, result) {
         connection.release();
         if(err){
           console.log('Error updating user');
@@ -75,7 +78,8 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(user_args[key]);
       }
-      connection.query('Select * from users '+where+' LIMIT 1;', function(err, results) {
+      var q = 'Select * from ' + dbName + '.users '+where+' LIMIT 1;';
+      connection.query(q,function(err, results) {
         connection.release();
         if(err){
           console.log('Error getting user');
@@ -105,7 +109,8 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(criteria[key]);
       }
-      connection.query('Select * from parts '+where+' ORDER BY Type;', function(err, results) {
+      var q = 'Select * from ' + dbName + '.parts '+where+' ORDER BY Type;';
+      connection.query(q, function(err, results) {
         connection.release();
         if(err){
           console.log('Error getting parts');
@@ -139,7 +144,8 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(part[key]);
       }
-      connection.query('Select * from parts '+where+' LIMIT 1;', function(err, results) {
+      var q = 'Select * from ' + dbName + '.parts '+where+' LIMIT 1;';
+      connection.query(q, function(err, results) {
         connection.release();
         if(err){
           console.log('Error getting parts');
@@ -172,7 +178,8 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(criteria[key]);
       }
-      connection.query('Select * from stacks '+where+' ORDER BY Name;', function(err, results) {
+      var q = 'Select * from ' + dbName + '.stacks '+where+' ORDER BY Name;';
+      connection.query(q, function(err, results) {
         connection.release();
         if(err){
           console.log('Error getting stacks');
@@ -205,7 +212,8 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(stack[key]);
       }
-      connection.query('Select * from `stacks` '+where+' LIMIT 1;', function(err, results) {
+      var q = 'Select * from ' + dbName + '.stacks '+where+' LIMIT 1;';
+      connection.query(q, function(err, results) {
         connection.release();
         if(err){
           console.log('Error getting stacks');
@@ -214,7 +222,7 @@ module.exports ={
         if(results.length<1){
           return callback("No stacks found");
         }
-        var obj = result[0];
+        var obj = results[0];
         obj.Template = JSON.parse(obj.Template);
         obj.Parts = JSON.parse(obj.Parts);
         return callback(null, obj);
@@ -237,7 +245,7 @@ module.exports ={
         }
         update += mysql.escapeId(col)+'=VALUES('+mysql.escapeId(col)+')';
       }
-      var q ='INSERT INTO `stacks` (`Name`, `Region`, `Ready`, `Template`, `Parts`) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE '+update+';';
+      var q ='INSERT INTO ' + dbName + '.stacks (`Name`, `Region`, `Ready`, `Template`, `Parts`) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE '+update+';';
       connection.query(q, [k_v.Name, k_v.Region, k_v.Ready||false, JSON.stringify(k_v.Template), JSON.stringify(k_v.Parts)], function(err, result) {
         connection.release();
         if(err){

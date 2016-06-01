@@ -90,10 +90,15 @@
         <div ng-repeat="apart in addedParts track by $index" class="panel panel-default">
           <div class="panel-heading pointer" ng-click="apart.Collapsed = !apart.Collapsed">
             <h2 class="panel-title">
-              <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.LogicalName)"></span>
-              {{apart.LogicalName}}
-              <span class="glyphicon glyphicon-triangle-bottom pull-right" ng-show="apart.Collapsed"></span>
-              <span class="glyphicon glyphicon-triangle-top pull-right" ng-hide="apart.Collapsed"></span>
+              <div class="form-inline">
+                <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.LogicalName)"></span>
+                <span ng-hide="apart.EditingName">{{apart.LogicalName}}</span>
+                <input type="text" class="form-control" ng-model="apart.LogicalName" ng-show="apart.EditingName" ng-click="$event.stopPropagation()" placeholder="New Name" name="partName"/>
+                <button type="button" class="btn btn-primary btn-sm" ng-show="apart.EditingName" ng-click="editPartName(apart); $event.stopPropagation()">Confirm</button>
+                <span class="glyphicon glyphicon-pencil" ng-click="editPartName(apart); $event.stopPropagation()" ng-hide="apart.EditingName"></span>
+                <span class="glyphicon glyphicon-triangle-bottom pull-right" ng-show="apart.Collapsed"></span>
+                <span class="glyphicon glyphicon-triangle-top pull-right" ng-hide="apart.Collapsed"></span>
+              </div>
             </h2>
           </div>
           <div class="panel-body" ng-hide="apart.Collapsed">

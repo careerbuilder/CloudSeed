@@ -112,8 +112,12 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
-    var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy};
+    var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
     $scope.addedParts.push(mod);
+  };
+
+  $scope.editPartName = function(part){
+    part.EditingName = !part.EditingName;
   };
 
   $scope.requiredName=function(param, part, value){

@@ -65,6 +65,7 @@ router.post('/register', function(req, res){
   var emailconfirm = uuid.v4();
   db.put_user({email: b.email.toLowerCase(), password: passhash, salt: salt, accesskey: b.accesskey, secretkey: b.secretkey, active:false, confirm:emailconfirm}, function(err, results){
     if(err){
+      console.log(err);
       if(err.err.indexOf('duplicate') >= 0){
         return res.send({Success: false, Error: "User with that email already exists!"});
       }
