@@ -47,6 +47,28 @@ router.get('/regions', function(req, res){
   });
 });
 
+router.get('/vpcs', function(req, res){
+  ec2.describeVpcs({}, function(err, data){
+    if (err){
+      console.log('Error describing VPCs: ', err);
+      return res.send({Success: false, Error: err});
+    }
+    var vpcs = data.Vpcs;
+    return res.send({Success: true, Vpcs: vpcs});
+  });
+});
+
+router.get('/subnets', function(req, res){
+  ec2.describeSubnets({}, function(err, data){
+    if (err){
+      console.log('Error describing Subnets: ', err);
+      return res.send({Success: false, Error: err});
+    }
+    var subnets = data.Subnets;
+    return res.send({Success: true, Subnets: subnets});
+  });
+});
+
 router.get('/', function(req, res){
   db.get_stacks({},function(err, results){
     if(err){

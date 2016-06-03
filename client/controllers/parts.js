@@ -18,6 +18,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.parts = [];
   $scope.stacks = [];
   $scope.build = {};
+  $scope.vpcs = [];
+  $scope.subnets = [];
   $scope.awspartsExpanded = true;
   $scope.subassembliesExpanded = false;
 
@@ -59,6 +61,32 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   }, function(err){
     console.log(err);
     toastr.error('Error fetching regions');
+  });
+
+  $http.get('/api/stacks/vpcs').then(function(res){
+    var data = res.data;
+    if(data.Success){
+      $scope.vpcs = data.Vpcs;
+    }
+    else{
+      console.log(data.Error);
+    }
+  }, function(err){
+    console.log(err);
+    toastr.error('Error fetching Vpcs');
+  });
+
+  $http.get('/api/stacks/subnets').then(function(res){
+    var data = res.data;
+    if(data.Success){
+      $scope.subnets = data.Subnets;
+    }
+    else{
+      console.log(data.Error);
+    }
+  }, function(err){
+    console.log(err);
+    toastr.error('Error fetching Subnets');
   });
 
   $scope.addPart=function(type){

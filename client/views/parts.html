@@ -92,7 +92,7 @@
             <h2 class="panel-title">
               <div class="form-inline">
                 <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.LogicalName)"></span>
-                {{apart.Type}} - 
+                {{apart.Type}} -
                 <span ng-hide="apart.EditingName">{{apart.LogicalName}}</span>
                 <input type="text" class="form-control" ng-model="apart.inputName" ng-show="apart.EditingName" ng-click="$event.stopPropagation()" placeholder="New Name" name="partName"/>
                 <button type="button" class="btn btn-primary btn-sm" ng-show="apart.EditingName" ng-click="editPartName(apart, apart.inputName); $event.stopPropagation()">Confirm</button>
@@ -109,8 +109,14 @@
                 <ng-form name="parametersForm">
                   <div class="form-group" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
                     <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, apart, value)}}</strong></label>
+                    <div ng-if="key === 'Subnet'">
+                      <select selector model="apart.Definition.Parameters[key].Value" options="subnets" value-attr="SubnetId" label-attr="SubnetId"></select>
+                    </div>
+                    <div ng-if="key === 'VPC'">
+                      <select selector model="apart.Definition.Parameters[key].Value" options="vpcs" value-attr="VpcId" label-attr="VpcId"></select>
+                    </div>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
-                      parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
+                      parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length || key == 'Subnet' || key == 'VPC'" ng-model="apart.Definition.Parameters[key].Value"
                       ng-required="checkRequiredParam(apart, value)" ng-disabled="value.Disabled">
                     <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
                       ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"

@@ -27,6 +27,10 @@
     "angular-toastr": "^1.7.0",
     "jquery": "^2.2.4",
     "bootstrap": "^3.3.6",
-    "angular-route": "^1.5.5"
+    "angular-route": "^1.5.5",
+    "angular-selector": "^1.3.9"
+  },
+  "resolutions": {
+    "angular": ">=1.3.0"
   }
 }

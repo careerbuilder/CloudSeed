@@ -10,7 +10,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 */
-var app = angular.module('cloudseed', ['ngRoute', 'ngCookies', 'toastr']);
+var app = angular.module('cloudseed', ['ngRoute', 'ngCookies', 'toastr', 'selector']);
 
 app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
 	$routeProvider.when('/login', {
