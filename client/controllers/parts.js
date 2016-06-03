@@ -116,8 +116,37 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     $scope.addedParts.push(mod);
   };
 
-  $scope.editPartName = function(part){
-    part.EditingName = !part.EditingName;
+  $scope.editPartName = function(apart, name){
+    console.log(apart);
+    for(var j=0; j<$scope.addedParts.length; j++){
+      var part = $scope.addedParts[j];
+      if(part.Definition.Connections){
+        var subs = part.Definition.Connections.Substitutes || [];
+        for(var k=0; k<subs.length; k++){
+          var sub = subs[k];
+          if(sub.Type.lastIndexOf('List::', 0) === 0){
+            if(sub.Reference){
+              sub.Reference.forEach(function(ref, i){
+                if (ref.Ref == apart.LogicalName){
+                  ref.Ref = name;
+                }
+              });
+            }
+          }
+        }
+      }
+
+      if(part.Definition.Resources){
+        var res = part.Definition.Resources || null;
+        if (res[apart.LogicalName]){
+          res[name] = res[apart.LogicalName];
+          delete res[apart.LogicalName];
+        }
+      }
+
+    }
+    apart.LogicalName = name;
+    apart.EditingName = !apart.EditingName;
   };
 
   $scope.requiredName=function(param, part, value){
