@@ -87,7 +87,14 @@
           </div>
           <hr>
         </div>
-        <div ng-repeat="apart in addedParts track by $index" class="panel panel-default">
+        <div class="input-group" ng-show="addedParts.length">
+          <span class="input-group-addon">Filter by Type:</span>
+          <input type="text" class="form-control" ng-model="partFilter.Type" placeholder="Part Type"/>
+          <span class="input-group-addon">Filter by Name:</span>
+          <input type="text" class="form-control" ng-model="partFilter.LogicalName" placeholder="Part Name"/>
+        </div>
+        <br>
+        <div ng-repeat="apart in addedParts | filter:partFilter track by $index" class="panel panel-default">
           <div class="panel-heading pointer" ng-click="apart.Collapsed = !apart.Collapsed">
             <h2 class="panel-title">
               <div class="form-inline">
