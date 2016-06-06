@@ -12,7 +12,7 @@
 */
 var mysql = require('mysql');
 var pool;
-var dbName = global.config.DB.Database;
+var dbName = global.config.DB.database;
 if(global.config.DB.Type === 'mysql'|| global.config.DB.Type === 'aurora'){
   var pool = mysql.createPool(global.config.DB);
 }
@@ -24,7 +24,7 @@ module.exports ={
 				console.log('Error connecting to database');
 				return callback(err);
 			}
-      var q = 'Insert into ' + dbName + '.users SET ?;';
+      var q = 'Insert into ' + mysql.escapeId(dbName + '.users') + ' SET ?;';
 	    connection.query(q, [user], function(err, result) {
 	      connection.release();
 	      if(err){
@@ -51,7 +51,7 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(user[key]);
       }
-      var q = 'Update ' + dbName + '.users SET ? ' + where + ';';
+      var q = 'Update ' + mysql.escapeId(dbName + '.users')+ ' SET ? ' + where + ';';
       connection.query(q, [k_v], function(err, result) {
         connection.release();
         if(err){
@@ -78,7 +78,7 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(user_args[key]);
       }
-      var q = 'Select * from ' + dbName + '.users '+where+' LIMIT 1;';
+      var q = 'Select * from ' + mysql.escapeId(dbName + '.users')+' '+where+' LIMIT 1;';
       connection.query(q,function(err, results) {
         connection.release();
         if(err){
@@ -109,7 +109,7 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(criteria[key]);
       }
-      var q = 'Select * from ' + dbName + '.parts '+where+' ORDER BY Type;';
+      var q = 'Select * from ' + mysql.escapeId(dbName + '.parts')+' '+where+' ORDER BY Type;';
       connection.query(q, function(err, results) {
         connection.release();
         if(err){
@@ -144,7 +144,7 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(part[key]);
       }
-      var q = 'Select * from ' + dbName + '.parts '+where+' LIMIT 1;';
+      var q = 'Select * from ' + mysql.escapeId(dbName + '.parts')+' '+where+' LIMIT 1;';
       connection.query(q, function(err, results) {
         connection.release();
         if(err){
@@ -178,7 +178,7 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(criteria[key]);
       }
-      var q = 'Select * from ' + dbName + '.stacks '+where+' ORDER BY Name;';
+      var q = 'Select * from ' + mysql.escapeId(dbName + '.stacks')+' '+where+' ORDER BY Name;';
       connection.query(q, function(err, results) {
         connection.release();
         if(err){
@@ -212,7 +212,7 @@ module.exports ={
         }
         where+= mysql.escapeId(key)+'='+mysql.escape(stack[key]);
       }
-      var q = 'Select * from ' + dbName + '.stacks '+where+' LIMIT 1;';
+      var q = 'Select * from ' + mysql.escapeId(dbName + '.stacks')+' '+where+' LIMIT 1;';
       connection.query(q, function(err, results) {
         connection.release();
         if(err){
@@ -245,7 +245,7 @@ module.exports ={
         }
         update += mysql.escapeId(col)+'=VALUES('+mysql.escapeId(col)+')';
       }
-      var q ='INSERT INTO ' + dbName + '.stacks (`Name`, `Region`, `Ready`, `Template`, `Parts`) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE '+update+';';
+      var q ='INSERT INTO ' + mysql.escapeId(dbName + '.stacks')+' (`Name`, `Region`, `Ready`, `Template`, `Parts`) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE '+update+';';
       connection.query(q, [k_v.Name, k_v.Region, k_v.Ready||false, JSON.stringify(k_v.Template), JSON.stringify(k_v.Parts)], function(err, result) {
         connection.release();
         if(err){
