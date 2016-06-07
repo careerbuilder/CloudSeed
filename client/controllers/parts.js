@@ -14,7 +14,7 @@
 app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice, requirementsservice){
   $scope.auth = authservice;
   $scope.regions = [];
-  $scope.addedParts = [];
+  $scope.addedParts = {};
   $scope.parts = [];
   $scope.stacks = [];
   $scope.types = [{Label: 'None', Value: undefined}];
@@ -101,15 +101,16 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     var num = 0;
     var newcount = 1;
     var others = [];
-    for(var j=0; j<$scope.addedParts.length; j++){
-      var other = $scope.addedParts[j];
-      if(other.Type === type){
+    for(var key in $scope.addedParts){
+      var other = $scope.addedParts[key];
+      if(other.Type == type){
         others.push(other.Count);
         if(other.Count > num){
           num = other.Count;
         }
       }
     }
+    /** TODO: Fix numbering **/
     for(var k=1; k<=num+1; k++){
       if(others.indexOf(k) == -1){
         newcount = k;
@@ -148,37 +149,35 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
-    var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
-    $scope.addedParts.push(mod);
+    var mod = {Type: type, Count: newcount, RefID:type+""+newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
+    $scope.addedParts[mod.RefID]= mod;
     $scope.getTypes();
   };
 
   $scope.editPartName = function(apart, name){
     console.log(apart);
-    for(var j=0; j<$scope.addedParts.length; j++){
-      var part = $scope.addedParts[j];
-      if(part.Definition.Connections){
-        var subs = part.Definition.Connections.Substitutes || [];
-        for(var k=0; k<subs.length; k++){
-          var sub = subs[k];
-          if(sub.Type.lastIndexOf('List::', 0) === 0){
-            if(sub.Reference){
-              for(var l=0; l<sub.Reference.length; l++){
-                var ref = sub.Reference[l];
-                if (ref.Ref == apart.LogicalName){
-                  ref.Ref = name;
-                }
+    var part = $scope.addedParts[apart.RefID];
+    if(part.Definition.Connections){
+      var subs = part.Definition.Connections.Substitutes || [];
+      for(var k=0; k<subs.length; k++){
+        var sub = subs[k];
+        if(sub.Type.lastIndexOf('List::', 0) === 0){
+          if(sub.Reference){
+            for(var l=0; l<sub.Reference.length; l++){
+              var ref = sub.Reference[l];
+              if (ref.Ref == apart.LogicalName){
+                ref.Ref = name;
               }
             }
           }
         }
       }
-      if(part.Definition.Resources){
-        var res = part.Definition.Resources || null;
-        if (res[apart.LogicalName]){
-          res[name] = res[apart.LogicalName];
-          delete res[apart.LogicalName];
-        }
+    }
+    if(part.Definition.Resources){
+      var res = part.Definition.Resources || null;
+      if (res[apart.LogicalName]){
+        res[name] = res[apart.LogicalName];
+        delete res[apart.LogicalName];
       }
     }
     apart.LogicalName = name;
@@ -187,9 +186,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
 
   $scope.getTypes = function(){
     var typesArr = [{Label: 'None', Value: undefined}];
-    for (var i = 0; i < $scope.addedParts.length; i++){
+    for (var key in $scope.addedParts){
       var containsType = false;
-      var type = $scope.addedParts[i].Type;
+      var type = $scope.addedParts[key].Type;
       for (var j = 0; j < typesArr.length; j++){
         if (typesArr[j].Value === type){
           containsType = true;
@@ -213,6 +212,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     }
   };
 
+  /* TODO: Remove by RefID */
   $scope.removePart=function(name){
     for(var i=0; i<$scope.addedParts.length; i++){
       if($scope.addedParts[i].LogicalName === name){
@@ -246,8 +246,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       ct = subtype;
     }
     var subs = [];
-    for(var i=0; i<$scope.addedParts.length; i++){
-      var part = $scope.addedParts[i];
+    for(var key in $scope.addedParts){
+      var part = $scope.addedParts[key];
+      /* TODO: push entinre sub object */
       if(part.Type === ct){
         subs.push(part.LogicalName);
       }
@@ -255,16 +256,18 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     return subs;
   };
 
+  /* TODO: build reference to object */
   $scope.getReferences=function(sub){
     var refstring = "";
     if(!sub.Reference || sub.Reference.length<1 || sub.Reference === 'None'){
       return "None";
     }
     if(sub.Type.lastIndexOf('List::', 0) === 0){
-      if(sub.Reference)
-      sub.Reference.forEach(function(ref, i){
-        refstring += ref.Ref + ", ";
-      });
+      if(sub.Reference){
+        sub.Reference.forEach(function(ref, i){
+          refstring += ref.Ref + ", ";
+        });
+      }
       return refstring.substring(0,refstring.length-2);
     }
     else{
@@ -278,6 +281,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         sub.Reference = [];
       }
       else{
+        /* TODO: FIX */
         sub.Reference = {Ref:'None'};
       }
     }
@@ -287,6 +291,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     return requirementsservice.isSubDisabled(part, sub);
   };
 
+  /* TODO: Remove entirely */
   $scope.setParam=function(part, sub, name){
     var param = sub.Parameter;
     var isList = (sub.Type.indexOf("List::") === 0);
@@ -354,12 +359,11 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     return (index != part.subparts[key].length-1);
   };
 
-
-
   $scope.checkRequiredParam=function(part, value){
     return requirementsservice.ResolveRequired(part, value);
   };
 
+  /* Deprecated */
   $scope.visibleParams=function(part){
     var num = 0;
     for(var param in part.Definition.Parameters){
@@ -495,9 +499,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       template.Conditions = {};
       template.Mappings = {};
       var pieces = JSON.parse(JSON.stringify($scope.addedParts));
-      for(var i=0; i<pieces.length; i++){
-        $scope.replaceRefs(pieces[i]);
-        var part = pieces[i].Definition;
+      for(var key in pieces){
+        var piece = pieces[key];
+        $scope.replaceRefs(piece);
+        var part = piece.Definition;
         for(var mapkey in part.Mappings){
           template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
         }
@@ -570,6 +575,14 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     $scope.build ={};
     $scope.addedParts =[];
     $scope.getTypes();
+  };
+
+  $scope.toArray= function(object){
+    var arr = [];
+    for(var key in object){
+      arr.push(object[key]);
+    }
+    return arr;
   };
 });
 
