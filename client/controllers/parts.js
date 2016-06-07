@@ -154,16 +154,16 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
           var sub = subs[k];
           if(sub.Type.lastIndexOf('List::', 0) === 0){
             if(sub.Reference){
-              sub.Reference.forEach(function(ref, i){
+              for(var l=0; l<sub.Reference.length; l++){
+                var ref = sub.Reference[l];
                 if (ref.Ref == apart.LogicalName){
                   ref.Ref = name;
                 }
-              });
+              }
             }
           }
         }
       }
-
       if(part.Definition.Resources){
         var res = part.Definition.Resources || null;
         if (res[apart.LogicalName]){
@@ -171,7 +171,6 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
           delete res[apart.LogicalName];
         }
       }
-
     }
     apart.LogicalName = name;
     apart.EditingName = !apart.EditingName;
