@@ -17,6 +17,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.addedParts = {};
   $scope.parts = [];
   $scope.stacks = [];
+  $scope.partCount = 0;
   $scope.types = [{Label: 'None', Value: undefined}];
   $scope.build = {};
   $scope.vpcs = [];
@@ -30,6 +31,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     {Label: 'Type: Descending', Value: {predicate: 'Type', reverse: true}},
     {Label: 'Name: Ascending', Value: {predicate: 'LogicalName', reverse: false}},
     {Label: 'Name: Descending', Value: {predicate: 'LogicalName', reverse: true}}];
+
 
   $http.get('/api/parts').then(function(res){
     var data = res.data;
@@ -149,9 +151,11 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
+    /** Do we need RefID in the part OBJ if we use it as the key for the dictionary? **/
     var mod = {Type: type, Count: newcount, RefID:type+""+newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
     $scope.addedParts[mod.RefID]= mod;
     $scope.getTypes();
+    $scope.countParts();
   };
 
   $scope.editPartName = function(apart, name){
@@ -235,6 +239,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       $scope.build = {};
     }
     $scope.getTypes();
+    $scope.countParts();
   };
 
   $scope.getSubs=function(subtype){
@@ -547,6 +552,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         $scope.build = JSON.parse(JSON.stringify(data.Data));
         $scope.addedParts = JSON.parse(JSON.stringify(data.Data.Parts));
         $scope.getTypes();
+        $scope.countParts();
       }
     }, function(err){
       console.log(err);
@@ -573,8 +579,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
 
   $scope.discardStack = function(){
     $scope.build ={};
-    $scope.addedParts =[];
+    $scope.addedParts ={};
     $scope.getTypes();
+    $scope.countParts();
   };
 
   $scope.toArray= function(object){
@@ -584,6 +591,16 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     }
     return arr;
   };
+
+  $scope.countParts = function(){
+    var count = 0;
+    for(var key in $scope.addedParts){
+      count++;
+    }
+    console.log($scope.addedParts);
+    $scope.partCount = count;
+    return count;
+  }
 });
 
 app.directive("compareTo", function() {
