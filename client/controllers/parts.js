@@ -17,11 +17,19 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.addedParts = [];
   $scope.parts = [];
   $scope.stacks = [];
+  $scope.types = [{Label: 'None', Value: undefined}];
   $scope.build = {};
   $scope.vpcs = [];
   $scope.subnets = [];
   $scope.awspartsExpanded = true;
   $scope.subassembliesExpanded = false;
+  $scope.showFilter = false;
+  $scope.sortOptions = [
+    {Label: 'None', Value: {predicate: undefined, reverse: false}},
+    {Label: 'Type: Ascending', Value: {predicate: 'Type', reverse: false}},
+    {Label: 'Type: Descending', Value: {predicate: 'Type', reverse: true}},
+    {Label: 'Name: Ascending', Value: {predicate: 'LogicalName', reverse: false}},
+    {Label: 'Name: Descending', Value: {predicate: 'LogicalName', reverse: true}}];
 
   $http.get('/api/parts').then(function(res){
     var data = res.data;
@@ -142,6 +150,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     }
     var mod = {Type: type, Count: newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
     $scope.addedParts.push(mod);
+    $scope.getTypes();
   };
 
   $scope.editPartName = function(apart, name){
@@ -177,6 +186,25 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     apart.EditingName = !apart.EditingName;
   };
 
+  $scope.getTypes = function(){
+    var typesArr = [{Label: 'None', Value: undefined}];
+    for (var i = 0; i < $scope.addedParts.length; i++){
+      var containsType = false;
+      var type = $scope.addedParts[i].Type;
+      for (var j = 0; j < typesArr.length; j++){
+        if (typesArr[j].Value === type){
+          containsType = true;
+        }
+      }
+      if (!containsType){
+        typesArr.push({Label: type, Value: type});
+      }
+    }
+    $scope.types = typesArr;
+    console.log($scope.types);
+  };
+
+
   $scope.requiredName=function(param, part, value){
     if($scope.checkRequiredParam(part, value)){
       return param+" *";
@@ -207,6 +235,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     if($scope.addedParts.length === 0){
       $scope.build = {};
     }
+    $scope.getTypes();
   };
 
   $scope.getSubs=function(subtype){
@@ -513,6 +542,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       if(data.Success){
         $scope.build = JSON.parse(JSON.stringify(data.Data));
         $scope.addedParts = JSON.parse(JSON.stringify(data.Data.Parts));
+        $scope.getTypes();
       }
     }, function(err){
       console.log(err);
@@ -540,6 +570,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.discardStack = function(){
     $scope.build ={};
     $scope.addedParts =[];
+    $scope.getTypes();
   };
 });
 

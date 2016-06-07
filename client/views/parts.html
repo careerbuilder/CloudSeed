@@ -87,19 +87,46 @@
           </div>
           <hr>
         </div>
-        <div class="input-group" ng-show="addedParts.length">
-          <span class="input-group-addon">Filter by Type:</span>
-          <input type="text" class="form-control" ng-model="partFilter.Type" placeholder="Part Type"/>
-          <span class="input-group-addon">Filter by Name:</span>
-          <input type="text" class="form-control" ng-model="partFilter.LogicalName" placeholder="Part Name"/>
+        <!-- <div class="dropdown">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" ng-click="getTypes()">
+            Filter<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="partFilter.Type = undefined">None</a></li>
+            <li role="presentation" ng-repeat="type in types" tabindex="{{$index}}">
+              <a role="menuitem" ng-click="partFilter.Type = type.Value">{{type.Label}}</a>
+            </li>
+          </ul>
+        </div> -->
+        <div class="row" ng-show="addedParts.length">
+          <div class="col-xs-12">
+            <button type="button" class="btn btn-default" ng-click="showFilter = !showFilter">
+              Filters
+              <span class="caret"></span>
+            </button>
+          </div>
+        </div>
+        <div class="row" ng-show="addedParts.length">
+          <div class="col-xs-8" ng-show="showFilter">
+            <br>
+            <label>Filter by Part Type</label>
+            <select selector model="partFilter.Type" options="types" value-attr="Value" label-attr="Label" placeholder="Part Type"></select>
+            <br>
+            <label>Filter by Part Name</label>
+            <input type="text" class="form-control" ng-model="partFilter.LogicalName" placeholder="Part Name"/>
+          </div>
+          <div class="col-xs-4" ng-show="showFilter">
+            <br>
+            <label>Sort By</label>
+            <select selector model="partSort" options="sortOptions" value-attr="Value" label-attr="Label" placeholder="None"></select>
+          </div>
         </div>
         <br>
-        <div ng-repeat="apart in addedParts | filter:partFilter track by $index" class="panel panel-default">
+        <div ng-repeat="apart in addedParts | filter:partFilter | orderBy:partSort.predicate:partSort.reverse track by $index" class="panel panel-default">
           <div class="panel-heading pointer" ng-click="apart.Collapsed = !apart.Collapsed">
             <h2 class="panel-title">
               <div class="form-inline">
                 <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.LogicalName)"></span>
-                {{apart.Type}} -
                 <span ng-hide="apart.EditingName">{{apart.LogicalName}}</span>
                 <input type="text" class="form-control" ng-model="apart.inputName" ng-show="apart.EditingName" ng-click="$event.stopPropagation()" placeholder="New Name" name="partName"/>
                 <button type="button" class="btn btn-primary btn-sm" ng-show="apart.EditingName" ng-click="editPartName(apart, apart.inputName); $event.stopPropagation()">Confirm</button>
@@ -111,6 +138,8 @@
           </div>
           <div class="panel-body" ng-hide="apart.Collapsed">
             <div ng-show="visibleParams(apart) > 0">
+              <h4>{{apart.Type}}</h4>
+              <hr>
               <h4>Parameters</h4>
               <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-if="!value.Hidden">
                 <ng-form name="parametersForm">
