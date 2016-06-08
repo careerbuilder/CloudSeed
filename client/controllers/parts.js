@@ -15,7 +15,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.auth = authservice;
   $scope.regions = [];
   $scope.addedParts = {};
-  $scope.parts = [];
+  $scope.parts = {};
   $scope.stacks = [];
   $scope.partCount = 0;
   $scope.types = [{Label: 'None', Value: undefined}];
@@ -36,7 +36,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $http.get('/api/parts').then(function(res){
     var data = res.data;
     if(data.Success){
-      $scope.parts = data.Data;
+      data.Data.forEach(function(x){
+        $scope.parts[x.Type] = x;
+      });
     }
     else{
       console.log(data.Error);
@@ -99,34 +101,27 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     toastr.error('Error fetching Subnets');
   });
 
+  function replaceNames(obj, append){
+    var newobj = {};
+    for(var key in obj){
+      newobj[key+""+append] = obj[key];
+    }
+    return newobj;
+  }
+
   $scope.addPart=function(type){
     var num = 0;
-    var newcount = 1;
     var others = [];
     for(var key in $scope.addedParts){
       var other = $scope.addedParts[key];
       if(other.Type == type){
-        others.push(other.Count);
         if(other.Count > num){
           num = other.Count;
         }
       }
     }
-    /** TODO: Fix numbering **/
-    for(var k=1; k<=num+1; k++){
-      if(others.indexOf(k) == -1){
-        newcount = k;
-        break;
-      }
-    }
-    var copy = {};
-    for(var i=0; i<$scope.parts.length; i++){
-      var part = $scope.parts[i];
-      if(part.Type === type){
-          copy = JSON.parse(JSON.stringify(part));
-          break;
-      }
-    }
+    var newcount = num+1;
+    var copy = JSON.parse(JSON.stringify($scope.parts[type]));
     var connections = copy.Connections || {Substitutes:[]};
     var subs = connections.Substitutes || [];
     var partstring = JSON.stringify(copy);
@@ -140,12 +135,12 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       var re2 = new RegExp('\\{\\s*"Fn::GetAtt"\\s*:\\s*\\['+ JSON.stringify(res) +',\\s*', 'g');
       partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
       partstring = partstring.replace(re2, '{"Fn::GetAtt":['+JSON.stringify(res+""+newcount)+',');
-      subsString = subsString.replace('\"' + res + '\"', '\"' + res+""+newcount + '\"');
+      subsString = subsString.replace('"' + res + '"', '"' + res+""+newcount + '"');
     }
     copy = JSON.parse(partstring);
     copy.Connections.Substitutes = JSON.parse(subsString);
-    copy.Resources = $scope.replaceNames(copy.Resources || {}, newcount);
-    copy.Outputs = $scope.replaceNames(copy.Outputs || {}, newcount);
+    copy.Resources = replaceNames(copy.Resources || {}, newcount);
+    copy.Outputs = replaceNames(copy.Outputs || {}, newcount);
     for(var par in copy.Parameters){
       if(copy.Parameters[par].Default){
         copy.Parameters[par].Value = copy.Parameters[par].Default;
@@ -158,9 +153,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     $scope.countParts();
   };
 
-  $scope.editPartName = function(apart, name){
-    console.log(apart);
-    var part = $scope.addedParts[apart.RefID];
+  $scope.editPartName = function(part, name){
+    if(part.Definition.SubAssembly){
+      return;
+    }
     if(part.Definition.Connections){
       var subs = part.Definition.Connections.Substitutes || [];
       for(var k=0; k<subs.length; k++){
@@ -191,19 +187,12 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.getTypes = function(){
     var typesArr = [{Label: 'None', Value: undefined}];
     for (var key in $scope.addedParts){
-      var containsType = false;
       var type = $scope.addedParts[key].Type;
-      for (var j = 0; j < typesArr.length; j++){
-        if (typesArr[j].Value === type){
-          containsType = true;
-        }
-      }
-      if (!containsType){
+      if(typesArr.indexOf(type)<0){
         typesArr.push({Label: type, Value: type});
       }
     }
     $scope.types = typesArr;
-    console.log($scope.types);
   };
 
 
@@ -216,15 +205,12 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     }
   };
 
-  /* TODO: Remove by RefID */
-  $scope.removePart=function(name){
-    for(var i=0; i<$scope.addedParts.length; i++){
-      if($scope.addedParts[i].LogicalName === name){
-        $scope.addedParts.splice(i, 1);
-      }
-    }
-    for(var j=0; j<$scope.addedParts.length; j++){
-      var part = $scope.addedParts[j];
+  /* TODO: Update New Substitutes construct */
+  $scope.removePart=function(refID){
+    var name = $scope.addedParts[refID].LogicalName ||"";
+    delete $scope.addedParts[refID];
+    for(var key in $scope.addedParts){
+      var part = $scope.addedParts[key];
       if(part.Definition.Connections){
         var subs = part.Definition.Connections.Substitutes || [];
         for(var k=0; k<subs.length; k++){
@@ -235,8 +221,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         }
       }
     }
-    if($scope.addedParts.length === 0){
+    if(Object.keys($scope.addedParts).length === 0){
       $scope.build = {};
+      return;
     }
     $scope.getTypes();
     $scope.countParts();
@@ -377,14 +364,6 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       }
     }
     return num;
-  };
-
-  $scope.replaceNames = function(obj, append){
-    var newobj = {};
-    for(var key in obj){
-      newobj[key+""+append] = obj[key];
-    }
-    return newobj;
   };
 
   $scope.replaceRefs = function(apart){
