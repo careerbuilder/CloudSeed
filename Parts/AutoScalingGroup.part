@@ -100,7 +100,7 @@
         },
         "LoadBalancerNames" : {
           "Fn::If" : ["HasLoadBalancer", {
-              "Ref" : "LoadBalancerNames"
+              "Ref" : "LoadBalancers"
             }, {
               "Ref" : "AWS::NoValue"
             }
@@ -146,7 +146,7 @@
         "Type" : "List::Subnet"
       },
       {
-        "Parameter" : "LoadBalancerNames",
+        "Parameter" : "LoadBalancers",
         "Type" : "List::LoadBalancer"
       },
       {
