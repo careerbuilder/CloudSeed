@@ -20,6 +20,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   $scope.partCount = 0;
   $scope.types = [{Label: 'None', Value: undefined}];
   $scope.build = {};
+  $scope.build.Region = 'us-east-1';
   $scope.vpcs = [];
   $scope.subnets = [];
   $scope.awspartsExpanded = true;
@@ -31,6 +32,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     {Label: 'Type: Descending', Value: {predicate: 'Type', reverse: true}},
     {Label: 'Name: Ascending', Value: {predicate: 'LogicalName', reverse: false}},
     {Label: 'Name: Descending', Value: {predicate: 'LogicalName', reverse: true}}];
+
 
 
   $http.get('/api/parts').then(function(res){
@@ -146,7 +148,6 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
-    /** Do we need RefID in the part OBJ if we use it as the key for the dictionary? **/
     var mod = {Type: type, Count: newcount, RefID:type+""+newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
     $scope.addedParts[mod.RefID]= mod;
     $scope.getTypes();
@@ -154,34 +155,10 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
   };
 
   $scope.editPartName = function(part, name){
-    if(part.Definition.SubAssembly){
-      return;
-    }
-    if(part.Definition.Connections){
-      var subs = part.Definition.Connections.Substitutes || [];
-      for(var k=0; k<subs.length; k++){
-        var sub = subs[k];
-        if(sub.Type.lastIndexOf('List::', 0) === 0){
-          if(sub.Reference){
-            for(var l=0; l<sub.Reference.length; l++){
-              var ref = sub.Reference[l];
-              if (ref.Ref == apart.LogicalName){
-                ref.Ref = name;
-              }
-            }
-          }
-        }
-      }
-    }
-    if(part.Definition.Resources){
-      var res = part.Definition.Resources || null;
-      if (res[apart.LogicalName]){
-        res[name] = res[apart.LogicalName];
-        delete res[apart.LogicalName];
-      }
-    }
-    apart.LogicalName = name;
-    apart.EditingName = !apart.EditingName;
+    part.LogicalName = name;
+    part.EditingName = false;
+    part.inputName = undefined;
+    console.log($scope.addedParts);
   };
 
   $scope.getTypes = function(){
@@ -195,6 +172,73 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     $scope.types = typesArr;
   };
 
+  $scope.getOptions = function(typeList){
+    var multi = false;
+    var results = [];
+
+    if (typeList.constructor === Array){
+      for (var i = 0; i < typeList.length; i++){
+
+        var type = typeList[i];
+        if (type.indexOf("List::") === 0){
+          type = type.substring(6);
+          multi = true;
+        }
+
+        if (type.indexOf("AWS::") === 0){
+          $http.get('/api/parts/awsvalues/' + type).then(function(res){
+            var data = res.data;
+            if(data.Success){
+              results.push(data.Values);
+            }
+            else{
+              console.log(data.Error);
+            }
+          }, function(err){
+            console.log(err);
+            toastr.error('Error fetching ' + type + ' list');
+          });
+        }else{
+          for (var key in $scope.addedParts){
+            var part = $scope.addedParts[key];
+            if (part.Type == type){
+              var obj = {"ID": {"Ref": part.RefID}, "Name": part.LogicalName};
+              results.push(obj);
+            }
+          }
+        }
+      }
+    }else{
+      var type = typeList;
+      if (type.indexOf("List::") === 0){
+        type = type.substring(6);
+        multi = true;
+      }
+
+      if (type.indexOf("AWS::") === 0){
+        $http.get('/api/parts/awsvalues/' + type).then(function(res){
+          var data = res.data;
+          if(data.Success){
+            results.push(data.Values);
+          }
+          else{
+            console.log(data.Error);
+          }
+        }, function(err){
+          console.log(err);
+          toastr.error('Error fetching ' + type + ' list');
+        });
+      }else{
+        for (var key in $scope.addedParts){
+          var part = $scope.addedParts[key];
+          if (part.Type == type){
+            var obj = {"ID": {"Ref": part.RefID}, "Name": part.LogicalName};
+            results.push(obj);
+          }
+        }
+      }
+    }
+  };
 
   $scope.requiredName=function(param, part, value){
     if($scope.checkRequiredParam(part, value)){
