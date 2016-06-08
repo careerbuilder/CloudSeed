@@ -6,7 +6,7 @@
   </h4>
   <hr>
   <ul class="nav nav-stacked" ng-show="awspartsExpanded">
-    <li ng-repeat="part in awsparts=(parts | filter:{SubAssembly:'!'+true} | orderBy: 'Type')" role="presentation">
+    <li ng-repeat="part in awsparts=(toArray(parts) | filter:{SubAssembly:'!'+true} | orderBy: 'Type')" role="presentation">
       <a ng-click="addPart(part.Type)" role="button" style="padding: 3px 15px;">{{part.Type}}</a>
     </li>
   </ul>
@@ -19,7 +19,7 @@
   </h4>
   <hr>
   <ul class="nav nav-stacked" ng-show="subassembliesExpanded">
-    <li ng-repeat="part in subassemblies=(parts | filter:{SubAssembly:true} | orderBy: 'Type')" role="presentation">
+    <li ng-repeat="part in subassemblies=(toArray(parts) | filter:{SubAssembly:true} | orderBy: 'Type')" role="presentation">
       <a ng-click="addPart(part.Type)" role="button" style="padding: 3px 15px;">{{part.Type}}</a>
     </li>
   </ul>
