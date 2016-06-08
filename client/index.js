@@ -12,7 +12,7 @@
 */
 var app = angular.module('cloudseed', ['ngRoute', 'ngCookies', 'toastr', 'selector']);
 
-app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
+app.config(['$routeProvider', '$httpProvider', function($routeProvider) {
 	$routeProvider.when('/login', {
 		controller: 'LoginCtrl',
 		templateUrl: 'views/login.html'
@@ -36,7 +36,6 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
 		}
 	})
 	.otherwise({redirectTo: '/'});
-  $httpProvider.interceptors.push('httpRequestInterceptor');
 }]);
 
 
@@ -65,16 +64,6 @@ app.directive('partsSidebar', function() {
     controller: 'PartCtrl',
 		templateUrl: 'views/sidebar.html'
 	};
-});
-
-app.factory('httpRequestInterceptor', function ($cookieStore) {
-  return {
-    request: function(config){
-      var auth_token = $cookieStore.get('c_s66d') || "";
-      config.headers.Authorization = auth_token;
-      return config;
-    }
-  };
 });
 
 app.run(["$rootScope", "$location", "toastr", function($rootScope, $location, toastr) {

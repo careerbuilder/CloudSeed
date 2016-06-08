@@ -14,9 +14,9 @@
 var express    = require('express'); 		// call express
 var https      = require('https');
 var fs         = require('fs');
-var bodyParser = require('body-parser');
 var path       = require('path');
-var favicon    = require('serve-favicon');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 global.config  = require('./config.json');
 var app        = express(); 			// define our app using express
 
@@ -26,7 +26,13 @@ app.use(express.static(path.join(__dirname, 'client')));
 app.set('views', __dirname + '/client/views');
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-app.use(favicon(__dirname + '/favicon.ico'));
+
+if(!global.config.CookieSecret){
+  var sec = require('crypto').randomBytes(32).toString('hex');
+  global.config.CookieSecret = sec;
+  fs.writeFileSync('./config.json', JSON.stringify(global.config, null, '\t'));
+}
+app.use(cookieParser(global.config.CookieSecret));
 
 var port = 3000;
 

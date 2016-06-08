@@ -19,7 +19,7 @@ var numcpus = require('os').cpus().length;
 
 var config = require('../../config.json');
 
-var dbName = config.DB.Database;
+var dbName = config.DB.database;
 var pool;
 if(config.DB.Type == 'mysql'|| config.DB.Type == 'aurora'){
   var pool = mysql.createPool(config.DB);
