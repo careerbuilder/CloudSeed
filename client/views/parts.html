@@ -128,12 +128,12 @@
               <div class="form-inline">
                 <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.LogicalName)"></span>
                 <span ng-hide="apart.EditingName">{{apart.LogicalName}}</span>
-                <div ng-hide="apart.Definition.SubAssembly">
+                <span ng-hide="apart.Definition.SubAssembly">
                   <input type="text" class="form-control" ng-model="apart.inputName" ng-show="apart.EditingName" ng-click="$event.stopPropagation()" placeholder="New Name" name="partName"/>
                   <button type="button" class="btn btn-success btn-sm" ng-show="apart.EditingName" ng-click="editPartName(apart, apart.inputName); $event.stopPropagation()">Confirm</button>
                   <button type="button" class="btn btn-danger btn-sm" ng-show="apart.EditingName" ng-click="apart.EditingName=false; $event.stopPropagation()">Cancel</button>
                   <span class="glyphicon glyphicon-pencil" ng-click="apart.EditingName = !apart.EditingName; $event.stopPropagation()" ng-hide="apart.EditingName"></span>
-                </div>
+                </span>
                 <span class="glyphicon glyphicon-triangle-bottom pull-right" ng-show="apart.Collapsed"></span>
                 <span class="glyphicon glyphicon-triangle-top pull-right" ng-hide="apart.Collapsed"></span>
               </div>
