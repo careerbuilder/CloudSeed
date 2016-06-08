@@ -10,10 +10,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 */
-var express = require('express');
-var db = require('../tools/db_tool.js');
+var router = require('express').Router();
 var aws = require('aws-sdk');
-var router = express.Router();
+var async = require('async');
+var db = require('../tools/db_tool.js');
+
 
 router.get('/awsvalues/:awstype', function(req, res){
   var ptype = req.params.awstype;
@@ -39,12 +40,12 @@ router.get('/awsvalues/:awstype', function(req, res){
       }
     });
   }
-  else if(ptype==='AWS::EC2::Instance::Id'){
+  else if(ptype=='AWS::EC2::Instance::Id'){
     var ec2nextToken = null;
     var rval = [];
     async.doWhilst(function(cb){
       ec2.describeInstances({NextToken:ec2nextToken}, function(err, data){
-        if (err){
+        if(err){
           console.log(err, err.stack);
           return cb(err);
         }
@@ -67,7 +68,7 @@ router.get('/awsvalues/:awstype', function(req, res){
         return cb();
       });
     }, function test(){
-      return ec2nextToken;
+      return !!ec2nextToken;
     }, function(err){
       if(err){
         return res.send({Success: false, Error: err, Values:[]});
@@ -95,7 +96,7 @@ router.get('/awsvalues/:awstype', function(req, res){
       }
     });
   }
-  else if(ptype==='AWS::EC2::Image::Id'){
+  else if(ptype=='AWS::EC2::Image::Id'){
     ec2.describeImages({}, function(err, data){
       if(err){
         return res.send({Success:false, Error:err});
@@ -117,13 +118,104 @@ router.get('/awsvalues/:awstype', function(req, res){
       });
       return res.send({Success:true, Values:rval});
     });
-
   }
-  else if(ptype==='AWS::EC2::KeyPair::KeyName'){return res.send({Success:true, Values:[]});}
-  else if(ptype==='AWS::EC2::Subnet::Id'){return res.send({Success:true, Values:[]});}
-  else if(ptype==='AWS::EC2::Volume::Id'){return res.send({Success:true, Values:[]});}
-  else if(ptype==='AWS::EC2::VPC::Id'){return res.send({Success:true, Values:[]});}
-  else{return res.send({Success:true, Values:[]});}
+  else if(ptype=='AWS::EC2::KeyPair::KeyName'){
+    ec2.describeKeyPairs({}, function(err, data){
+      if(err){
+        return res.send({Success:false, Error:err});
+      }
+      var rval = [];
+      data.KeyPairs.forEach(function(kp){
+        var id = kp.KeyName;
+        var name = id;
+        rval.push({ID: id, Name: name});
+      });
+      return res.send({Success:true, Values:rval});
+    });
+  }
+  else if(ptype=='AWS::EC2::Subnet::Id'){
+    ec2.describeSubnets({}, function(err, data){
+      if(err){
+        return res.send({Success:false, Error:err});
+      }
+      var rval = [];
+      data.Subnets.forEach(function(subnet){
+        var id = subnet.SubnetId;
+        var name = id;
+        if(subnet.Tags){
+          for(var i=0; i<subnet.Tags.length; i++){
+            var t = subnet.Tags[i];
+            if(t.Key.search(/^\s*name\s*$/i)>=0){
+              name= t.Value;
+              break;
+            }
+          }
+        }
+        rval.push({ID: id, Name: name+" ("+ subnet.CidrBlock +")"});
+      });
+      return res.send({Success:true, Values:rval});
+    });
+  }
+  else if(ptype=='AWS::EC2::Volume::Id'){
+    var volnextToken = null;
+    async.doWhilst(function(cb){
+      ec2.describeVolumes({NextToken:volnextToken}, function(err, data){
+        if(err){
+          return cb(err);
+        }
+        if(data.NextToken){
+          volnextToken= data.NextToken;
+        }
+        var rval = [];
+        data.Volumes.forEach(function(vol){
+          var id = vol.VolumeId;
+          var name = id;
+          if(vol.Tags){
+            for(var i=0; i<vol.Tags.length; i++){
+              var t = vol.Tags[i];
+              if(t.Key.search(/^\s*name\s*$/i)>=0){
+                name= t.Value;
+                break;
+              }
+            }
+          }
+          rval.push({ID: id, Name: name});
+        });
+        return cb();
+      });
+    },function(){
+      return !!volnextToken;
+    }, function(err){
+      if(err){
+        return res.send({Success:false, Error:err});
+      }
+      return res.send({Success:true, Values:rval});
+    });
+  }
+  else if(ptype=='AWS::EC2::VPC::Id'){
+    ec2.describeVpcs({}, function(err, data){
+      if(err){
+        return res.send({Success:false, Error:err});
+      }
+      var rval = [];
+      data.Vpcs.forEach(function(vpc){
+        var id = vpc.VpcId;
+        var name = id;
+        if(vpc.Tags){
+          for(var i=0; i<vpc.Tags.length; i++){
+            var t = vpc.Tags[i];
+            if(t.Key.search(/^\s*name\s*$/i)>=0){
+              name= t.Value;
+              break;
+            }
+          }
+        }
+        rval.push({ID: id, Name: name+" ("+ vpc.CidrBlock+")"});
+      });
+      return res.send({Success:true, Values:rval});
+    });
+  }
+  else{return res.send({Success:false, Error:'Unrecognized part type: '+ptype});}
 });
 
 router.get('/', function(req, res){
@@ -132,7 +224,6 @@ router.get('/', function(req, res){
       console.log(err);
       return res.send({Success: false, Error: err});
     }
-    // console.log(results);
     return res.send({Success:true, Data: results});
   });
 });
