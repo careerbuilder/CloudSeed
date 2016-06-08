@@ -15,11 +15,10 @@ var aws = require('aws-sdk');
 var async = require('async');
 var db = require('../tools/db_tool.js');
 
-
 router.get('/awsvalues/:awstype', function(req, res){
   var ptype = req.params.awstype;
   var region = req.query.region;
-  var aws_obj = {region:region};
+  var aws_obj = {region:region, httpOptions:{timeout:10000}};
   if('Amazon' in global.config){
     aws_obj.AccessKey = global.config.AccessKey;
     aws_obj.SecretKey = global.config.SecretKey;
@@ -234,7 +233,6 @@ router.get('/:type', function(req, res){
       console.log(err);
       return res.send({Success: false, Error: err});
     }
-  //  console.log(results);
     return res.send({Success:true, Data: results});
   });
 });
