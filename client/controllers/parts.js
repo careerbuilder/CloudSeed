@@ -203,7 +203,6 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
 
   /* TODO: Update New Substitutes construct */
   $scope.removePart=function(refID){
-    var name = $scope.addedParts[refID].LogicalName ||"";
     delete $scope.addedParts[refID];
     for(var key in $scope.addedParts){
       var part = $scope.addedParts[key];
@@ -211,13 +210,14 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         var subs = part.Definition.Connections.Substitutes || [];
         for(var k=0; k<subs.length; k++){
           var sub = subs[k];
-          if(sub.Reference === name){
+          if(sub.Reference === refID){
             $scope.setParam(part, sub, 'None');
           }
         }
       }
     }
     if(Object.keys($scope.addedParts).length === 0){
+      //discard build
       $scope.build = {};
       return;
     }
@@ -237,7 +237,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       var part = $scope.addedParts[key];
       /* TODO: push entinre sub object */
       if(part.Type === ct){
-        subs.push(part.LogicalName);
+        subs.push(part.RefID);
       }
     }
     return subs;
