@@ -86,7 +86,7 @@ module.exports ={
           return callback(err);
         }
         if(results.length<1){
-          return callback("No such user");
+          return callback();
         }
         return callback(null, results[0]);
       });

@@ -10,69 +10,47 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 */
-app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $cookieStore){
+app.factory('authservice', ['$q', '$http','$cookies', function($q, $http, $cookies){
 
   var auth_ID;
   var user;
+  var auth_cookie = $cookies.get('c_s66d');
+  var authservice = {};
 
-  var cookie = $cookieStore.get('c_s66d');
-
-  if(cookie){
-    console.log("found session in progress");
-    $http.get('/api/users/'+cookie)
+  function load_cookie(){
+    var c_promise = $q.defer();
+    $http.get('/api/auth/')
     .then(function(res){
       var data = res.data;
       if(data.Success){
         user = data.user;
-        auth_ID = cookie;
+        auth_ID = data.session;
+        c_promise.resolve(user);
       }
       else{
         console.log(data.Error);
         user = null;
         auth_ID = null;
+        c_promise.reject(data);
       }
     },
-    function(res){
+    function(err){
       user = null;
       auth_ID = null;
+      c_promise.reject(err);
     });
-  }
-
-  var authservice = {};
-
-  function load_cookie(){
-    var cookie = $cookieStore.get('c_s66d');
-    var c_promise = $q.defer();
-    if(cookie){
-      $http.get('/api/users/'+cookie)
-      .then(function(res){
-        var data = res.data;
-        if(data.Success){
-          user = data.user;
-          auth_ID = cookie;
-          c_promise.resolve(cookie);
-        }
-        else{
-          console.log(data.Error);
-          user = null;
-          auth_ID = null;
-          c_promise.reject(data);
-        }
-      },
-      function(err){
-        user = null;
-        auth_ID = null;
-        c_promise.reject(err);
-      });
-    }
-    else{
-      c_promise.reject('No Cookie');
-    }
     return c_promise.promise;
   }
 
+  if(auth_cookie){
+    load_cookie().then(function(user){
+      console.log('Logged in as',user.email);
+    }, function(err){
+      console.log(err);
+    });
+  }
+
   authservice.saveAuth = function(userinfo){
-    $cookieStore.put('c_s66d', userinfo._id);
     auth_ID = userinfo.confirm;
     user = userinfo;
   };
@@ -81,7 +59,7 @@ app.factory('authservice', ['$q', '$http','$cookieStore', function($q, $http, $c
     auth_ID = null;
     user = null;
     cookie= null;
-    $cookieStore.remove('c_s66d');
+    $cookies.remove('c_s66d');
   };
   authservice.authid = function(){
     return auth_ID;

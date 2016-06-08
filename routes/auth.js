@@ -48,7 +48,9 @@ router.post('/login', function(req, res){
     shasum.update(record.salt + b.password);
     var passhash = shasum.digest('hex');
     if(passcheck === passhash){
-      return res.send({Success: true, user: {email: record.email, _id: record.confirm}});
+      var session = record.confirm;
+      res.cookie('c_s66d', session, {secure:req.secure, signed:true});
+      return res.send({Success: true, user: {email: record.email, session: session}});
     }
     else{
       return res.send({Success: false, Error: 'Invalid password'});
@@ -91,6 +93,15 @@ router.post('/register', function(req, res){
       });
     }
   });
+});
+
+router.get('/', function(req,res){
+  if(res.locals.user){
+    return res.send({Success: true, user:{email:res.locals.user.email, confirm:res.locals.user.confirm}, session:res.locals.user.confirm});
+  }
+  else{
+    return res.send({Success: false, Error: 'Unauthorized!'});
+  }
 });
 
 module.exports = router;

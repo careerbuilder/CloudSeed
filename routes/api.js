@@ -14,22 +14,39 @@ var express = require('express');
 var router = express.Router();
 var db = require('../tools/db_tool.js');
 
+router.use(function(req, res, next){
+  if(!req.signedCookies || !req.signedCookies.c_s66d){
+    res.locals.user = null;
+    return next();
+  }
+  else{
+    var a_sess = req.signedCookies.c_s66d;
+    db.get_user({confirm:a_sess, active:true}, function(err, result){
+      if(err){
+        console.log('Error connecting to auth service');
+        return res.send({Success: false, Error: 'Could not retrieve user'});
+      }
+      if(result){
+        res.locals.user = result;
+        return next();
+      }
+      else{
+        res.locals.user = null;
+        return next();
+      }
+    });
+  }
+});
+
 router.use('/auth/', require('./auth.js'));
 
 router.use(function(req, res, next){
-  var authZ = req.headers.authorization || req.headers.authorization;
-  if(!authZ){
-    return res.send({Success:false, Error:"No valid Auth token"});
+  if(res.locals.user){
+    return next();
   }
-  db.get_user({confirm: authZ, active:true}, function(err, result){
-    if(err){
-      return res.send({Success: false, Error: err});
-    }
-    if(!result){
-      return res.send({Success: false, Error: "Invalid Auth!"});
-    }
-    next();
-  });
+  else{
+    return res.send({Success: false, Error: 'Unauthorized!'});
+  }
 });
 
 router.use('/users/', require('./users.js'));
