@@ -201,15 +201,12 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     }
   };
 
-  /* TODO: Remove by RefID */
-  $scope.removePart=function(name){
-    for(var i=0; i<$scope.addedParts.length; i++){
-      if($scope.addedParts[i].LogicalName === name){
-        $scope.addedParts.splice(i, 1);
-      }
-    }
-    for(var j=0; j<$scope.addedParts.length; j++){
-      var part = $scope.addedParts[j];
+  /* TODO: Update New Substitutes construct */
+  $scope.removePart=function(refID){
+    var name = $scope.addedParts[refID].LogicalName ||"";
+    delete $scope.addedParts[refID];
+    for(var key in $scope.addedParts){
+      var part = $scope.addedParts[key];
       if(part.Definition.Connections){
         var subs = part.Definition.Connections.Substitutes || [];
         for(var k=0; k<subs.length; k++){
@@ -220,8 +217,9 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         }
       }
     }
-    if($scope.addedParts.length === 0){
+    if(Object.keys($scope.addedParts).length === 0){
       $scope.build = {};
+      return;
     }
     $scope.getTypes();
   };
