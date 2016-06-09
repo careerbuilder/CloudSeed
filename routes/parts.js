@@ -80,7 +80,7 @@ router.get('/awsvalues/:awstype', function(req, res){
       });
     }
     else if(ptype=='AWS::EC2::SecurityGroup::GroupName' || ptype=='AWS::EC2::SecurityGroup::Id'){
-      ec2.describeSecurityGroups(params, function(err, data) {
+      ec2.describeSecurityGroups({}, function(err, data) {
         if (err){
           console.log(err, err.stack);
           return res.send({Success: false, Error: err, Values:[]});
