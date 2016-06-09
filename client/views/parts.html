@@ -102,7 +102,7 @@
             <select selector model="partFilter.Type" options="types" value-attr="Value" label-attr="Label" placeholder="Part Type"></select>
             <br>
             <label>Filter by Part Name</label>
-            <input type="text" class="form-control" ng-model="partFilter.LogicalName" placeholder="Part Name"/>
+            <input type="text" class="form-control" ng-model="partFilter.Name" placeholder="Part Name"/>
           </div>
           <div class="col-xs-4" ng-show="showFilter">
             <br>
@@ -116,7 +116,7 @@
             <h2 class="panel-title">
               <div class="form-inline">
                 <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.RefID)"></span>
-                <span ng-hide="apart.EditingName">{{apart.LogicalName}}</span>
+                <span ng-hide="apart.EditingName">{{apart.Name}}</span>
                 <span ng-hide="apart.Definition.SubAssembly">
                   <input type="text" class="form-control" ng-model="apart.inputName" ng-show="apart.EditingName" ng-click="$event.stopPropagation()" placeholder="New Name" name="partName"/>
                   <button type="button" class="btn btn-success btn-sm" ng-show="apart.EditingName" ng-click="editPartName(apart, apart.inputName); $event.stopPropagation()">Confirm</button>
@@ -135,10 +135,10 @@
               <h4>Parameters</h4>
               <div ng-repeat="(key, value) in apart.Definition.Parameters" ng-if="!value.Hidden">
                 <ng-form name="parametersForm">
-                  <div class="form-group" ng-init="key.dropdownOptions = getOptions(value.Type)" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
+                  <div class="form-group" ng-init="getAllOptions(value)" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
                     <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, apart, value)}}</strong></label>
-                    <div ng-if="key.dropdownOptions">
-                      <select selector model="apart.Definition.Parameters[key].Value" options="key.dropdownOptions" value-attr="ID" label-attr="Name"></select>
+                    <div ng-if="value.dropdownOptions.length > 0">
+                      <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions" value-attr="ID" label-attr="Name" multi="value.multipleOptions" ng-click="getAllOptions(value)"></select>
                     </div>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                       parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length || key == 'Subnet' || key == 'VPC'" ng-model="apart.Definition.Parameters[key].Value"

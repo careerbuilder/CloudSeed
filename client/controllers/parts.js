@@ -11,7 +11,7 @@
 * See the License for the specific language governing permissions and limitations under the License.
 */
 
-app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice, requirementsservice){
+app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authservice, requirementsservice){
   $scope.auth = authservice;
   $scope.regions = [];
   $scope.addedParts = {};
@@ -30,8 +30,8 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     {Label: 'None', Value: {predicate: undefined, reverse: false}},
     {Label: 'Type: Ascending', Value: {predicate: 'Type', reverse: false}},
     {Label: 'Type: Descending', Value: {predicate: 'Type', reverse: true}},
-    {Label: 'Name: Ascending', Value: {predicate: 'LogicalName', reverse: false}},
-    {Label: 'Name: Descending', Value: {predicate: 'LogicalName', reverse: true}}];
+    {Label: 'Name: Ascending', Value: {predicate: 'Name', reverse: false}},
+    {Label: 'Name: Descending', Value: {predicate: 'Name', reverse: true}}];
 
 
 
@@ -148,14 +148,14 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
-    var mod = {Type: type, Count: newcount, RefID:type+""+newcount, LogicalName:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
+    var mod = {Type: type, Count: newcount, RefID:type+""+newcount, Name:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
     $scope.addedParts[mod.RefID]= mod;
     $scope.getTypes();
     $scope.countParts();
   };
 
   $scope.editPartName = function(part, name){
-    part.LogicalName = name;
+    part.Name = name;
     part.EditingName = false;
     part.inputName = undefined;
     console.log($scope.addedParts);
@@ -172,40 +172,65 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
     $scope.types = typesArr;
   };
 
-  $scope.getOptions = function(typeList){
+  $scope.getAWSOptions = function(type, results){
+
+    var deferred = $q.defer();
+
+    $http.get('/api/parts/awsvalues/' + type + '/?region=' + $scope.build.Region).then(function(res){
+      var data = res.data;
+      if(data.Success){
+        deferred.resolve(data.Values);
+      }
+      else{
+        console.log(data.Error);
+        deferred.reject("Fail");
+      }
+    }, function(err){
+      console.log(err);
+      deferred.reject("Fail");
+      toastr.error('Error fetching ' + type + ' list');
+    });
+    return deferred.promise;
+  };
+
+  $scope.getLocalOptions = function(type){
+    var results = [];
+    for (var key in $scope.addedParts){
+      var part = $scope.addedParts[key];
+      if (part.Type == type){
+        part.ID = {"Ref": part.RefID};
+        results.push(part);
+      }
+    }
+    console.log('local options: ', results);
+    return results;
+  };
+
+  $scope.refreshLocalOptions = function(paramValues){
+    
+  };
+
+  $scope.getAllOptions = function(paramValues){
     var multi = false;
     var results = [];
+    var promises = [];
+    var typeList = paramValues.Type;
 
     if (typeList.constructor === Array){
       for (var i = 0; i < typeList.length; i++){
-
         var type = typeList[i];
+        console.log(type);
         if (type.indexOf("List::") === 0){
           type = type.substring(6);
           multi = true;
         }
 
         if (type.indexOf("AWS::") === 0){
-          $http.get('/api/parts/awsvalues/' + type).then(function(res){
-            var data = res.data;
-            if(data.Success){
-              results.push(data.Values);
-            }
-            else{
-              console.log(data.Error);
-            }
-          }, function(err){
-            console.log(err);
-            toastr.error('Error fetching ' + type + ' list');
-          });
+          promises.push($scope.getAWSOptions(type));
         }else{
-          for (var key in $scope.addedParts){
-            var part = $scope.addedParts[key];
-            if (part.Type == type){
-              var obj = {"ID": {"Ref": part.RefID}, "Name": part.LogicalName};
-              results.push(obj);
-            }
-          }
+          var locals = $scope.getLocalOptions(type);
+          results = results.concat(locals);
+          console.log('After getting local options results are now: ', results);
         }
       }
     }else{
@@ -214,30 +239,19 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
         type = type.substring(6);
         multi = true;
       }
-
       if (type.indexOf("AWS::") === 0){
-        $http.get('/api/parts/awsvalues/' + type).then(function(res){
-          var data = res.data;
-          if(data.Success){
-            results.push(data.Values);
-          }
-          else{
-            console.log(data.Error);
-          }
-        }, function(err){
-          console.log(err);
-          toastr.error('Error fetching ' + type + ' list');
-        });
+        promises.push($scope.getAWSOptions(type, results));
       }else{
-        for (var key in $scope.addedParts){
-          var part = $scope.addedParts[key];
-          if (part.Type == type){
-            var obj = {"ID": {"Ref": part.RefID}, "Name": part.LogicalName};
-            results.push(obj);
-          }
-        }
+        results.push.apply($scope.getLocalOptions(type));
       }
     }
+    $q.all(promises).then(function(awsResults){
+      var merged = results.concat(awsResults);
+      var flattened = [].concat.apply([], merged);
+      console.log(flattened);
+      paramValues.dropdownOptions = flattened;
+      paramValues.multipleOptions = multi;
+    });
   };
 
   $scope.requiredName=function(param, part, value){
@@ -481,7 +495,7 @@ app.controller('PartCtrl', function($http, $scope, $cookies, toastr, authservice
       for(var subp in apart.subparts){
         var models = apart.subparts[subp];
         var path = subp.split('|');
-        var res = apart.Definition.Resources[apart.LogicalName];
+        var res = apart.Definition.Resources[apart.Name];
         for(var x=0; x<path.length; x++){
           res = res[path[x]];
         }
