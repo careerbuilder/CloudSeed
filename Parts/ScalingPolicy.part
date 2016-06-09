@@ -8,8 +8,8 @@
       "Required" : true
     },
     "ASG":{
-      "Description" : "The name or Amazon Resource Name (ARN) of the Auto Scaling Group that you want to attach the policy to.",
-      "Type" : "String",
+      "Description" : "The name of the Auto Scaling Group that you want to attach the policy to.",
+      "Type" : ["AWS::AutoScaling::AutoScalingGroup::Name", "AutoScalingGroup"],
       "Required" : true
     },
     "AdjustmentKind":{
@@ -45,10 +45,6 @@
     }
   },
   "Connections" : {
-    "Substitutes" : [{
-        "Parameter" : "ASG",
-        "Type" : "AutoScalingGroup"
-      }
-    ]
+
   }
 }

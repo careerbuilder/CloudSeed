@@ -7,11 +7,11 @@
     },
     "RDSSG" : {
       "Description" : "IDs of security groups to use for new RDS",
-      "Type" : "CommaDelimitedList"
+      "Type" : ["List::AWS::EC2::SecurityGroup::Id","List::SecurityGroup"]
     },
     "SubnetGroup" : {
       "Description" : "name of subnet group to use for new RDS",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::SubnetGroup::Id","SubnetGroup"]
     },
     "SnapshotID" : {
       "Description" : "ID of snapshot to use (if any)",
@@ -49,7 +49,7 @@
     },
     "DBCluster":{
       "Description": "Cluster for the Aurora Instance",
-      "Type":"String",
+      "Type":["AWS::RDS::DBCluster::Id", "DBCluster"],
       "Required":{
         "Func":"Only",
         "Args": [1, {"Param":"GBAllocated"}]
@@ -165,16 +165,5 @@
     }
   },
   "Connections" : {
-    "Substitutes" : [{
-        "Type" : "SubnetGroup",
-        "Parameter" : "SubnetGroup"
-      }, {
-        "Type" : "List::SecurityGroup",
-        "Parameter" : "RDSSG"
-      }, {
-        "Type" : "DBCluster",
-        "Parameter" : "DBCluster"
-      }
-    ]
   }
 }

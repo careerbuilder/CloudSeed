@@ -4,7 +4,7 @@
   "Parameters" : {
     "RouteTable" : {
       "Description" : "Host Route Table",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::RouteTable::Id","RouteTable"],
       "Required": true
     },
     "DestinationCidr" : {
@@ -14,7 +14,7 @@
     },
     "Gateway" : {
       "Description" : "Id of Gateway",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::VPNGateway::Id","AWS::EC2::InternetGateway::Id","IGW","VPNGateway"],
       "Default" : "",
       "Required": {
         "Func": "Only",
@@ -23,7 +23,7 @@
     },
     "Instance" : {
       "Description" : "Id of EC2 instance",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::Instance::Id","EC2Instance"],
       "Default" : "",
       "Required": {
         "Func": "Only",
@@ -32,7 +32,7 @@
     },
     "NetworkInterface" : {
       "Description" : "Id of Network Interface",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::NetworkInterface::Id","NetworkInterface"],
       "Default" : "",
       "Required": {
         "Func": "Only",
@@ -41,7 +41,7 @@
     },
     "VpcPeeringConnection" : {
       "Description" : "Id of peering connection",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::VPCPeeringConnection::Id","VpcPeeringConnection"],
       "Default" : "",
       "Required": {
         "Func": "Only",
@@ -117,27 +117,6 @@
     }
   },
   "Connections" : {
-    "References" : [],
-    "Substitutes" : [{
-        "Parameter" : "RouteTable",
-        "Type" : "RouteTable"
-      },
-      {
-        "Parameter" : "Gateway",
-        "Type" : "Gateway"
-      },
-      {
-        "Parameter" : "Instance",
-        "Type" : "EC2"
-      },
-      {
-        "Parameter" : "NetworkInterface",
-        "Type" : "NetworkInterface"
-      },
-      {
-        "Parameter" : "VpcPeeringConnection",
-        "Type" : "VpcPeeringConnection"
-      }
-    ]
+    "References" : []
   }
 }

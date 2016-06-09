@@ -4,7 +4,7 @@
   "Parameters" : {
     "VPC" : {
       "Description" : "ID of VPC to use",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::VPC::Id","VPC"],
       "Required": true
     },
     "RouteTableName" : {
@@ -38,11 +38,5 @@
     }
   },
   "Connections":{
-    "Substitutes":[            
-        {
-            "Parameter": "VPC",
-            "Type":"VPC"
-        }
-    ]
   }
 }

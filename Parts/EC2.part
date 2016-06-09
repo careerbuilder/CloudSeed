@@ -8,11 +8,11 @@
     },
     "Subnet" : {
       "Description" : "ID for the home subnet",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::Subnet::Id", "Subnet"]
     },
     "AMI" : {
       "Description" : "ID of AMI",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::Image::Id"]
     },
     "Size" : {
       "Description" : "Size of the Instance",
@@ -25,12 +25,11 @@
     },
     "KeyName" : {
       "Description" : "Name of private key",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::KeyPair::KeyName"]
     },
     "SecurityGroups":{
         "Description": "SecurityGroups which govern the Instance",
-        "Type": "CommaDelimitedList",
-        "Default": ""
+        "Type": ["List::AWS::EC2::SecurityGroup::Id","List::SecurityGroup"]
     }
   },
   "Resources" : {
@@ -54,16 +53,6 @@
   },
   "Connections":{
     "Dependencies":[],
-    "References":[],
-    "Substitutes":[            
-            {
-                "Parameter": "Subnet",
-                "Type":"Subnet"
-            },
-            {
-                "Parameter": "SecurityGroups",
-                "Type": "List::SecurityGroup"
-            }
-        ]
+    "References":[]
   }
 }

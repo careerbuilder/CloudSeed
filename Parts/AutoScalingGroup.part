@@ -21,12 +21,12 @@
     },
     "LaunchConfiguration" : {
       "Description" : "Specifies the name of the associated LaunchConfiguration.",
-      "Type" : "String",
+      "Type" : ["AWS::AutoScaling::LaunchConfiguration::Id", "LaunchConfiguration"],
       "Required" : true
     },
     "LoadBalancers" : {
       "Description" : "A list of load balancers associated with this Auto Scaling group.",
-      "Type" : "CommaDelimitedList",
+      "Type" : ["List::AWS::ElasticLoadBalancing::LoadBalancer::Id", "List::LoadBalancer"],
       "Default" : "",
       "Required" : false
     },
@@ -44,7 +44,7 @@
     },
     "Subnets" : {
       "Description" : "A list of subnet identifiers of Amazon VPCs.",
-      "Type" : "CommaDelimitedList",
+      "Type" : ["List::AWS::EC2::Subnet::Id", "List::Subnet"],
       "Default" : "",
       "Required" : false
     }
@@ -140,19 +140,6 @@
   },
   "Connections" : {
     "Dependencies" : [],
-    "References" : [],
-    "Substitutes" : [{
-        "Parameter" : "Subnets",
-        "Type" : "List::Subnet"
-      },
-      {
-        "Parameter" : "LoadBalancers",
-        "Type" : "List::LoadBalancer"
-      },
-      {
-        "Parameter" : "LaunchConfiguration",
-        "Type" : "LaunchConfiguration"
-      }
-    ]
+    "References" : []
   }
 }

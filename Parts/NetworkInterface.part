@@ -3,7 +3,7 @@
   "Parameters" : {
     "SecurityGroups" : {
       "Description" : "The IDs of the Security Groups attached",
-      "Type" : "CommaDelimitedList",
+      "Type" : ["List::AWS::EC2::SecurityGroup::Id", "List::SecurityGroup"],
       "Default" : "",
       "Required" : false
     },
@@ -20,7 +20,7 @@
     },
     "Subnet" : {
       "Description" : "ID of the resident Subnet",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::Subnet::Id", "Subnet"],
       "Required" : true
     },
     "TeamName" : {
@@ -54,15 +54,6 @@
   },
   "Connections" : {
     "Dependencies" : [],
-    "References" : {},
-    "Substitutes" : [{
-        "Type" : "Subnet",
-        "Parameter" : "Subnet"
-      },
-      {
-        "Type" : "List::SecurityGroup",
-        "Parameter" : "SecurityGroups"
-      }
-    ]
+    "References" : {}
   }
 }

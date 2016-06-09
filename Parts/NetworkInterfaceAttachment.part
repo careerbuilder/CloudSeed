@@ -15,12 +15,12 @@
     },
     "Instance" : {
       "Description" : "ID of the Instance to attach",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::Instance::Id","EC2Instance"],
       "Required" : true
     },
     "ENIID" : {
       "Description" : "ID of the ENI",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::NetworkInterface::Id","NetworkInterface"],
       "Required" : true
     }
   },
@@ -46,14 +46,6 @@
   },
   "Connections" : {
     "Dependencies" : [],
-    "References" : {},
-    "Substitutes" : [{
-        "Type" : "EC2Instance",
-        "Parameter" : "Instance"
-      }, {
-        "Type" : "NetworkInterface",
-        "Parameter" : "ENIID"
-      }
-    ]
+    "References" : {}
   }
 }

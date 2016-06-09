@@ -4,11 +4,11 @@
   "Parameters" : {
     "VPNGWId" : {
       "Description" : "The ID of the virtual private gateway that is attached to a VPC.",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::VPNGateway::Id", "VPNGateway"]
     },
     "RouteTables" : {
       "Description" : "A list of routing table IDs that are associated with a VPC",
-      "Type" : "List::String"
+      "Type" : ["List::AWS::EC2::RouteTable::Id", "List::RouteTable"]
     }
   },
   "Resources" : {
@@ -30,17 +30,6 @@
   },
   "Connections":{
         "Dependencies":[],
-        "References":{},
-        "Substitutes":[
-          {
-            "Parameter": "RouteTables",
-            "Type":"List::RouteTable"
-          },
-          {
-            "Parameter": "VPNGWId",
-            "Type":"VPNGateway",
-            "Dependent": "VPNGatewayRoutePropagation"
-          }
-        ]
+        "References":{}
     }
 }

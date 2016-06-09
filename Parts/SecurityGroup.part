@@ -3,7 +3,7 @@
   "Parameters" : {
     "VPC" : {
       "Description" : "VPC ID",
-      "Type" : "AWS::EC2::VPC::Id",
+      "Type" : ["AWS::EC2::VPC::Id", "VPC"],
       "Required": true
     },
     "SGName" : {
@@ -96,11 +96,6 @@
           }
         }
       }
-    },
-    "Substitutes" : [{
-        "Parameter" : "VPC",
-        "Type" : "VPC"
-      }
-    ]
+    }
   }
 }

@@ -4,7 +4,7 @@
   "Parameters" : {
     "ACL" : {
       "Description" : "Base ACL for new Rules",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::NetworkAcl::Id","ACL"]
     },
     "Cidr":{
       "Description" : "Cidr Block",
@@ -59,11 +59,6 @@
     }
   },
   "Connections":{
-    "Substitutes":[            
-      {
-        "Parameter": "ACL",
-        "Type":"ACL"
-      }
-    ]
+    
   }
 }
