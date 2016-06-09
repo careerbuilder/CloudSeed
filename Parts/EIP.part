@@ -3,8 +3,7 @@
   "Parameters" : {
     "InstanceID" : {
       "Description" : "The ID of the instance to which the EIP will associate",
-      "Type" : "String",
-      "Default":"",
+      "Type" : ["AWS::EC2::Instance::Id","EC2Instance"],
       "Required":{
         "Func":"Only",
         "Args":[1,{"Param":"DomainType"}]
@@ -44,12 +43,6 @@
   },
   "Connections" : {
     "Dependencies" : [],
-    "References" : {},
-    "Substitutes" : [
-      {
-        "Type" : "EC2Instance",
-        "Parameter" : "InstanceID"
-      }
-    ]
+    "References" : {}
   }
 }

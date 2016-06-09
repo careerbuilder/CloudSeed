@@ -10,7 +10,7 @@
     },
     "Subnets" : {
       "Description" : "Subnets which will make up the group",
-      "Type" : "CommaDelimitedList",
+      "Type" : ["List::AWS::EC2::Subnet::Id", "List::Subnet"],
       "Required": true
     },
     "GroupDescription":{
@@ -43,9 +43,6 @@
   },
   "Outputs" : {},
   "Connections":{
-    "Substitutes":[
-      {"Type":"List::Subnet", "Parameter":"Subnets"}
-    ]
   }
 
 }

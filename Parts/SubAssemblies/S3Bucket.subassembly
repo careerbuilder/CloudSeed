@@ -1,0 +1,100 @@
+{
+  "Type" : "S3Bucket",
+  "Description" : "Version 1.0.  Creates a customized S3 bucket.",
+  "Parameters" : {
+    "BucketShortName" : {
+      "Description" : "Descriptor of Created bucket",
+      "AllowedPattern" : "[a-zA-Z0-9]+",
+      "Type" : "String"
+    },
+    "TeamName" : {
+      "Description" : "Name of owning team",
+      "Type" : "String"
+    },
+    "VPCName" : {
+      "Description" : "Short name of VPC",
+      "AllowedValues" : ["USEastTest", "USEast", "Ireland"],
+      "Type" : "String"
+    },
+    "DeleteDays":{
+      "Description": "Days after creation to delete",
+      "Type": "Integer",
+      "Default": 120
+    },
+    "GlacierDays":{
+      "Description": "Days after creation to move into glacier",
+      "Type":"Integer",
+      "Default": 30
+    }
+  },
+  "Mappings" : {
+    "Info" : {
+      "USEastTest" : {
+        "CIDROne" : "172.26.0.0/16",
+        "CIDRTwo" : "172.21.0.0/16",
+        "Name" : "useasttest"
+      },
+      "USEast" : {
+        "CIDROne" : "172.29.0.0/16",
+        "CIDRTwo" : "172.22.0.0/16",
+        "Name" : "useast"
+      },
+      "Ireland" : {
+        "CIDROne" : "172.28.0.0/16",
+        "CIDRTwo" : "172.23.0.0/16",
+        "Name" : "ireland"
+      }
+    }
+  },
+  "Resources" : {
+    "S3Bucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "AccessControl": "LogDeliveryWrite",
+        "BucketName" : {
+          "Fn::Join" : ["-", [{
+                "Ref" : "TeamName"
+              }, {
+                "Ref" : "BucketShortName"
+              }, {
+                "Fn::FindInMap" : ["Info", {
+                    "Ref" : "VPCName"
+                  }, "Name"]
+              }
+            ]]
+        },
+        "LifecycleConfiguration" : {
+          "Rules" : [{
+              "ExpirationInDays" : {"Ref":"DeleteDays"},
+              "Status" : "Enabled",
+              "Transition" : {
+                "StorageClass" : "Glacier",
+                "TransitionInDays" : {"Ref":"GlacierDays"}
+              }
+            }
+          ]
+        },
+        "LoggingConfiguration" : {
+          "LogFilePrefix" : "Log"
+        },
+        "Tags" : [{
+            "Key" : "TeamName",
+            "Value" : {
+              "Ref" : "TeamName"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "Outputs" : {
+    "BucketID" : {
+      "Description" : "ID of created ACL",
+      "Value" : {
+        "Ref" : "S3Bucket"
+      }
+    }
+  },
+  "Connections" : {}
+
+}

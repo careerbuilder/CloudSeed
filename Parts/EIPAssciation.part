@@ -4,14 +4,12 @@
   "Parameters" : {
     "ElasticIP":{
       "Description": "Elastic IP address that you want to associate with the Amazon EC2 instance specified by the InstanceId",
-      "Type": "String",
-      "Default":"",
+      "Type": ["AWS::EC2::EIP::Ip","EIP"],
       "Required": false
     },
     "Instance":{
       "Description": "Instance to associate",
-      "Type": "String",
-      "Default":"",
+      "Type": ["AWS::EC2::Instance::Id", "EC2Instance"],
       "Required": false
     },
     "AllocationID":{
@@ -21,8 +19,7 @@
       "Required": false
     },
     "NetworkInterfaceID":{
-      "Type": "String",
-      "Default":"",
+      "Type": ["AWS::EC2::NetworkInterface::Id", "NetworkInterface"],
       "Description":"The ID of the network interface to associate with the Elastic IP address (VPC only).",
       "Required": false
     },
@@ -109,10 +106,5 @@
     }
   },
   "Connections":{
-    "Substitutes": [
-      {"Type":"EIP", "Parameter":"ElasticIP"},
-      {"Type":"EC2Instance", "Parameter":"Instance"},
-      {"Type":"NetworkInterface", "Parameter":"NetworkInterfaceID"}
-    ]
   }
 }

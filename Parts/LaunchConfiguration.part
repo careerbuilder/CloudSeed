@@ -3,7 +3,7 @@
   "Parameters" : {
     "AMI" : {
       "Description" : "ID of AMI",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::Image::Id"],
       "Required" : true
     },
     "Size" : {
@@ -14,13 +14,12 @@
     },
     "RSAKeyName" : {
       "Description" : "Name of private key",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::KeyPair::KeyName"],
       "Required" : true
     },
     "SecurityGroupIDs" : {
       "Description" : "SecurityGroups which govern the Instance",
-      "Type" : "CommaDelimitedList",
-      "Default" : "",
+      "Type" : ["List::AWS::EC2::SecurityGroup::Id", "List::SecurityGroup"],
       "Required" : false
     },
     "Tenancy" : {
@@ -108,11 +107,6 @@
   },
   "Connections" : {
     "Dependencies" : [],
-    "References" : [],
-    "Substitutes" : [{
-        "Parameter" : "SecurityGroupIDs",
-        "Type" : "List::SecurityGroup"
-      }
-    ]
+    "References" : []
   }
 }

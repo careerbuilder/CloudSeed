@@ -4,11 +4,11 @@
   "Parameters" : {
     "Subnet" : {
       "Description" : "ID of the subnet to associate",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::Subnet::Id", "Subnet"]
     },
     "RouteTable" : {
       "Description" : "ID of the Route Table to associate",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::RouteTable::Id", "RouteTable"]
     }
   },
   "Resources" : {
@@ -24,15 +24,5 @@
   },
   "Outputs" : {},
   "Connections":{
-    "Substitutes":[            
-        {
-            "Parameter": "Subnet",
-            "Type":"Subnet"
-        },
-        {
-            "Parameter": "RouteTable",
-            "Type":"RouteTable"
-        }
-    ]
   }
 }

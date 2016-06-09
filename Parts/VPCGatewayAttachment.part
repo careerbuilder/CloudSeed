@@ -4,12 +4,12 @@
   "Parameters" : {
     "VPC" : {
       "Description" : "VPC to which the IGW will attach",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::VPC::Id","VPC"],
       "Required":true
     },
     "IGW" : {
       "Description" : "Internet Gateway to attach",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::InternetGateway::Id", "IGW"],
       "Default": "",
       "Required":{
         "Func": "Only",
@@ -18,7 +18,7 @@
     },
     "VPNGW" : {
       "Description" : "VPN Gateway to attach",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::VPNGateway::Id", "VPNGateway"],
       "Default": "",
       "Required":{
         "Func": "Only",
@@ -63,19 +63,5 @@
     }
   },
   "Connections":{
-        "Substitutes":[            
-            {
-                "Parameter": "VPC",
-                "Type":"VPC"
-            },
-            {
-                "Parameter": "IGW",
-                "Type":"InternetGateway"
-            },
-            {
-                "Parameter": "VPNGW",
-                "Type":"VPNGateway"
-            }
-        ]
-    }
+  }
 }

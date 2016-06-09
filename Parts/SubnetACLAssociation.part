@@ -4,12 +4,12 @@
   "Parameters" : {
     "ACL" : {
       "Description" : "ID of ACL",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::NetworkAcl::Id","ACL"],
       "Required": true
     },
     "Subnet" : {
       "Description" : "ID of Associated Subnet",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::Subnet::Id","Subnet"],
       "Required": true
     }
   },
@@ -27,15 +27,5 @@
     }
   },
   "Connections":{
-    "Substitutes":[
-        {
-            "Parameter": "ACL",
-            "Type":"ACL"
-        },
-        {
-            "Parameter": "Subnet",
-            "Type":"Subnet"
-        }
-    ]
   }
 }

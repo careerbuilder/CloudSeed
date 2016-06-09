@@ -9,7 +9,7 @@
     },
     "CustomerGatewayID" : {
       "Description" : "ID of Gateway to attach",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::CustomerGateway::Id", "CustomerGateway"]
     },
     "StaticRoutes" : {
       "Description" : "Indicates whether the VPN connection requires static routes.",
@@ -17,7 +17,7 @@
     },
     "VPNGatewayID" : {
       "Description" : "ID of Gateway to attach",
-      "Type" : "String"
+      "Type" : ["AWS::EC2::VPNGateway::Id", "VPNGateway"]
     }
   },
   "Resources" : {
@@ -33,16 +33,6 @@
   },
   "Connections":{
         "Dependencies":[],
-        "References":{},
-        "Substitutes":[            
-            {
-                "Parameter": "CustomerGatewayID",
-                "Type":"CustomerGateway"
-            },
-            {
-                "Parameter": "VPNGatewayID",
-                "Type":"VPNGateway"
-            }
-        ]
+        "References":{}
     }
 }
