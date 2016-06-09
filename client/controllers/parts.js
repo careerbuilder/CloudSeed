@@ -207,7 +207,27 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   };
 
   $scope.refreshLocalOptions = function(paramValues){
-    
+    console.log('refreshing local options');
+    for (var i = 0; i < paramValues.dropdownOptions.length; i++){
+      if ('Definition' in paramValues.dropdownOptions[i]){
+        paramValues.dropdownOptions.splice(i, 1);
+      }
+    }
+
+    var localOptions = [];
+    for (var i = 0; i < paramValues.Type.length; i++){
+      var type = paramValues.Type[i];
+      if (type.indexOf("List::") === 0){
+        type = type.substring(6);
+      }
+      if (type.indexOf("AWS::") !== 0){
+        var locals = $scope.getLocalOptions(type);
+        localOptions = localOptions.concat(locals);
+      }
+    }
+
+    paramValues.dropdownOptions = paramValues.dropdownOptions.concat(localOptions);
+    console.log(paramValues.dropdownOptions);
   };
 
   $scope.getAllOptions = function(paramValues){
