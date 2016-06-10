@@ -148,7 +148,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
-    var mod = {Type: type, Count: newcount, RefID:type+""+newcount, Name:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false};
+    var mod = {Type: type, Count: newcount, RefID:type+""+newcount, Name:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false, Origin: 'Local'};
     $scope.addedParts[mod.RefID]= mod;
     $scope.getTypes();
     $scope.countParts();
@@ -158,7 +158,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     part.Name = name;
     part.EditingName = false;
     part.inputName = undefined;
-    console.log($scope.addedParts);
   };
 
   $scope.getTypes = function(){
@@ -172,7 +171,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $scope.types = typesArr;
   };
 
-  $scope.getAWSOptions = function(type, results){
+  $scope.getAWSOptions = function(type){
 
     var deferred = $q.defer();
 
@@ -202,32 +201,39 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         results.push(part);
       }
     }
-    console.log('local options: ', results);
     return results;
   };
 
   $scope.refreshLocalOptions = function(paramValues){
-    console.log('refreshing local options');
+    var newOptions = [];
     for (var i = 0; i < paramValues.dropdownOptions.length; i++){
-      if ('Definition' in paramValues.dropdownOptions[i]){
-        paramValues.dropdownOptions.splice(i, 1);
+      if (paramValues.dropdownOptions[i].Origin != 'Local'){
+        newOptions.push(paramValues.dropdownOptions[i]);
       }
     }
-
-    var localOptions = [];
-    for (var i = 0; i < paramValues.Type.length; i++){
-      var type = paramValues.Type[i];
+    if (paramValues.Type.constructor === Array){
+      for (var i = 0; i < paramValues.Type.length; i++){
+        var type = paramValues.Type[i];
+        if (type.indexOf("List::") === 0){
+          type = type.substring(6);
+        }
+        if (type.indexOf("AWS::") !== 0){
+          var locals = $scope.getLocalOptions(type);
+          newOptions = newOptions.concat(locals);
+        }
+      }
+    }else{
+      var type = paramValues.Type;
       if (type.indexOf("List::") === 0){
         type = type.substring(6);
       }
       if (type.indexOf("AWS::") !== 0){
         var locals = $scope.getLocalOptions(type);
-        localOptions = localOptions.concat(locals);
+        newOptions = newOptions.concat(locals);
       }
     }
 
-    paramValues.dropdownOptions = paramValues.dropdownOptions.concat(localOptions);
-    console.log(paramValues.dropdownOptions);
+    paramValues.dropdownOptions = newOptions;
   };
 
   $scope.getAllOptions = function(paramValues){
@@ -239,7 +245,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     if (typeList.constructor === Array){
       for (var i = 0; i < typeList.length; i++){
         var type = typeList[i];
-        console.log(type);
         if (type.indexOf("List::") === 0){
           type = type.substring(6);
           multi = true;
@@ -250,7 +255,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         }else{
           var locals = $scope.getLocalOptions(type);
           results = results.concat(locals);
-          console.log('After getting local options results are now: ', results);
         }
       }
     }else{
@@ -268,7 +272,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $q.all(promises).then(function(awsResults){
       var merged = results.concat(awsResults);
       var flattened = [].concat.apply([], merged);
-      console.log(flattened);
       paramValues.dropdownOptions = flattened;
       paramValues.multipleOptions = multi;
     });

@@ -137,11 +137,11 @@
                 <ng-form name="parametersForm">
                   <div class="form-group" ng-init="getAllOptions(value)" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
                     <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, apart, value)}}</strong></label>
-                    <div ng-if="value.dropdownOptions.length > 0">
-                      <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions" value-attr="ID" label-attr="Name" multi="value.multipleOptions" ng-click="getAllOptions(value)"></select>
+                    <div ng-if="value.dropdownOptions.length">
+                      <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions" group-attr="Origin" value-attr="ID" label-attr="Name" multi="value.multipleOptions" ng-click="refreshLocalOptions(value)"></select>
                     </div>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
-                      parameter="true" validation-model="{{value}}" ng-hide="value.AllowedValues.length || key == 'Subnet' || key == 'VPC'" ng-model="apart.Definition.Parameters[key].Value"
+                      parameter="true" validation-model="{{value}}" ng-hide="value.dropdownOptions.length" ng-model="apart.Definition.Parameters[key].Value"
                       ng-required="checkRequiredParam(apart, value)" ng-disabled="value.Disabled">
                     <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
                       ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"

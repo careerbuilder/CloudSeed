@@ -37,7 +37,7 @@ router.get('/awsvalues/:awstype', function(req, res){
         else{
           var rval = [];
           data.AvailabilityZones.forEach(function(az){
-            rval.push({ID: az.ZoneName, Name:az.ZoneName});
+            rval.push({ID: az.ZoneName, Name:az.ZoneName, Origin: 'AWS'});
           });
           return res.send({Success:true, Values:rval});
         }
@@ -64,7 +64,7 @@ router.get('/awsvalues/:awstype', function(req, res){
                   name = tags[k].Value;
                 }
               }
-              rval.push({ID: id, Name: name});
+              rval.push({ID: id, Name: name, Origin: 'AWS'});
             }
           }
           ec2nextToken=data.NextToken||null;
@@ -93,7 +93,7 @@ router.get('/awsvalues/:awstype', function(req, res){
             if(ptype=='AWS::EC2::SecurityGroup::GroupName'){
               id = name;
             }
-            rval.push({ID: id, Name: name});
+            rval.push({ID: id, Name: name, Origin: 'AWS'});
           });
           return res.send({Success:true, Values:rval});
         }
@@ -117,7 +117,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -131,7 +131,7 @@ router.get('/awsvalues/:awstype', function(req, res){
         data.KeyPairs.forEach(function(kp){
           var id = kp.KeyName;
           var name = id;
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -154,7 +154,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name+" ("+ subnet.CidrBlock +")"});
+          rval.push({ID: id, Name: name+" ("+ subnet.CidrBlock +")", Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -180,7 +180,7 @@ router.get('/awsvalues/:awstype', function(req, res){
                 }
               }
             }
-            vval.push({ID: id, Name: name});
+            vval.push({ID: id, Name: name, Origin: 'AWS'});
           });
           return cb();
         });
@@ -211,7 +211,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name+" ("+ vpc.CidrBlock+")"});
+          rval.push({ID: id, Name: name+" ("+ vpc.CidrBlock+")", Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -234,7 +234,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -248,7 +248,7 @@ router.get('/awsvalues/:awstype', function(req, res){
         data.Addresses.forEach(function(addr){
           var id = addr.PublicIp;
           var name = id;
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -279,7 +279,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -302,7 +302,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -325,7 +325,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -348,7 +348,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -371,7 +371,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -394,7 +394,7 @@ router.get('/awsvalues/:awstype', function(req, res){
               }
             }
           }
-          rval.push({ID: id, Name: name});
+          rval.push({ID: id, Name: name, Origin: 'AWS'});
         });
         return res.send({Success:true, Values:rval});
       });
@@ -417,7 +417,7 @@ router.get('/awsvalues/:awstype', function(req, res){
           data.LoadBalancerDescriptions.forEach(function(lb){
             var id = lb.LoadBalancerName;
             var name = id;
-            lbval.push({ID: id, Name: name});
+            lbval.push({ID: id, Name: name, Origin: 'AWS'});
           });
           return cb();
         });
@@ -448,7 +448,7 @@ router.get('/awsvalues/:awstype', function(req, res){
           data.DBClusters.forEach(function(db){
             var id = db.DBClusterIdentifier;
             var name = id;
-            dbval.push({ID: id, Name: name});
+            dbval.push({ID: id, Name: name, Origin: 'AWS'});
           });
           return cb();
         });
@@ -479,7 +479,7 @@ router.get('/awsvalues/:awstype', function(req, res){
           data.AutoScalingGroups.forEach(function(asg){
             var id = asg.AutoScalingGroupName;
             var name = id;
-            asgval.push({ID: id, Name: name});
+            asgval.push({ID: id, Name: name, Origin: 'AWS'});
           });
           return cb();
         });
@@ -504,7 +504,7 @@ router.get('/awsvalues/:awstype', function(req, res){
           data.LaunchConfigurations.forEach(function(lc){
             var id = lc.LaunchConfigurationName;
             var name = id;
-            asgval.push({ID: id, Name: name});
+            asgval.push({ID: id, Name: name, Origin: 'AWS'});
           });
           return cb();
         });
