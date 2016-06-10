@@ -272,8 +272,10 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $q.all(promises).then(function(awsResults){
       var merged = results.concat(awsResults);
       var flattened = [].concat.apply([], merged);
-      paramValues.dropdownOptions = flattened;
-      paramValues.multipleOptions = multi;
+      if (flattened.length > 0){
+        paramValues.dropdownOptions = flattened;
+        paramValues.multipleOptions = multi;
+      }
     });
   };
 
