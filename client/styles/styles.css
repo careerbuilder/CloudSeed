@@ -9,3 +9,6 @@
     max-height: 200px;
     overflow-x: hidden;
 }
+.selector-dropdown>.selector-optgroup{
+  background: #ECECEC;
+}

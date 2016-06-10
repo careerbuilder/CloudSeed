@@ -657,7 +657,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     for(var key in $scope.addedParts){
       count++;
     }
-    console.log($scope.addedParts);
     $scope.partCount = count;
     return count;
   }
