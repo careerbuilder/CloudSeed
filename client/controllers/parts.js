@@ -178,6 +178,9 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $http.get('/api/parts/awsvalues/' + type + '/?region=' + $scope.build.Region).then(function(res){
       var data = res.data;
       if(data.Success){
+        for (var i = 0; i < data.Values.length; i++){
+          data.Values[i].Origin = 'AWS';
+        }
         deferred.resolve(data.Values);
       }
       else{
@@ -249,7 +252,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
           type = type.substring(6);
           multi = true;
         }
-
         if (type.indexOf("AWS::") === 0){
           promises.push($scope.getAWSOptions(type));
         }else{
@@ -264,7 +266,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         multi = true;
       }
       if (type.indexOf("AWS::") === 0){
-        promises.push($scope.getAWSOptions(type, results));
+        promises.push($scope.getAWSOptions(type));
       }else{
         results.push.apply($scope.getLocalOptions(type));
       }
