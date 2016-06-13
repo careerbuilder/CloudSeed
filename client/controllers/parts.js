@@ -24,6 +24,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   $scope.awspartsExpanded = true;
   $scope.subassembliesExpanded = false;
   $scope.showFilter = false;
+  $scope.showSort = false;
+  $scope.showVars = false;
   $scope.sortOptions = [
     {Label: 'None', Value: {predicate: undefined, reverse: false}},
     {Label: 'Type: Ascending', Value: {predicate: 'Type', reverse: false}},
