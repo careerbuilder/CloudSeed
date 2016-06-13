@@ -68,12 +68,6 @@ app.factory('requirementsservice', [function(){
         req = !value.Hidden && (value.Default === null || value.Default === undefined);
       }
       return req;
-    },
-    isSubDisabled: function(part, sub){
-      if(part.Definition.Parameters[sub.Parameter].Disabled){
-        return true;
-      }
-      return false;
     }
   };
 

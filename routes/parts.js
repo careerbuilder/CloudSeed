@@ -520,7 +520,7 @@ router.get('/awsvalues/:awstype', function(req, res){
           data.LaunchConfigurations.forEach(function(lc){
             var id = lc.LaunchConfigurationName;
             var name = id;
-            asgval.push({ID: id, Name: name});
+            lcval.push({ID: id, Name: name});
           });
           return cb();
         });
