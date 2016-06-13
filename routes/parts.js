@@ -100,23 +100,14 @@ router.get('/awsvalues/:awstype', function(req, res){
       });
     }
     else if(ptype=='AWS::EC2::Image::Id'){
-      ec2.describeImages({}, function(err, data){
+      ec2.describeImages({Owners:['self']}, function(err, data){
         if(err){
           return res.send({Success:false, Error:err});
         }
         var rval = [];
         data.Images.forEach(function(img){
           var id = img.ImageId;
-          var name = id;
-          if(img.Tags){
-            for(var i=0; i<img.Tags.length; i++){
-              var t = img.Tags[i];
-              if(t.Key.search(/^\s*name\s*$/i)>=0){
-                name= t.Value;
-                break;
-              }
-            }
-          }
+          var name = img.Name || img.ImageId;
           rval.push({ID: id, Name: name});
         });
         return res.send({Success:true, Values:rval});
