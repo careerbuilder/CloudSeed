@@ -214,7 +214,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         newOptions.push(paramValues.dropdownOptions[i]);
       }
     }
-    if (paramValues.Type.constructor === Array){
+    if (paramValues.Type instanceof Array){
       for (var i = 0; i < paramValues.Type.length; i++){
         var type = paramValues.Type[i];
         if (type.indexOf("List::") === 0){
@@ -245,7 +245,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     var promises = [];
     var typeList = paramValues.Type;
 
-    if (typeList.constructor === Array){
+    if (typeList instanceof Array){
       for (var i = 0; i < typeList.length; i++){
         var type = typeList[i];
         if (type.indexOf("List::") === 0){
