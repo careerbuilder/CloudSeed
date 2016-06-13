@@ -25,7 +25,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   $scope.subassembliesExpanded = false;
   $scope.showFilter = false;
   $scope.showSort = false;
-  $scope.showVars = false;
+  $scope.showGlobalVariables = false;
+  $scope.globalVariables = [{}];
   $scope.sortOptions = [
     {Label: 'None', Value: {predicate: undefined, reverse: false}},
     {Label: 'Type: Ascending', Value: {predicate: 'Type', reverse: false}},
@@ -262,7 +263,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     delete $scope.addedParts[refID];
     if(Object.keys($scope.addedParts).length === 0){
       $scope.build = {};
-      return;
     }
     $scope.getTypes();
     $scope.countParts();
