@@ -21,19 +21,17 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   $scope.types = [{Label: 'None', Value: undefined}];
   $scope.build = {};
   $scope.build.Region = 'us-east-1';
-  $scope.vpcs = [];
-  $scope.subnets = [];
   $scope.awspartsExpanded = true;
   $scope.subassembliesExpanded = false;
   $scope.showFilter = false;
+  $scope.showSort = false;
+  $scope.showVars = false;
   $scope.sortOptions = [
     {Label: 'None', Value: {predicate: undefined, reverse: false}},
     {Label: 'Type: Ascending', Value: {predicate: 'Type', reverse: false}},
     {Label: 'Type: Descending', Value: {predicate: 'Type', reverse: true}},
     {Label: 'Name: Ascending', Value: {predicate: 'Name', reverse: false}},
     {Label: 'Name: Descending', Value: {predicate: 'Name', reverse: true}}];
-
-
 
   $http.get('/api/parts').then(function(res){
     var data = res.data;
@@ -77,32 +75,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     toastr.error('Error fetching regions');
   });
 
-  $http.get('/api/stacks/vpcs').then(function(res){
-    var data = res.data;
-    if(data.Success){
-      $scope.vpcs = data.Vpcs;
-    }
-    else{
-      console.log(data.Error);
-    }
-  }, function(err){
-    console.log(err);
-    toastr.error('Error fetching Vpcs');
-  });
-
-  $http.get('/api/stacks/subnets').then(function(res){
-    var data = res.data;
-    if(data.Success){
-      $scope.subnets = data.Subnets;
-    }
-    else{
-      console.log(data.Error);
-    }
-  }, function(err){
-    console.log(err);
-    toastr.error('Error fetching Subnets');
-  });
-
   function replaceNames(obj, append){
     var newobj = {};
     for(var key in obj){
@@ -124,10 +96,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     }
     var newcount = num+1;
     var copy = JSON.parse(JSON.stringify($scope.parts[type]));
-    var connections = copy.Connections || {Substitutes:[]};
-    var subs = connections.Substitutes || [];
+    var connections = copy.Connections || {};
     var partstring = JSON.stringify(copy);
-    var subsString = JSON.stringify(subs);
     for(var cond in copy.Conditions){
       var cre = new RegExp('"'+cond+'"', 'g');
       partstring = partstring.replace(cre, '"'+cond+''+newcount+'"');
@@ -137,10 +107,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       var re2 = new RegExp('\\{\\s*"Fn::GetAtt"\\s*:\\s*\\['+ JSON.stringify(res) +',\\s*', 'g');
       partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
       partstring = partstring.replace(re2, '{"Fn::GetAtt":['+JSON.stringify(res+""+newcount)+',');
-      subsString = subsString.replace('"' + res + '"', '"' + res+""+newcount + '"');
     }
     copy = JSON.parse(partstring);
-    copy.Connections.Substitutes = JSON.parse(subsString);
     copy.Resources = replaceNames(copy.Resources || {}, newcount);
     copy.Outputs = replaceNames(copy.Outputs || {}, newcount);
     for(var par in copy.Parameters){
@@ -172,9 +140,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   };
 
   $scope.getAWSOptions = function(type){
-
     var deferred = $q.defer();
-
     $http.get('/api/parts/awsvalues/' + type + '/?region=' + $scope.build.Region).then(function(res){
       var data = res.data;
       if(data.Success){
@@ -209,41 +175,35 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
 
   $scope.refreshLocalOptions = function(paramValues){
     var newOptions = [];
-    for (var i = 0; i < paramValues.dropdownOptions.length; i++){
-      if (paramValues.dropdownOptions[i].Origin != 'Local'){
+    for(var i=0; i<paramValues.dropdownOptions.length; i++){
+      if(paramValues.dropdownOptions[i].Origin != 'Local'){
         newOptions.push(paramValues.dropdownOptions[i]);
       }
     }
-    if (paramValues.Type instanceof Array){
-      for (var i = 0; i < paramValues.Type.length; i++){
-        var type = paramValues.Type[i];
+    var type, locals;
+    if(paramValues.Type.constructor === Array){
+      for (var j = 0; j < paramValues.Type.length; j++){
+        type = paramValues.Type[j];
         if (type.indexOf("List::") === 0){
           type = type.substring(6);
         }
         if (type.indexOf("AWS::") !== 0){
-          var locals = $scope.getLocalOptions(type);
+          locals = $scope.getLocalOptions(type);
           newOptions = newOptions.concat(locals);
         }
       }
-    }else{
-      var type = paramValues.Type;
+    }
+    else{
+      type = paramValues.Type;
       if (type.indexOf("List::") === 0){
         type = type.substring(6);
       }
       if (type.indexOf("AWS::") !== 0){
-        var locals = $scope.getLocalOptions(type);
+        locals = $scope.getLocalOptions(type);
         newOptions = newOptions.concat(locals);
       }
     }
-
     paramValues.dropdownOptions = newOptions;
-  };
-
-  $scope.createCustomOption = function(input){
-    return {
-      ID: input,
-      Name: input
-    };
   };
 
   $scope.getAllOptions = function(paramValues){
@@ -251,10 +211,10 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     var results = [];
     var promises = [];
     var typeList = paramValues.Type;
-
-    if (typeList instanceof Array){
+    var type;
+    if (typeList.constructor === Array){
       for (var i = 0; i < typeList.length; i++){
-        var type = typeList[i];
+        type = typeList[i];
         if (type.indexOf("List::") === 0){
           type = type.substring(6);
           multi = true;
@@ -266,8 +226,9 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
           results = results.concat(locals);
         }
       }
-    }else{
-      var type = typeList;
+    }
+    else{
+      type = typeList;
       if (type.indexOf("List::") === 0){
         type = type.substring(6);
         multi = true;
@@ -297,109 +258,14 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     }
   };
 
-  /* TODO: Update New Substitutes construct */
   $scope.removePart=function(refID){
     delete $scope.addedParts[refID];
-    for(var key in $scope.addedParts){
-      var part = $scope.addedParts[key];
-      if(part.Definition.Connections){
-        var subs = part.Definition.Connections.Substitutes || [];
-        for(var k=0; k<subs.length; k++){
-          var sub = subs[k];
-          if(sub.Reference === refID){
-            $scope.setParam(part, sub, 'None');
-          }
-        }
-      }
-    }
     if(Object.keys($scope.addedParts).length === 0){
-      //discard build
       $scope.build = {};
       return;
     }
     $scope.getTypes();
     $scope.countParts();
-  };
-
-  $scope.getSubs=function(subtype){
-    var ct;
-    if(subtype.lastIndexOf('List::',0) === 0){
-      ct = subtype.replace('List::', '');
-    }
-    else{
-      ct = subtype;
-    }
-    var subs = [];
-    for(var key in $scope.addedParts){
-      var part = $scope.addedParts[key];
-      /* TODO: push entinre sub object */
-      if(part.Type === ct){
-        subs.push(part.RefID);
-      }
-    }
-    return subs;
-  };
-
-  /* TODO: build reference to object */
-  $scope.getReferences=function(sub){
-    var refstring = "";
-    if(!sub.Reference || sub.Reference.length<1 || sub.Reference === 'None'){
-      return "None";
-    }
-    if(sub.Type.lastIndexOf('List::', 0) === 0){
-      if(sub.Reference){
-        sub.Reference.forEach(function(ref, i){
-          refstring += ref.Ref + ", ";
-        });
-      }
-      return refstring.substring(0,refstring.length-2);
-    }
-    else{
-      return sub.Reference.Ref;
-    }
-  };
-
-  $scope.RefInit=function(sub){
-    if(!sub.Reference){
-      if(sub.Type.lastIndexOf('List::', 0) === 0){
-        sub.Reference = [];
-      }
-      else{
-        /* TODO: FIX */
-        sub.Reference = {Ref:'None'};
-      }
-    }
-  };
-
-  $scope.subdisabled=function(part, sub){
-    return requirementsservice.isSubDisabled(part, sub);
-  };
-
-  /* TODO: Remove entirely */
-  $scope.setParam=function(part, sub, name){
-    var param = sub.Parameter;
-    var isList = (sub.Type.indexOf("List::") === 0);
-    if(!isList){
-      sub.Reference = {Ref: name};
-    }
-    else if(isList){
-      if(name === 'None'){
-        sub.Reference = [];
-      }else{
-        var found = false;
-        for(var i=0; i<sub.Reference.length; i++){
-          if(sub.Reference[i].Ref === name){
-            found = true;
-            sub.Reference.splice(i,1);
-            break;
-          }
-        }
-        if(!found){
-          sub.Reference.push({Ref:name});
-        }
-      }
-    }
-    part.Definition.Parameters[param].Hidden=((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None'));
   };
 
   $scope.canAddSubPart=function(part, name, index){
@@ -447,84 +313,27 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     return requirementsservice.ResolveRequired(part, value);
   };
 
-  /* Deprecated */
-  $scope.visibleParams=function(part){
-    var num = 0;
-    for(var param in part.Definition.Parameters){
-      if(!part.Definition.Parameters[param].Hidden){
-        num++;
-      }
-    }
-    return num;
-  };
-
+  /* TODO: Replace refs to stack variables */
   $scope.replaceRefs = function(apart){
-    var partstring = JSON.stringify(apart.Definition);
+    var partstring = angular.toJson(apart.Definition);
     for(var param in apart.Definition.Parameters){
-      if(!apart.Definition.Parameters[param].Hidden){
-        var paramValue = apart.Definition.Parameters[param].Value;
-        if(!paramValue || apart.Definition.Parameters[param].Disabled){
-          if('Default' in apart.Definition.Parameters[param]){
-            paramValue = apart.Definition.Parameters[param].Default;
-          }
-          else{
-            console.log('No default on excluded value!', apart);
-            return;
-          }
+      var paramValue = apart.Definition.Parameters[param].Value;
+      if(!paramValue || apart.Definition.Parameters[param].Disabled){
+        if('Default' in apart.Definition.Parameters[param]){
+          paramValue = apart.Definition.Parameters[param].Default;
         }
-        var pre = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(param) +'\\s*\\}', 'g');
-        if(apart.Definition.Parameters[param].Type === 'CommaDelimitedList'){
-          paramValue = paramValue.split(/\s*,\s*/g);
-        }
-        partstring = partstring.replace(pre, JSON.stringify(paramValue));
-      }
-    }
-    var replace_conds = [];
-    if(apart.Definition.Connections){
-      var csubs = apart.Definition.Connections.Substitutes || [];
-      for(var i=0; i<csubs.length; i++){
-        var sub = csubs[i];
-        if(apart.Definition.Conditions){
-          replace_conds.push(sub.Reference.Ref);
-        }
-        var isList = (sub.Type.indexOf("List::")===0);
-        if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
-          var re = new RegExp('\{\s*"Ref"\s*:\s*'+ JSON.stringify(sub.Parameter) +'\s*\}', 'g');
-          partstring = partstring.replace(re, JSON.stringify(sub.Reference));
+        else{
+          console.log('No default on excluded value!', apart);
+          return;
         }
       }
+      var pre = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ angular.toJson(param) +'\\s*\\}', 'g');
+      if(apart.Definition.Parameters[param].Type === 'CommaDelimitedList'){
+        paramValue = paramValue.split(/\s*,\s*/g);
+      }
+      partstring = partstring.replace(pre, angular.toJson(paramValue));
     }
     apart.Definition = JSON.parse(partstring);
-    if(apart.Definition.Conditions){
-      var condstring = JSON.stringify(apart.Definition.Conditions);
-      replace_conds.forEach(function(rc){
-        var rcname = JSON.stringify(rc);
-        var cre = new RegExp('\{\s*"Ref"\s*:\s*'+ rcname +'\s*\}', 'g');
-        condstring = condstring.replace(cre, rcname);
-      });
-      apart.Definition.Conditions = JSON.parse(condstring);
-    }
-    if(apart.Definition.Connections && apart.Definition.Connections.Substitutes){
-      var subs = apart.Definition.Connections.Substitutes;
-      subs.forEach(function(sub, i){
-        var isList = (sub.Type.indexOf("List::")===0);
-        if(sub.Dependent){
-          if((isList && sub.Reference.length > 0) || (!isList && sub.Reference.Ref!='None')){
-            var dep;
-            if(isList){
-              dep = [];
-              sub.Reference.forEach(function(ref){
-                dep.push(ref.Ref);
-              });
-            }
-            else{
-              dep = sub.Reference.Ref;
-            }
-            apart.Definition.Resources[sub.Dependent].DependsOn = dep;
-          }
-        }
-      });
-    }
     if(apart.subparts){
       for(var subp in apart.subparts){
         var models = apart.subparts[subp];
@@ -670,7 +479,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     }
     $scope.partCount = count;
     return count;
-  }
+  };
 });
 
 app.directive("compareTo", function() {

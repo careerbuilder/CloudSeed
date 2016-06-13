@@ -11,7 +11,7 @@
     },
     "SubnetGroup" : {
       "Description" : "name of subnet group to use for new RDS",
-      "Type" : ["AWS::EC2::SubnetGroup::Id","SubnetGroup"]
+      "Type" : ["AWS::RDS::SubnetGroup::Name","SubnetGroup"]
     },
     "SnapshotID" : {
       "Description" : "ID of snapshot to use (if any)",
