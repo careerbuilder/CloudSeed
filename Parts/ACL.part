@@ -4,7 +4,7 @@
   "Parameters" : {
     "VPC" : {
       "Description" : "ID of VPC in which the ACL will reside",
-      "Type" : ["AWS::EC2::VPC::Id", "List::VPC"]
+      "Type" : ["AWS::EC2::VPC::Id", "VPC"]
     },
     "ACLName" : {
       "Description" : "Name of Created ACL",

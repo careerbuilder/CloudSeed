@@ -452,6 +452,31 @@ router.get('/awsvalues/:awstype', function(req, res){
         return res.send({Success:true, Values:dbval});
       });
     }
+    else if(ptype=='AWS::RDS::SubnetGroup::Name'){
+      var sngnextToken = null;
+      var sngval = [];
+      async.doWhilst(function(cb){
+        rds.describeDBSubnetGroups({Marker:sngnextToken}, function(err, data){
+          if(err){
+            return cb(err);
+          }
+          sngnextToken= data.Marker || null;
+          data.DBSubnetGroups.forEach(function(db){
+            var id = db.DBSubnetGroupName;
+            var name = id;
+            sngval.push({ID: id, Name: name});
+          });
+          return cb();
+        });
+      },function(){
+        return !!sngnextToken;
+      }, function(err){
+        if(err){
+          return res.send({Success:false, Error:err});
+        }
+        return res.send({Success:true, Values:sngval});
+      });
+    }
     else{
       return res.send({Success:false, Error:'Unrecognized part type: '+ptype});
     }
