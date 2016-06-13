@@ -3,7 +3,7 @@
   "Parameters" : {
     "AvailabilityZoneName":{
       "Description" : "Name of the resident AZ",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::AvailabilityZone::Name"],
       "Required": false
     },
     "Subnet" : {
