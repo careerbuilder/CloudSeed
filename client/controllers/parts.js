@@ -239,6 +239,13 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     paramValues.dropdownOptions = newOptions;
   };
 
+  $scope.createCustomOption = function(input){
+    return {
+      ID: input,
+      Name: input
+    };
+  };
+
   $scope.getAllOptions = function(paramValues){
     var multi = false;
     var results = [];
