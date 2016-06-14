@@ -134,7 +134,7 @@
                     <input type="text" class="form-control" ng-model="var.inputID" placeholder="Value"/>
                   </div>
                   <div class="col-xs-2 btn-group">
-                    <button class="btn btn-default" ng-click="setGlobalVariable(var)" type="button"><span class="glyphicon glyphicon-ok"></span></button>
+                    <button class="btn btn-default" ng-click="setGlobalVariable(var, $index)" type="button"><span class="glyphicon glyphicon-ok"></span></button>
                     <button class="btn btn-default" ng-click="cancelGlobalVariableEdit(var, $index)" type="button"><span class="glyphicon glyphicon-remove"></span></button>
                   </div>
                 </ng-form>

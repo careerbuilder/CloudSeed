@@ -140,11 +140,13 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $scope.types = typesArr;
   };
 
-  $scope.setGlobalVariable = function(varObj){
+  $scope.setGlobalVariable = function(varObj, index){
     if (varObj.inputName && varObj.inputName.length > 0){
       for (var i = 0; i < $scope.globalVariables.length; i++){
         if (varObj.inputName == $scope.globalVariables[i].Name){
-          return;
+          if (i !== index){
+            return;
+          }
         }
       }
       varObj.Name = varObj.inputName;
