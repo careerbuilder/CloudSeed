@@ -26,7 +26,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   $scope.showFilter = false;
   $scope.showSort = false;
   $scope.showGlobalVariables = false;
-  $scope.globalVariables = [{}];
+  $scope.globalVariables = [];
   $scope.sortOptions = [
     {Label: 'None', Value: {predicate: undefined, reverse: false}},
     {Label: 'Type: Ascending', Value: {predicate: 'Type', reverse: false}},
@@ -138,6 +138,27 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       }
     }
     $scope.types = typesArr;
+  };
+
+  $scope.setGlobalVariable = function(varObj){
+    if (varObj.inputName && varObj.inputName.length > 0){
+      for (var i = 0; i < $scope.globalVariables.length; i++){
+        if (varObj.inputName == $scope.globalVariables[i].Name){
+          return;
+        }
+      }
+      varObj.Name = varObj.inputName;
+      varObj.ID = varObj.inputID;
+      varObj.editing = false;
+    }
+  };
+
+  $scope.cancelGlobalVariableEdit = function(varObj, i){
+    if (varObj.inputName && varObj.inputName.length > 0){
+      varObj.editing = false;
+    }else{
+      $scope.globalVariables.splice(i, 1);
+    }
   };
 
   $scope.getAWSOptions = function(type){

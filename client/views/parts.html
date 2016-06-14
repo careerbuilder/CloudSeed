@@ -67,7 +67,8 @@
         <div ng-show="toArray(addedParts).length >0">
           <div class="row">
             <div class="col-xs-9">
-              <input type="text" class="form-control" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" ng-class="{'has-error': PartsForm.stackName.$invalid}" required >
+              <input type="text" class=
+              "form-control" ng-model="build.Name" placeholder="Untitled Stack" name="stackName" ng-pattern="'[A-Za-z0-9_\-]+'" ng-class="{'has-error': PartsForm.stackName.$invalid}" required >
             </div>
             <div class="col-xs-3">
               <select class="selectpicker form-control" title="region" name="regionpicker" ng-model="build.Region" ng-class="{'has-error': PartsForm.stackRegion.$invalid}" required>
@@ -102,20 +103,48 @@
           </div>
         </div>
         <div class="row" id="Variables" ng-show="partCount && showGlobalVariables">
-          <br>
           <div class="col-xs-12">
-            <label>Global Variable Assignment</label>
-          </div>
-          <div ng-repeat="var in globalVariables">
-            <div class="col-xs-5">
-              <input type="text" class="form-control" ng-model="var.Name" placeholder="Global Variable Name"/>
+            <div class="row">
+              <div class="col-xs-12">
+                <h4>Global Variable Assignment</h4>
+              </div>
             </div>
-            <div class="col-xs-6">
-              <input type="text" class="form-control" ng-model="var.ID" placeholder="Value"/>
+            <div ng-repeat="var in globalVariables">
+              <div class="row">
+                <div class="form-group" ng-hide="var.editing">
+                  <div class="col-xs-5">
+                    <h5><span>$</span>{{var.Name}}<span>;</span></h5>
+                  </div>
+                  <div class="col-xs-1">
+                    <h5><span>=</span></h5>
+                  </div>
+                  <div class="col-xs-4">
+                  <h5>{{var.ID}}</h5>
+                  </div>
+                  <div class="col-xs-2 btn-group">
+                    <button class="btn btn-default" ng-click="var.editing = true" type="button"><span class="glyphicon glyphicon-pencil"></span></button>
+                    <button class="btn btn-default" ng-click="globalVariables.splice($index, 1)" style="color:red;" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                  </div>
+                </div>
+                <ng-form ng-if="var.editing">
+                  <div class="col-xs-5">
+                    <input type="text" class="form-control" ng-model="var.inputName" placeholder="Global Variable Name"/>
+                  </div>
+                  <div class="col-xs-5">
+                    <input type="text" class="form-control" ng-model="var.inputID" placeholder="Value"/>
+                  </div>
+                  <div class="col-xs-2 btn-group">
+                    <button class="btn btn-default" ng-click="setGlobalVariable(var)" type="button"><span class="glyphicon glyphicon-ok"></span></button>
+                    <button class="btn btn-default" ng-click="cancelGlobalVariableEdit(var, $index)" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                  </div>
+                </ng-form>
+              </div>
+              <br>
             </div>
-            <div class="col-xs-1">
-              <button class="btn btn-default" ng-show="($index == (globalVariables.length - 1)) && var.Name" ng-click="globalVariables.push({})" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-              <button class="btn btn-default" ng-hide="($index == (globalVariables.length - 1))" ng-click="globalVariables.splice($index, 1)" style="color:red;" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <button class="btn btn-primary" type="button" ng-click="globalVariables.push({Name: '', ID: '', editing: true})">Add Variable</button>
+              </div>
             </div>
           </div>
         </div>
