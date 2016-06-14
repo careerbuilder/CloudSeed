@@ -8,7 +8,7 @@
     },
     "AMI" : {
       "Description" : "ID of AMI",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::Image::Id"],
       "Required" : true
     },
     "Size" : {
@@ -19,12 +19,12 @@
     },
     "RSAKeyName" : {
       "Description" : "Name of private key",
-      "Type" : "String",
+      "Type" : ["AWS::EC2::KeyPair::KeyName"],
       "Required" : true
     },
     "SecurityGroupIDs" : {
       "Description" : "SecurityGroups which govern the Instance",
-      "Type" : "CommaDelimitedList",
+      "Type": ["List::AWS::EC2::SecurityGroup::Id","List::SecurityGroup"],
       "Default" : "",
       "Required" : false
     },
@@ -35,7 +35,7 @@
       "Required" : true
     },
     "NetworkInterfaceID":{
-      "Type": "String",
+      "Type" : ["AWS::EC2::NetworkInterface::Id","NetworkInterface"],
       "Default":"",
       "Description":"The ID of the network interface to associate"
     },
@@ -71,8 +71,7 @@
     },
     "Subnets" : {
       "Description" : "A list of subnet identifiers of Amazon VPCs.",
-      "Type" : "CommaDelimitedList",
-      "Default" : "",
+      "Type" : ["List::AWS::EC2::Subnet::Id", "List::Subnet"],
       "Required" : false
     }
   },

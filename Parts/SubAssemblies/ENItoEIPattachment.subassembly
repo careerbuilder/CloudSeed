@@ -2,10 +2,9 @@
   "Type": "ENItoEIPattachment",
   "Parameters" : {
     "NetworkInterfaceID":{
-      "Type": "String",
-      "Default":"",
+      "Type" : ["AWS::EC2::NetworkInterface::Id","NetworkInterface"],
       "Description":"The ID of the network interface to associate with the Elastic IP address (VPC only).",
-      "Required": false
+      "Required": true
     }
   },
   "Resources" : {
@@ -36,8 +35,5 @@
     }
   },
   "Connections":{
-    "Substitutes": [
-      {"Type":"NetworkInterface", "Parameter":"NetworkInterfaceID"}
-    ]
   }
 }

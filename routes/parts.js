@@ -93,7 +93,7 @@ router.get('/awsvalues/:awstype', function(req, res){
             if(ptype=='AWS::EC2::SecurityGroup::GroupName'){
               id = name;
             }
-            rval.push({ID: id, Name: name});
+            rval.push({ID: id, Name: name +" ("+sg.VpcId+")"});
           });
           return res.send({Success:true, Values:rval});
         }
