@@ -261,9 +261,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
 
   $scope.removePart=function(refID){
     delete $scope.addedParts[refID];
-    if(Object.keys($scope.addedParts).length === 0){
-      $scope.build = {};
-    }
     $scope.getTypes();
     $scope.countParts();
   };
