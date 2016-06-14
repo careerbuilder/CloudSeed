@@ -13,12 +13,12 @@
     },
     "RDSSG" : {
       "Description" : "IDs of security groups to use for new RDS",
-      "Type" : ["List::AWS::EC2::SecurityGroup","List::SecurityGroup"],
+      "Type" : ["List::AWS::EC2::SecurityGroup::Id","List::SecurityGroup"],
       "Required" : true
     },
     "SubnetGroup" : {
       "Description" : "name of subnet group to use for new RDS",
-      "Type" : ["AWS::RDS::DBSubnetGroup","SubnetGroup"],
+      "Type" : ["AWS::RDS::SubnetGroup::Name","SubnetGroup"],
       "Required" : true
     },
     "SnapshotID" : {

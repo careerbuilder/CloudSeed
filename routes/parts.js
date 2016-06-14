@@ -394,9 +394,9 @@ router.get('/awsvalues/:awstype', function(req, res){
       return res.send({Success:false, Error:'Unrecognized part type: '+ptype});
     }
   }
-  else if(ptype.indexOf('ElasticLoadBalancer::')===5){
+  else if(ptype.indexOf('ElasticLoadBalancing::')===5){
     var elb = new aws.ELB(aws_obj);
-    if(ptype == 'AWS::ElasticLoadBalancer::LoadBalancer::Id'){
+    if(ptype == 'AWS::ElasticLoadBalancing::LoadBalancer::Id'){
       var lbnextToken = null;
       var lbval = [];
       async.doWhilst(function(cb){
