@@ -82,15 +82,15 @@
               <input type="text" class="form-control" ng-model="build.Template.Description" placeholder="Description" name="stackDescription"/>
             </div>
             <div class="col-xs-3">
-              <button class="btn btn-default btn-block" ng-disabled="toArray(addedParts).length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
+              <button class="btn btn-primary btn-block" ng-disabled="toArray(addedParts).length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
             </div>
           </div>
           <hr>
         </div>
         <div class="row" ng-show="partCount">
-          <div class="col-xs-12">
+          <div class="col-xs-12 text-right">
             <div class="btn-group" role="group" aria-label="menu">
-              <button type="button" class="btn btn-default" ng-click="showGlobalVariables = !showGlobalVariables" ng-class="{'active':showVars}">
+              <button type="button" class="btn btn-default" ng-click="showGlobalVariables = !showGlobalVariables" ng-class="{'active':showGlobalVariables}">
                 <span class="glyphicon glyphicon-globe"></span>
               </button>
               <button type="button" class="btn btn-default" ng-click="showFilter = !showFilter" ng-class="{'active':showFilter}">
@@ -102,24 +102,25 @@
             </div>
           </div>
         </div>
+        <br>
         <div class="row" id="Variables" ng-show="partCount && showGlobalVariables">
-          <div class="col-xs-12">
+          <div class="col-xs-10 col-xs-offset-1 well">
             <div class="row">
               <div class="col-xs-12">
-                <h4>Global Variable Assignment</h4>
+                <label>Global Variable Assignment</label>
               </div>
             </div>
             <div ng-repeat="var in globalVariables">
               <div class="row">
                 <div class="form-group" ng-hide="var.editing">
                   <div class="col-xs-5">
-                    <h5><span>$</span>{{var.Name}}<span>;</span></h5>
+                    <h5>{{var.Name}}</h5>
                   </div>
                   <div class="col-xs-1">
                     <h5><span>=</span></h5>
                   </div>
                   <div class="col-xs-4">
-                  <h5>{{var.ID}}</h5>
+                    <h5>{{var.ID}}</h5>
                   </div>
                   <div class="col-xs-2 btn-group">
                     <button class="btn btn-default" ng-click="var.editing = true" type="button"><span class="glyphicon glyphicon-pencil"></span></button>
@@ -149,25 +150,29 @@
           </div>
         </div>
         <div class="row" id="Filters" ng-show="partCount && showFilter">
-          <div class="col-xs-6">
-            <br>
-            <label>Filter by Part Type</label>
-            <select selector model="partFilter.Type" options="types" value-attr="Value" label-attr="Label" placeholder="Part Type"></select>
-          </div>
-          <div class="col-xs-6">
-            <br>
-            <label>Filter by Part Name</label>
-            <input type="text" class="form-control" ng-model="partFilter.Name" placeholder="Part Name"/>
+          <div class="col-xs-10 col-xs-offset-1 well">
+            <div class="row">
+              <div class="col-xs-6">
+                <label>Filter by Part Type</label>
+                <select selector model="partFilter.Type" options="types" value-attr="Value" label-attr="Label"></select>
+              </div>
+              <div class="col-xs-6">
+                <label>Filter by Part Name</label>
+                <input type="text" class="form-control" ng-model="partFilter.Name" placeholder="Part Name"/>
+              </div>
+            </div>
           </div>
         </div>
         <div class="row" id="Sort" ng-show="partCount && showSort">
-          <div class="col-xs-6">
-            <br>
-            <label>Sort By</label>
-            <select selector model="partSort" options="sortOptions" value-attr="Value" label-attr="Label" placeholder="None"></select>
+          <div class="col-xs-10 col-xs-offset-1 well">
+            <div class="row">
+              <div class="col-xs-6">
+                <label>Sort By</label>
+                <select selector model="partSort" options="sortOptions" value-attr="Value" label-attr="Label"></select>
+              </div>
+            </div>
           </div>
         </div>
-        <br>
         <div ng-repeat="apart in toArray(addedParts) | filter:partFilter | orderBy:partSort.predicate:partSort.reverse track by $index" class="panel panel-default">
           <div class="panel-heading pointer" ng-click="apart.Collapsed = !apart.Collapsed">
             <h2 class="panel-title">
@@ -176,8 +181,8 @@
                 <span ng-hide="apart.EditingName">{{apart.Name}}</span>
                 <span ng-hide="apart.Definition.SubAssembly">
                   <input type="text" class="form-control" ng-model="apart.inputName" ng-show="apart.EditingName" ng-click="$event.stopPropagation()" placeholder="New Name" name="partName"/>
-                  <button type="button" class="btn btn-success btn-sm" ng-show="apart.EditingName" ng-click="editPartName(apart, apart.inputName); $event.stopPropagation()">Confirm</button>
-                  <button type="button" class="btn btn-danger btn-sm" ng-show="apart.EditingName" ng-click="apart.EditingName=false; $event.stopPropagation()">Cancel</button>
+                  <button type="button" class="btn btn-primary btn-sm" ng-show="apart.EditingName" ng-click="editPartName(apart, apart.inputName); $event.stopPropagation()">Confirm</button>
+                  <button type="button" class="btn btn-default btn-sm" ng-show="apart.EditingName" ng-click="apart.EditingName=false; $event.stopPropagation()">Cancel</button>
                   <span class="glyphicon glyphicon-pencil" ng-click="apart.EditingName = !apart.EditingName; $event.stopPropagation()" ng-hide="apart.EditingName"></span>
                 </span>
                 <span class="glyphicon glyphicon-triangle-bottom pull-right" ng-show="apart.Collapsed"></span>
@@ -195,16 +200,20 @@
                   <div class="form-group" ng-init="getAllOptions(value)" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
                     <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, apart, value)}}</strong></label>
                     <div ng-if="value.dropdownOptions.length">
-                      <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions" group-attr="Origin" value-attr="ID" label-attr="Name" create="createCustomOption(input)" multi="value.multipleOptions" ng-click="refreshLocalOptions(value)"></select>
+                      <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions" group-attr="Origin" value-attr="ID" label-attr="Name" create="createCustomOption(input)" disable="value.Disabled" multi="value.multipleOptions" ng-click="refreshLocalOptions(value)"></select>
                     </div>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
-                      parameter="true" validation-model="{{value}}" ng-hide="value.dropdownOptions.length || value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
+                      parameter="true" validation-model="{{value}}" ng-hide="value.dropdownOptions.length || value.AllowedValues.length || value.Type == 'Boolean'" ng-model="apart.Definition.Parameters[key].Value"
                       ng-required="checkRequiredParam(apart, value)" ng-disabled="value.Disabled">
                     <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
                       ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
                       ng-required="checkRequiredParam(apart, value) && value.AllowedValues" ng-disabled="value.Disabled">
                       <option ng-repeat="av in value.AllowedValues">{{av}}</option>
                     </select>
+                    <div ng-if="value.Type == 'Boolean'">
+                      <label><input type="radio" ng-model="apart.Definition.Parameters[key].Value" value="true">&nbsp;&nbsp;True&nbsp;&nbsp;</label>
+                      <label><input type="radio" ng-model="apart.Definition.Parameters[key].Value" value="false">&nbsp;&nbsp;False&nbsp;&nbsp;</label>
+                    </div>
                   </div><!--/input-->
                 </ng-form>
               </div>
