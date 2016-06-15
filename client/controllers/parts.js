@@ -151,7 +151,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
           }
         }
       }
-      varObj.Name = varObj.inputName;
+      varObj.Name = '$' + varObj.inputName + ';';
       varObj.ID = varObj.inputID;
       varObj.editing = false;
     }
@@ -209,13 +209,18 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         results.push(part);
       }
     }
+    for (var i = 0; i < $scope.globalVariables.length; i++){
+      var global = $scope.globalVariables[i];
+      global.Origin = 'Global';
+      results.push(global);
+    }
     return results;
   };
 
   $scope.refreshLocalOptions = function(paramValues){
     var newOptions = [];
     for(var i=0; i<paramValues.dropdownOptions.length; i++){
-      if(paramValues.dropdownOptions[i].Origin != 'Local'){
+      if(paramValues.dropdownOptions[i].Origin == 'AWS'){
         newOptions.push(paramValues.dropdownOptions[i]);
       }
     }
@@ -436,6 +441,16 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         }
       }
       $scope.build.Template = template;
+
+      for (var i = 0; i < $scope.globalVariables.length; i++){
+        var globalObj = $scope.globalVariables[i];
+        var quoteName = globalObj.Name.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+        var re = new RegExp(quoteName, "g");
+        var templateString = angular.toJson($scope.build.Template);
+        templateString = templateString.replace(re, JSON.parse(angular.toJson(globalObj.ID)));
+        $scope.build.Template = JSON.parse(templateString);
+      }
+
       $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
       $http.post('/api/stacks', {build: $scope.build, user: $scope.auth.userinfo().email}).then(function(res){
         var data = res.data;
