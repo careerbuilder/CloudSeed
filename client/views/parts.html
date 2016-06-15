@@ -198,10 +198,10 @@
                       <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions" group-attr="Origin" value-attr="ID" label-attr="Name" create="createCustomOption(input)" multi="value.multipleOptions" ng-click="refreshLocalOptions(value)"></select>
                     </div>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
-                      parameter="true" validation-model="{{value}}" ng-hide="value.dropdownOptions.length || value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
+                      parameter="true" validation-model="{{value}}" ng-if="(!value.dropdownOptions) && (!value.AllowedValues)" ng-model="apart.Definition.Parameters[key].Value"
                       ng-required="checkRequiredParam(apart, value)" ng-disabled="value.Disabled">
                     <select class="selectpicker form-control" title="{{value.Description}}" name="selectvalue"
-                      ng-show="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
+                      ng-if="value.AllowedValues.length" ng-model="apart.Definition.Parameters[key].Value"
                       ng-required="checkRequiredParam(apart, value) && value.AllowedValues" ng-disabled="value.Disabled">
                       <option ng-repeat="av in value.AllowedValues">{{av}}</option>
                     </select>

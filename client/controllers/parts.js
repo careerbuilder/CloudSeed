@@ -34,6 +34,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     {Label: 'Name: Ascending', Value: {predicate: 'Name', reverse: false}},
     {Label: 'Name: Descending', Value: {predicate: 'Name', reverse: true}}];
 
+  $scope.Resources={};
+
   $http.get('/api/parts').then(function(res){
     var data = res.data;
     if(data.Success){
@@ -164,24 +166,37 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   };
 
   $scope.getAWSOptions = function(type){
-    var deferred = $q.defer();
-    $http.get('/api/parts/awsvalues/' + type + '/?region=' + $scope.build.Region).then(function(res){
-      var data = res.data;
-      if(data.Success){
-        for (var i = 0; i < data.Values.length; i++){
-          data.Values[i].Origin = 'AWS';
+    var deferred;
+    if(type in $scope.Resources && $scope.Resources[type].Values){
+      deferred = $q.defer();
+      deferred.resolve($scope.Resources[type].Values);
+    }
+    else if(type in $scope.Resources && $scope.Resources[type].Promise){
+      deferred = $scope.Resources[type].Promise;
+    }
+    else{
+      deferred = $q.defer();
+      $scope.Resources[type] = {};
+      $scope.Resources[type].Promise = deferred;
+      $http.get('/api/parts/awsvalues/' + type + '/?region=' + $scope.build.Region).then(function(res){
+        var data = res.data;
+        if(data.Success){
+          for (var i = 0; i < data.Values.length; i++){
+            data.Values[i].Origin = 'AWS';
+          }
+          $scope.Resources[type].Values = data.Values;
+          deferred.resolve(data.Values);
         }
-        deferred.resolve(data.Values);
-      }
-      else{
-        console.log(data.Error);
+        else{
+          console.log(data.Error);
+          deferred.reject("Fail");
+        }
+      }, function(err){
+        console.log(err);
         deferred.reject("Fail");
-      }
-    }, function(err){
-      console.log(err);
-      deferred.reject("Fail");
-      toastr.error('Error fetching ' + type + ' list');
-    });
+        toastr.error('Error fetching ' + type + ' list');
+      });
+    }
     return deferred.promise;
   };
 
@@ -333,7 +348,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     return requirementsservice.ResolveRequired(part, value);
   };
 
-  /* TODO: Replace refs to stack variables */
   $scope.replaceRefs = function(apart){
     var partstring = angular.toJson(apart.Definition);
     for(var param in apart.Definition.Parameters){
@@ -449,8 +463,10 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $http.get('/api/stacks/'+name).then(function(res){
       var data = res.data;
       if(data.Success){
-        $scope.build = JSON.parse(JSON.stringify(data.Data));
-        $scope.addedParts = JSON.parse(JSON.stringify(data.Data.Parts));
+        $scope.addedParts = data.Data.Parts;
+        delete data.Data.Parts;
+        delete data.Data.Template;
+        $scope.build = data.Data;
         $scope.getTypes();
         $scope.countParts();
       }

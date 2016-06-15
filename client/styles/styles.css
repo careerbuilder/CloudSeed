@@ -12,3 +12,11 @@
 .selector-dropdown>.selector-optgroup{
   background: #ECECEC;
 }
+
+.aselector-disabled{
+  background-color: #c7c7c7 !important;
+  background-image: -webkit-linear-gradient(#c7c7c7, #d5d5d5) !important;
+  background-image:    -moz-linear-gradient(#c7c7c7, #d5d5d5) !important;
+  background-image:      -o-linear-gradient(#c7c7c7, #d5d5d5) !important;
+  background-image:         linear-gradient(#c7c7c7, #d5d5d5) !important;
+}
