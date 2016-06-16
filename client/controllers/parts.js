@@ -131,6 +131,18 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     part.inputName = undefined;
   };
 
+  $scope.expandAll = function(partList){
+    for (var i = 0; i < partList.length; i++){
+      partList[i].Collapsed = false;
+    }
+  };
+
+  $scope.collapseAll = function(partList){
+    for (var i = 0; i < partList.length; i++){
+      partList[i].Collapsed = true;
+    }
+  };
+
   $scope.getTypes = function(){
     var typesArr = [{Label: 'None', Value: undefined}];
     for (var key in $scope.addedParts){

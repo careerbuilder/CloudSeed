@@ -90,6 +90,14 @@
         <div class="row" ng-show="partCount">
           <div class="col-xs-12 text-right">
             <div class="btn-group" role="group" aria-label="menu">
+              <button type="button" class="btn btn-default" ng-click="collapseAll(filteredParts)">
+                <span class="glyphicon glyphicon-menu-up"></span>
+              </button>
+              <button type="button" class="btn btn-default" ng-click="expandAll(filteredParts)">
+                <span class="glyphicon glyphicon-menu-down"></span>
+              </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="menu">
               <button type="button" class="btn btn-default" ng-click="showGlobalVariables = !showGlobalVariables" ng-class="{'active':showGlobalVariables}">
                 <span class="glyphicon glyphicon-globe"></span>
               </button>
@@ -173,7 +181,7 @@
             </div>
           </div>
         </div>
-        <div ng-repeat="apart in toArray(addedParts) | filter:partFilter | orderBy:partSort.predicate:partSort.reverse track by $index" class="panel panel-default">
+        <div ng-repeat="apart in toArray(addedParts) | orderBy:partSort.predicate:partSort.reverse  | filter:partFilter as filteredParts track by $index" class="panel panel-default">
           <div class="panel-heading pointer" ng-click="apart.Collapsed = !apart.Collapsed">
             <h2 class="panel-title">
               <div class="form-inline">
@@ -202,7 +210,7 @@
                     <div ng-if="value.dropdownOptions.length">
                       <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions"
                         group-attr="Origin" value-attr="ID" label-attr="Name"
-                        create="createCustomOption(input)" disable="value.Disabled" multi="value.multipleOptions" debounce="300" 
+                        create="createCustomOption(input)" disable="value.Disabled" multi="value.multipleOptions" debounce="300"
                         ng-click="refreshLocalOptions(value)">
                       </select>
                     </div>
