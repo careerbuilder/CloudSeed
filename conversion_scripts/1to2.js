@@ -135,14 +135,16 @@ async.series([function(callback){
         partstring = partstring.replace(cre, '"'+cond+''+newcount+'"');
       }
       var newresname = null;
-      if(!copy.Subpart){
+      if(!copy.SubAssembly){
         newresname = ap.LogicalName;
       }
       for(var res in copy.Resources){
         var re = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(res) +'\\s*\\}', 'g');
         var re2 = new RegExp('\\{\\s*"Fn::GetAtt"\\s*:\\s*\\['+ JSON.stringify(res) +',\\s*', 'g');
+        var re3 = new RegExp('"'+res+'\\|', 'g');
         partstring = partstring.replace(re, JSON.stringify({Ref:newresname||(res+""+newcount)}));
         partstring = partstring.replace(re2, '{"Fn::GetAtt":['+JSON.stringify(newresname||(res+""+newcount))+',');
+        partstring = partstring.replace(re3, '"'+res+newcount+'|');
       }
       copy = JSON.parse(partstring);
       for(var resname in copy.Resources){
@@ -182,6 +184,12 @@ async.series([function(callback){
         }
       }
       var mod = {Type: type, Count: newcount, RefID:ap.LogicalName, Name:ap.LogicalName, Collapsed: false, Definition:copy, EditingName: false, Origin: 'Local'};
+      if(ap.subparts){
+        mod.subparts={};
+        for(var subp in ap.subparts){
+          mod.subparts[ap.LogicalName+'|'+subp] = ap.subparts[subp];
+        }
+      }
       //add to Parts object instead of List
       cparts[mod.RefID]= mod;
       return cb3();

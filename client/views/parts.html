@@ -230,7 +230,7 @@
                 </ng-form>
               </div>
             </div>
-            <div ng-show="apart.Definition.Connections.SubParts">
+            <div ng-if="apart.Definition.Connections && apart.Definition.Connections.SubParts">
               <hr>
               <h4>SubParts</h4>
               <div ng-repeat="(key, value) in apart.Definition.Connections.SubParts">
@@ -239,7 +239,7 @@
                   <table class="table table-bordered table-striped table-condensed" ng-init="addSubPart(apart, key)">
                     <tr>
                       <th ng-repeat="(param,details) in value.Model">{{param}}</th>
-                      <th></th>
+                      <th>&nbsp;</th>
                     </tr>
                     <tr ng-repeat="subp in apart.subparts[key] track by $index">
                       <td ng-repeat="(param,details) in value.Model">
