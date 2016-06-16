@@ -3,7 +3,7 @@
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at
--- 
+--
 --     http://www.apache.org/licenses/LICENSE-2.0
 -- Unless required by applicable law or agreed to in writing, software
 -- distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
     <div class="col-md-4">
       <div class="form-group container-fluid">
         <h3>Sign up</h3>
-        <form class="simple-form" name="loginform" novalidate>
+        <form class="simple-form" name="loginform" ng-submit="loginform.$valid && signup()" novalidate>
           <div class="input-group form-group" ng-class="{'has-error': (loginform.email.$invalid && loginform.email.$dirty)}">
             <span class="input-group-addon" id="EmailAddress" style="text-align:left; min-width:100px;"><b>Email</b></span>
             <input type="email" class="form-control" placeholder="Email" name="email" ng-model="auth.email" required />
@@ -37,9 +37,9 @@
             <span class="input-group-addon" id="secretkey" style="text-align:left; min-width:100px;"><b>Secret Key</b></span>
             <input type="password" class="form-control" placeholder="AWS Secret Key" name="SecretKey" ng-model="auth.secretkey" pattern="[A-Za-z0-9+\-\\/]{40}" required/>
           </div>
+          <a href="#/login"><em>Already a member? Log in instead</em></a>
+          <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="loginform.$invalid">Sign up</button>
         </form>
-        <a href="#/login"><em>Already a member? Log in instead</em></a>
-        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="signup()" ng-disabled="loginform.$invalid">Sign up</button>
         <br />
         <div class="alert alert-dismissible" role="alert" ng-if="signupResult" ng-class="{'alert-danger': !signupResult.Success, 'alert-success': signupResult.Success}">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
