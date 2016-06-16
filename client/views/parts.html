@@ -185,7 +185,7 @@
           <div class="panel-heading pointer" ng-click="apart.Collapsed = !apart.Collapsed">
             <h2 class="panel-title">
               <div class="form-inline">
-                <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.RefID)"></span>
+                <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="removePart(apart.RefID); $event.stopPropagation()"></span>
                 <span ng-hide="apart.EditingName">{{apart.Name}}</span>
                 <span ng-hide="apart.Definition.SubAssembly">
                   <input type="text" class="form-control" ng-model="apart.inputName" ng-show="apart.EditingName" ng-click="$event.stopPropagation()" placeholder="New Name" name="partName"/>
