@@ -41,7 +41,7 @@
     },
     "ParameterGroup" : {
       "Description" : "Name of the ParameterGroup",
-      "Type" : "String",
+      "Type" : ["AWS::RDS::DBClusterParameterGroup::Name"],
       "Default" : "",
       "Required" : false
     },

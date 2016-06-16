@@ -477,6 +477,81 @@ router.get('/awsvalues/:awstype', function(req, res){
         return res.send({Success:true, Values:sngval});
       });
     }
+    else if(ptype=='AWS::RDS::OptionGroup::Name'){
+      var ognextToken = null;
+      var ogval = [];
+      async.doWhilst(function(cb){
+        rds.describeOptionGroups({Marker:ognextToken}, function(err, data){
+          if(err){
+            return cb(err);
+          }
+          ognextToken= data.Marker || null;
+          data.OptionGroupsList.forEach(function(og){
+            var id = og.OptionGroupName;
+            var name = id;
+            ogval.push({ID: id, Name: name});
+          });
+          return cb();
+        });
+      },function(){
+        return !!ognextToken;
+      }, function(err){
+        if(err){
+          return res.send({Success:false, Error:err});
+        }
+        return res.send({Success:true, Values:ogval});
+      });
+    }
+    else if(ptype=='AWS::RDS::DBParameterGroup::Name'){
+      var pgnextToken = null;
+      var pgval = [];
+      async.doWhilst(function(cb){
+        rds.describeDBParameterGroups({Marker:pgnextToken}, function(err, data){
+          if(err){
+            return cb(err);
+          }
+          pgnextToken= data.Marker || null;
+          data.DBParameterGroups.forEach(function(pg){
+            var id = pg.DBParameterGroupName;
+            var name = id;
+            pgval.push({ID: id, Name: name});
+          });
+          return cb();
+        });
+      },function(){
+        return !!pgnextToken;
+      }, function(err){
+        if(err){
+          return res.send({Success:false, Error:err});
+        }
+        return res.send({Success:true, Values:pgval});
+      });
+    }
+    else if(ptype=='AWS::RDS::DBClusterParameterGroup::Name'){
+      var cpgnextToken = null;
+      var cpgval = [];
+      async.doWhilst(function(cb){
+        rds.describeDBClusterParameterGroups({Marker:cpgnextToken}, function(err, data){
+          if(err){
+            return cb(err);
+          }
+          cpgnextToken= data.Marker || null;
+          data.DBClusterParameterGroups.forEach(function(cpg){
+            var id = cpg.DBClusterParameterGroupName ;
+            var name = id;
+            pgval.push({ID: id, Name: name});
+          });
+          return cb();
+        });
+      },function(){
+        return !!cpgnextToken;
+      }, function(err){
+        if(err){
+          return res.send({Success:false, Error:err});
+        }
+        return res.send({Success:true, Values:cpgval});
+      });
+    }
     else{
       return res.send({Success:false, Error:'Unrecognized part type: '+ptype});
     }
