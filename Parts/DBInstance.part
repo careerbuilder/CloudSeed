@@ -67,11 +67,11 @@
     },
     "OptionGroup" : {
       "Description" : "Name of OptionGroup",
-      "Type" : "String"
+      "Type" : ["AWS::RDS::OptionGroup::Name"]
     },
     "ParameterGroup" : {
       "Description" : "Name of the ParameterGroup",
-      "Type" : "String",
+      "Type" : ["AWS::RDS::DBParameterGroup::Name"],
       "Default" : ""
     },
     "SAUserName" : {

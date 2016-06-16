@@ -41,19 +41,19 @@
     },
     "ClusterParameterGroup" : {
       "Description" : "Name of the ParameterGroup for the cluster",
-      "Type" : "String",
+      "Type" : ["AWS::RDS::DBClusterParameterGroup::Name"],
       "Default" : "",
       "Required" : false
     },
     "InstanceParameterGroup" : {
       "Description" : "Name of the ParameterGroup for the Instances",
-      "Type" : "String",
+      "Type" : ["AWS::RDS::DBParameterGroup::Name"],
       "Default" : "pg-aurora-sitedb",
       "Required" : false
     },
     "OptionGroup" : {
       "Description" : "Name of OptionGroup",
-      "Type" : "String",
+      "Type" : ["AWS::RDS::OptionGroup::Name"],
       "Required":true
     },
     "SAUserName" : {
