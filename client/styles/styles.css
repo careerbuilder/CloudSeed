@@ -1,14 +1,26 @@
+#stage{
+  min-height:300px;
+  margin-bottom:200px;
+}
+
+.pointer{
+  cursor:pointer;
+}
+
 .ddl-active{
   background-color:#4caf50;
 }
+
 .ddl-active:hover{
   background-color:#59b75c;
 }
+
 .scrollable-menu {
     height: auto;
     max-height: 200px;
     overflow-x: hidden;
 }
+
 .selector-dropdown>.selector-optgroup{
   background: #ECECEC;
 }
@@ -19,4 +31,8 @@
 
 .selector-container.disabled>label{
   cursor: not-allowed !important;
+}
+
+.selector-container>.selector-dropdown{
+  margin-bottom:25px !important;
 }

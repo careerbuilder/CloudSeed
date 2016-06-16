@@ -21,11 +21,3 @@
   max-width:50px;
   min-height:100px;
 }
-
-.pointer{
-  cursor:pointer;
-}
-
-#stage{
-  min-height:300px;
-}

@@ -200,7 +200,11 @@
                   <div class="form-group" ng-init="getAllOptions(value)" ng-class="{'has-error': (parametersForm.txtvalue.$invalid)}">
                     <label class="control-label" id="{{key}}-Title"><strong>{{requiredName(key, apart, value)}}</strong></label>
                     <div ng-if="value.dropdownOptions.length">
-                      <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions" group-attr="Origin" value-attr="ID" label-attr="Name" create="createCustomOption(input)" disable="value.Disabled" multi="value.multipleOptions" ng-click="refreshLocalOptions(value)"></select>
+                      <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions"
+                        group-attr="Origin" value-attr="ID" label-attr="Name"
+                        create="createCustomOption(input)" disable="value.Disabled" multi="value.multipleOptions" debounce="300" 
+                        ng-click="refreshLocalOptions(value)">
+                      </select>
                     </div>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
                       parameter="true" validation-model="{{value}}" ng-if="(!value.dropdownOptions) && (!value.AllowedValues) && (value.Type != 'Boolean')" ng-model="apart.Definition.Parameters[key].Value"
