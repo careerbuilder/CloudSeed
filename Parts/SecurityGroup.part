@@ -46,7 +46,7 @@
   },
   "Connections" : {
     "SubParts" : {
-      "Properties|SecurityGroupIngress" : {
+      "SecurityGroup|Properties|SecurityGroupIngress" : {
         "Type" : "List::SecurityGroupIngressRule",
         "Model" : {
           "IpProtocol" : {
@@ -71,7 +71,7 @@
           }
         }
       },
-      "Properties|SecurityGroupEgress" : {
+      "SecurityGroup|Properties|SecurityGroupEgress" : {
         "Type" : "List::SecurityGroupEgressRule",
         "Model" : {
           "IpProtocol" : {

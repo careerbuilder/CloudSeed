@@ -108,8 +108,10 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     for(var res in copy.Resources){
       var re = new RegExp('\\{\\s*"Ref"\\s*:\\s*'+ JSON.stringify(res) +'\\s*\\}', 'g');
       var re2 = new RegExp('\\{\\s*"Fn::GetAtt"\\s*:\\s*\\['+ JSON.stringify(res) +',\\s*', 'g');
+      var re3 = new RegExp('"'+res+'\\|', 'g');
       partstring = partstring.replace(re, JSON.stringify({Ref:res+""+newcount}));
       partstring = partstring.replace(re2, '{"Fn::GetAtt":['+JSON.stringify(res+""+newcount)+',');
+      partstring = partstring.replace(re3, '"'+res+newcount+'|');
     }
     copy = JSON.parse(partstring);
     copy.Resources = replaceNames(copy.Resources || {}, newcount);
@@ -416,8 +418,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       for(var subp in apart.subparts){
         var models = apart.subparts[subp];
         var path = subp.split('|');
-        var res = apart.Definition.Resources[apart.Name];
-        for(var x=0; x<path.length; x++){
+        var res = apart.Definition.Resources[path[0]];
+        for(var x=1; x<path.length; x++){
           res = res[path[x]];
         }
         for(var j=0; j<models.length; j++){
@@ -456,7 +458,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     if($scope.build.Name){
       $scope.build.Ready = true;
       var template = {};
-      template.Description = $scope.build.Template.Description;
+      template.Description = ($scope.build.Template || {Description:''}).Description;
       template.Resources = {};
       template.Outputs = {};
       template.Conditions = {};
