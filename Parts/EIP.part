@@ -4,6 +4,7 @@
     "InstanceID" : {
       "Description" : "The ID of the instance to which the EIP will associate",
       "Type" : ["AWS::EC2::Instance::Id","EC2Instance"],
+      "Default":"",
       "Required":{
         "Func":"Only",
         "Args":[1,{"Param":"DomainType"}]

@@ -72,6 +72,7 @@
     "Subnets" : {
       "Description" : "A list of subnet identifiers of Amazon VPCs.",
       "Type" : ["List::AWS::EC2::Subnet::Id", "List::Subnet"],
+      "Default":"",
       "Required" : false
     }
   },

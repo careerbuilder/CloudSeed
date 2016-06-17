@@ -4,6 +4,7 @@
         "AZ":{
           "Description": "AvailabilityZone in the provided region",
           "Type":["AWS::EC2::AvailabilityZone::Name"],
+          "Default":"us-east-1b",
           "Required": true
         },
         "SubnetCIDR": {
