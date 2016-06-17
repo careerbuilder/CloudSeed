@@ -145,6 +145,33 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     }
   };
 
+  $scope.showRequiredFields = function(){
+    var invalidParts = [];
+    var form = $scope.PartsForm;
+    if (form.$invalid){
+      for (var key in form){
+        if (key.split('-')[0] == 'parametersForm' && form[key].$invalid){
+          var name = key.split("-")[1];
+          var added = false;
+          for (var i = 0; i < invalidParts.length; i++){
+            if (invalidParts[i] == name){
+              added = true;
+            }
+          }
+          if (!added){
+            invalidParts.push(name);
+          }
+        }
+      }
+    }
+    for(var j in $scope.addedParts){
+      $scope.addedParts[j].Collapsed = true;
+    }
+    for (var k = 0; k < invalidParts.length; k++){
+      $scope.addedParts[invalidParts[k]].Collapsed = false;
+    }
+  };
+
   $scope.getTypes = function(){
     var typesArr = [{Label: 'None', Value: undefined}];
     for (var key in $scope.addedParts){
