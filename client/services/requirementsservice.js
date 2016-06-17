@@ -69,6 +69,8 @@ app.factory('requirementsservice', [function(){
       }
       if (req){
         value.Required = true;
+      }else{
+        value.Required = false;
       }
       return req;
     }

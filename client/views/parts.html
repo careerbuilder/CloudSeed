@@ -216,7 +216,7 @@
                       <select selector model="apart.Definition.Parameters[key].Value" options="value.dropdownOptions"
                         group-attr="Origin" value-attr="ID" label-attr="Name"
                         create="createCustomOption(input)" disable="value.Disabled" multi="value.multipleOptions"
-                        debounce="300" require="value.Required"
+                        debounce="300" require="value.Required && !value.Disabled"
                         ng-click="refreshLocalOptions(value)">
                       </select>
                     </div>
@@ -229,8 +229,8 @@
                       <option ng-repeat="av in value.AllowedValues">{{av}}</option>
                     </select>
                     <div ng-if="value.Type == 'Boolean'">
-                      <label><input type="radio" ng-model="apart.Definition.Parameters[key].Value" value="true">&nbsp;&nbsp;True&nbsp;&nbsp;</label>
-                      <label><input type="radio" ng-model="apart.Definition.Parameters[key].Value" value="false">&nbsp;&nbsp;False&nbsp;&nbsp;</label>
+                      <label><input type="radio" ng-model="apart.Definition.Parameters[key].Value" ng-value="true">&nbsp;&nbsp;True&nbsp;&nbsp;</label>
+                      <label><input type="radio" ng-model="apart.Definition.Parameters[key].Value" ng-value="false">&nbsp;&nbsp;False&nbsp;&nbsp;</label>
                     </div>
                   </div><!--/input-->
                 </ng-form>

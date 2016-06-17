@@ -117,7 +117,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     copy.Resources = replaceNames(copy.Resources || {}, newcount);
     copy.Outputs = replaceNames(copy.Outputs || {}, newcount);
     for(var par in copy.Parameters){
-      if(copy.Parameters[par].Default){
+      if ('Default' in copy.Parameters[par]){
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
