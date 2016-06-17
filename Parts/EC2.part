@@ -29,7 +29,8 @@
     },
     "SecurityGroups":{
         "Description": "SecurityGroups which govern the Instance",
-        "Type": ["List::AWS::EC2::SecurityGroup::Id","List::SecurityGroup"]
+        "Type": ["List::AWS::EC2::SecurityGroup::Id","List::SecurityGroup"],
+        "Default": ""
     }
   },
   "Resources" : {
