@@ -539,7 +539,7 @@ router.get('/awsvalues/:awstype', function(req, res){
           data.DBClusterParameterGroups.forEach(function(cpg){
             var id = cpg.DBClusterParameterGroupName ;
             var name = id;
-            pgval.push({ID: id, Name: name});
+            cpgval.push({ID: id, Name: name});
           });
           return cb();
         });

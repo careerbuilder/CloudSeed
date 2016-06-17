@@ -13,7 +13,8 @@
     },
     "StaticRoutes" : {
       "Description" : "Indicates whether the VPN connection requires static routes.",
-      "Type" : "Boolean"
+      "Type" : "Boolean",
+      "Default" : false
     },
     "VPNGatewayID" : {
       "Description" : "ID of Gateway to attach",
