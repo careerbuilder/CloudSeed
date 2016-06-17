@@ -67,6 +67,9 @@ app.factory('requirementsservice', [function(){
       else{
         req = !value.Hidden && (value.Default === null || value.Default === undefined);
       }
+      if (req){
+        value.Required = true;
+      }
       return req;
     }
   };
