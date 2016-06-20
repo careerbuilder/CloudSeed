@@ -176,8 +176,15 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     var typesArr = [{Label: 'None', Value: undefined}];
     for (var key in $scope.addedParts){
       var type = $scope.addedParts[key].Type;
-      if(typesArr.indexOf(type)<0){
-        typesArr.push({Label: type, Value: type});
+      var typeObj = {Label: type, Value: type};
+      var found = false;
+      for (var i = 0; i < typesArr.length; i++){
+        if (typesArr[i].Label == type){
+          found = true;
+        }
+      }
+      if (!found){
+        typesArr.push(typeObj);
       }
     }
     $scope.types = typesArr;
