@@ -112,6 +112,10 @@
       "eu-west-1" : {
         "AZ" : ["eu-west-1a", "eu-west-1b", "eu-west-1c"],
         "Append" : ["a", "b", "c"]
+      },
+	  "us-west-2" : {
+        "AZ" : ["us-west-2a", "us-west-2b", "us-west-2c"],
+        "Append" : ["a", "b", "c"]
       }
     }
   },

@@ -49,7 +49,7 @@
   "Outputs" : {
     "InstanceID" : {
       "Description" : "ID of created Instance",
-      "Value" : {"Ref" : "EC2"}
+      "Value" : {"Ref" : "EC2Instance"}
     }
   },
   "Connections":{
