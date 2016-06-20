@@ -12,8 +12,8 @@
     },
     "EgressRule":{
       "Description" : "Egress rule",
-      "Type" : "String",
-      "Default":"false"
+      "Type" : "Boolean",
+      "Default": false
     },
     "Prot" :{
       "Description" : "Protocol for rule",
@@ -59,6 +59,6 @@
     }
   },
   "Connections":{
-    
+
   }
 }
