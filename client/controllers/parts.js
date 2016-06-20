@@ -208,24 +208,27 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
 
   $scope.getAWSOptions = function(type){
     var deferred;
-    if(type in $scope.Resources && $scope.Resources[type].Values){
-      deferred = $q.defer();
-      deferred.resolve($scope.Resources[type].Values);
+    if(!($scope.build.Region in $scope.Resources)){
+      $scope.Resources[$scope.build.Region]={};
     }
-    else if(type in $scope.Resources && $scope.Resources[type].Promise){
-      deferred = $scope.Resources[type].Promise;
+    if(type in $scope.Resources[$scope.build.Region] && $scope.Resources[$scope.build.Region][type].Values){
+      deferred = $q.defer();
+      deferred.resolve($scope.Resources[$scope.build.Region][type].Values);
+    }
+    else if(type in $scope.Resources[$scope.build.Region] && $scope.Resources[$scope.build.Region][type].Promise){
+      deferred = $scope.Resources[$scope.build.Region][type].Promise;
     }
     else{
       deferred = $q.defer();
-      $scope.Resources[type] = {};
-      $scope.Resources[type].Promise = deferred;
+      $scope.Resources[$scope.build.Region][type] = {};
+      $scope.Resources[$scope.build.Region][type].Promise = deferred;
       $http.get('/api/parts/awsvalues/' + type + '/?region=' + $scope.build.Region).then(function(res){
         var data = res.data;
         if(data.Success){
           for (var i = 0; i < data.Values.length; i++){
             data.Values[i].Origin = 'AWS';
           }
-          $scope.Resources[type].Values = data.Values;
+          $scope.Resources[$scope.build.Region][type].Values = data.Values;
           deferred.resolve(data.Values);
         }
         else{
@@ -258,14 +261,10 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     return results;
   };
 
-  $scope.refreshLocalOptions = function(paramValues){
+  $scope.refreshOptions = function(paramValues){
     var newOptions = [];
-    for(var i=0; i<paramValues.dropdownOptions.length; i++){
-      if(paramValues.dropdownOptions[i].Origin == 'AWS'){
-        newOptions.push(paramValues.dropdownOptions[i]);
-      }
-    }
     var type, locals;
+    var promises = [];
     if(paramValues.Type.constructor === Array){
       for (var j = 0; j < paramValues.Type.length; j++){
         type = paramValues.Type[j];
@@ -275,6 +274,9 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         if (type.indexOf("AWS::") !== 0){
           locals = $scope.getLocalOptions(type);
           newOptions = newOptions.concat(locals);
+        }
+        else{
+          promises.push($scope.getAWSOptions(type));
         }
       }
     }
@@ -287,8 +289,17 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         locals = $scope.getLocalOptions(type);
         newOptions = newOptions.concat(locals);
       }
+      else{
+        promises.push($scope.getAWSOptions(type));
+      }
     }
-    paramValues.dropdownOptions = newOptions;
+    $q.all(promises).then(function(awsResults){
+      var merged = newOptions.concat(awsResults);
+      var flattened = [].concat.apply([], merged);
+      if (flattened.length > 0){
+        paramValues.dropdownOptions = flattened;
+      }
+    });
   };
 
   $scope.getAllOptions = function(paramValues){

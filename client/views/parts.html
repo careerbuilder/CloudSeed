@@ -217,7 +217,7 @@
                         group-attr="Origin" value-attr="ID" label-attr="Name"
                         create="createCustomOption(input)" disable="value.Disabled" multi="value.multipleOptions"
                         debounce="300" require="value.Required && !value.Disabled"
-                        ng-click="refreshLocalOptions(value)">
+                        ng-click="refreshOptions(value)">
                       </select>
                     </div>
                     <input type="text" class="form-control" placeholder="{{value.Description}}" aria-describedby="{{key}}-Title" name="txtvalue"
