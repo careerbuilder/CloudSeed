@@ -590,6 +590,16 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $scope.partCount = count;
     return count;
   };
+
+  $scope.$watch('build.Region', function(){
+    for (var partKey in $scope.addedParts){
+      var part = $scope.addedParts[partKey];
+      for (var paramKey in part.Definition.Parameters){
+        var paramValue = part.Definition.Parameters[paramKey];
+        $scope.refreshOptions(paramValue);
+      }
+    }
+  });
 });
 
 app.directive("compareTo", function() {
