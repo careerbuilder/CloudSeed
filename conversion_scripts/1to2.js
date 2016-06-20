@@ -169,6 +169,11 @@ async.series([function(callback){
                 }
               }
             }
+            if(copy.Parameters[cpar].Type == 'Boolean'){
+              if(typeof copy.Parameters[cpar].Value == 'string'){
+                copy.Parameters[cpar].Value = (copy.Parameters[cpar].Value.toUpperCase()=='TRUE');
+              }
+            }
           }
           else{
             if(ap.Definition.Connections && ap.Definition.Connections.Substitutes && ap.Definition.Connections.Substitutes.length>0){
