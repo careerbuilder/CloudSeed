@@ -568,7 +568,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   };
 
   $scope.discardStack = function(){
-    $scope.build ={};
+    $scope.build ={Region:'us-east-1'};
     $scope.addedParts ={};
     $scope.getTypes();
     $scope.countParts();
