@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `cloudseed`.`stacks` (
   `Region` varchar(45) DEFAULT NULL,
   `Ready` tinyint(1) NOT NULL DEFAULT '0',
   `Parts` longtext,
+  `Variables` longtext,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Name_UNIQUE` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

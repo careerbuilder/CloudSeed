@@ -225,6 +225,7 @@ module.exports ={
         var obj = results[0];
         obj.Template = JSON.parse(obj.Template);
         obj.Parts = JSON.parse(obj.Parts);
+        obj.Variables = JSON.parse(obj.Variables);
         return callback(null, obj);
       });
     });
@@ -245,8 +246,8 @@ module.exports ={
         }
         update += mysql.escapeId(col)+'=VALUES('+mysql.escapeId(col)+')';
       }
-      var q ='INSERT INTO ' + mysql.escapeId(dbName + '.stacks')+' (`Name`, `Region`, `Ready`, `Template`, `Parts`) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE '+update+';';
-      connection.query(q, [k_v.Name, k_v.Region, k_v.Ready||false, JSON.stringify(k_v.Template), JSON.stringify(k_v.Parts)], function(err, result) {
+      var q ='INSERT INTO ' + mysql.escapeId(dbName + '.stacks')+' (`Name`, `Region`, `Ready`, `Template`, `Parts`, `Variables`) VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE '+update+';';
+      connection.query(q, [k_v.Name, k_v.Region, k_v.Ready||false, JSON.stringify(k_v.Template), JSON.stringify(k_v.Parts), JSON.stringify(k_v.Variables)], function(err, result) {
         connection.release();
         if(err){
           console.log('Error adding stack');

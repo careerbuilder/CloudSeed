@@ -365,6 +365,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     delete $scope.addedParts[refID];
     $scope.getTypes();
     $scope.countParts();
+    $scope.globalVariables = [];
   };
 
   $scope.canAddSubPart=function(part, name, index){
@@ -475,6 +476,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   $scope.saveTemplate=function(){
     if($scope.build.Name){
       $scope.build.Ready = true;
+      $scope.build.Variables = $scope.globalVariables;
       var template = {};
       template.Description = ($scope.build.Template || {Description:''}).Description;
       template.Resources = {};
@@ -538,6 +540,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       var data = res.data;
       if(data.Success){
         $scope.addedParts = data.Data.Parts;
+        $scope.globalVariables = data.Data.Variables;
+        delete data.Data.Variables;
         delete data.Data.Parts;
         delete data.Data.Template;
         $scope.build = data.Data;
@@ -572,6 +576,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     $scope.addedParts ={};
     $scope.getTypes();
     $scope.countParts();
+    $scope.globalVariables = [];
   };
 
   $scope.toArray= function(object){
