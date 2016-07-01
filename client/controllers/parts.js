@@ -536,14 +536,15 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
 
   $scope.loadTemplate=function(name){
     console.log("parts loading " + name);
+    $scope.addedParts = {};
+    $scope.globalVariables = [];
     $http.get('/api/stacks/'+name).then(function(res){
       var data = res.data;
       if(data.Success){
         $scope.addedParts = data.Data.Parts;
-        $scope.globalVariables = data.Data.Variables;
+        $scope.globalVariables = data.Data.Variables || [];
         delete data.Data.Variables;
         delete data.Data.Parts;
-        delete data.Data.Template;
         $scope.build = data.Data;
         $scope.getTypes();
         $scope.countParts();
