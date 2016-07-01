@@ -260,6 +260,9 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         results.push(part);
       }
     }
+    if (results.length === 0){
+      return results;
+    }
     for (var i = 0; i < $scope.globalVariables.length; i++){
       var global = $scope.globalVariables[i];
       global.Origin = 'Global';
