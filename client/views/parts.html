@@ -263,7 +263,47 @@
                   </table>
                 </div><!--/table-responsive-->
               </div>
-              <hr>
+            </div>
+            <hr>
+            <div class="row" ng-show="apart.Tags.length">
+              <div class="col-xs-12">
+                <h4>Tags</h4>
+              </div>
+            </div>
+            <div ng-repeat="tag in apart.Tags">
+              <div class="row">
+                <div class="form-group" ng-hide="tag.editing">
+                  <div class="col-xs-5">
+                    <h5>{{tag.Name}}</h5>
+                  </div>
+                  <div class="col-xs-1">
+                    <h5><span>=</span></h5>
+                  </div>
+                  <div class="col-xs-4">
+                    <h5>{{tag.ID}}</h5>
+                  </div>
+                  <div class="col-xs-2 btn-group">
+                    <button class="btn btn-default" ng-click="tag.editing = true" type="button"><span class="glyphicon glyphicon-pencil"></span></button>
+                    <button class="btn btn-default" ng-click="apart.Tags.splice($index, 1)" style="color:red;" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                  </div>
+                </div>
+                <div ng-if="tag.editing">
+                  <div class="col-xs-5">
+                    <input type="text" class="form-control" ng-model="tag.inputName" placeholder="Tag Name"/>
+                  </div>
+                  <div class="col-xs-5">
+                    <input type="text" class="form-control" ng-model="tag.inputID" placeholder="Tag Value"/>
+                  </div>
+                  <div class="col-xs-2 btn-group">
+                    <button class="btn btn-default" ng-click="setTag(apart, $index)" type="button"><span class="glyphicon glyphicon-ok"></span></button>
+                    <button class="btn btn-default" ng-click="cancelTagEdit(apart, $index)" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                  </div>
+                </div>
+              </div>
+              <br>
+            </div>
+            <div class="text-center">
+              <button class="btn btn-default" ng-click="addNewTag(apart)" type="button">Add Tag</button>
             </div>
           </div>
         </div>

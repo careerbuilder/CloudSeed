@@ -121,7 +121,17 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         copy.Parameters[par].Value = copy.Parameters[par].Default;
       }
     }
-    var mod = {Type: type, Count: newcount, RefID:type+""+newcount, Name:type+""+newcount, Collapsed: false, Definition:copy, EditingName: false, Origin: 'Local'};
+    var mod = {
+      Type: type,
+      Count: newcount,
+      RefID:type+""+newcount,
+      Name:type+""+newcount,
+      Collapsed: false,
+      Definition:copy,
+      EditingName: false,
+      Origin: 'Local',
+      Tags: []
+    };
     $scope.addedParts[mod.RefID]= mod;
     $scope.getTypes();
     $scope.countParts();
@@ -142,6 +152,39 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   $scope.collapseAll = function(partList){
     for (var i = 0; i < partList.length; i++){
       partList[i].Collapsed = true;
+    }
+  };
+
+  $scope.addNewTag = function(part){
+    if (part.Tags){
+      part.Tags.push({Name: '', ID: '', editing: true});
+    }else{
+      part.Tags = [{Name: '', ID: '', editing: true}];
+    }
+  };
+
+  $scope.setTag = function(part, index){
+    var tag = part.Tags[index];
+    if (tag.inputName && tag.inputName.length > 0){
+      for (var i = 0; i < part.Tags.length; i++){
+        if (tag.inputName == tag.Name){
+          if (i !== index){
+            return;
+          }
+        }
+      }
+      tag.Name = tag.inputName;
+      tag.ID = tag.inputID;
+      tag.editing = false;
+    }
+  };
+
+  $scope.cancelTagEdit = function(part, index){
+    var tag = part.Tags[index];
+    if (tag.inputName && tag.inputName.length > 0){
+      tag.editing = false;
+    }else{
+      part.Tags.splice(index, 1);
     }
   };
 
@@ -435,6 +478,15 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       }
       partstring = partstring.replace(pre, angular.toJson(paramValue));
     }
+    
+    var tempPartObj = JSON.parse(partstring);
+    for (var tagIndex = 0; tagIndex < apart.Tags.length; tagIndex++){
+      var tag = apart.Tags[tagIndex];
+      var cleanTag = {Key: tag.Name, Value: tag.ID};
+      tempPartObj.Resources[apart.RefID].Properties.Tags.push(cleanTag);
+    }
+    partstring = angular.toJson(tempPartObj);
+
     apart.Definition = JSON.parse(partstring);
     if(apart.subparts){
       for(var subp in apart.subparts){
@@ -461,6 +513,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         }
       }
     }
+    console.log(apart.Definition.Resources[apart.RefID].Properties.Tags);
   };
 
   $scope.refreshStacks=function(){
