@@ -167,7 +167,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     var tag = part.Tags[index];
     if (tag.inputName && tag.inputName.length > 0){
       for (var i = 0; i < part.Tags.length; i++){
-        if (tag.inputName == tag.Name){
+        if (tag.inputName == part.Tags[i].Name){
           if (i !== index){
             return;
           }
@@ -478,7 +478,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       }
       partstring = partstring.replace(pre, angular.toJson(paramValue));
     }
-    
+
     var tempPartObj = JSON.parse(partstring);
     for (var tagIndex = 0; tagIndex < apart.Tags.length; tagIndex++){
       var tag = apart.Tags[tagIndex];
