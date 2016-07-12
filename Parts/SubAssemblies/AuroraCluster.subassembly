@@ -188,6 +188,18 @@
       "Properties" : {
         "AllowMajorVersionUpgrade" : false,
         "AutoMinorVersionUpgrade" : false,
+		"AvailabilityZone": {
+			"Fn::Select" : [
+				0, 
+				{
+					"Fn::FindInMap" : [
+						"ConfigMap", 
+						{"Ref" : "AWS::Region"}, 
+						"AZ"
+					]
+				}
+			]
+		},
         "DBClusterIdentifier" : {
           "Ref" : "DBCluster"
         },
@@ -232,6 +244,18 @@
       "Properties" : {
         "AllowMajorVersionUpgrade" : false,
         "AutoMinorVersionUpgrade" : false,
+				"AvailabilityZone": {
+			"Fn::Select" : [
+				1, 
+				{
+					"Fn::FindInMap" : [
+						"ConfigMap", 
+						{"Ref" : "AWS::Region"}, 
+						"AZ"
+					]
+				}
+			]
+		},
         "DBClusterIdentifier" : {
           "Ref" : "DBCluster"
         },
