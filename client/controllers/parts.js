@@ -480,12 +480,14 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     }
 
     var tempPartObj = JSON.parse(partstring);
-    for (var tagIndex = 0; tagIndex < apart.Tags.length; tagIndex++){
-      var tag = apart.Tags[tagIndex];
-      var cleanTag = {Key: tag.Name, Value: tag.ID};
-      tempPartObj.Resources[apart.RefID].Properties.Tags.push(cleanTag);
+    if ('Tags' in apart){
+      for (var tagIndex = 0; tagIndex < apart.Tags.length; tagIndex++){
+        var tag = apart.Tags[tagIndex];
+        var cleanTag = {Key: tag.Name, Value: tag.ID};
+        tempPartObj.Resources[apart.RefID].Properties.Tags.push(cleanTag);
+      }
+      partstring = angular.toJson(tempPartObj);
     }
-    partstring = angular.toJson(tempPartObj);
 
     apart.Definition = JSON.parse(partstring);
     if(apart.subparts){
@@ -513,7 +515,6 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
         }
       }
     }
-    console.log(apart.Definition.Resources[apart.RefID].Properties.Tags);
   };
 
   $scope.refreshStacks=function(){
