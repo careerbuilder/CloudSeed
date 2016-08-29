@@ -15,7 +15,7 @@ var db = require('../tools/db_tool.js');
 var aws = require('aws-sdk');
 var exec = require('child_process').execFile;
 var fs = require('fs');
-var aws_obj = {region:"us-east-1"};
+var aws_obj = {region:global.config.Region};
 if('Amazon' in global.config){
   if (global.config.AccessKey && global.config.SecretKey){
     aws_obj.accessKeyId = global.config.AccessKey;

@@ -11,6 +11,7 @@
     "AccessKey": "f4k3k3y5ftw",
     "SecretKey": "THISISCLEARLYAFAKEKEY"
   },
+  "Region": "us-east-1",
   "STACKREPO": "/path/to/Stacks/folder",
   "APIHost": "http://localhost:3000/",
   "EmailAccount": "CloudSeed@yourdomain.com"
