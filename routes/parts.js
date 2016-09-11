@@ -612,6 +612,32 @@ router.get('/awsvalues/:awstype', function(req, res){
       return res.send({Success:false, Error:'Unrecognized part type: '+ptype});
     }
   }
+  else if(ptype=='AWS::KMS::Key'){
+    var kms = new aws.KMS(aws_obj);
+    var kmsnextToken = null;
+    var kmsval = [];
+    async.doWhilst(function(cb){
+      kms.listAliases({Marker:kmsnextToken}, function(err, data){
+        if(err){
+          return cb(err);
+        }
+        kmsnextToken= data.NextMarker || null;
+        data.Aliases.forEach(function(key){
+          var id = key.AliasArn;
+          var name = key.AliasName;
+          kmsval.push({ID: id, Name: name});
+        });
+        return cb();
+      });
+    },function(){
+      return !!kmsnextToken;
+    }, function(err){
+      if(err){
+        return res.send({Success:false, Error:err});
+      }
+      return res.send({Success:true, Values:kmsval});
+    });
+  }
   else{
     return res.send({Success:false, Error:'Unrecognized part type: '+ptype});
   }

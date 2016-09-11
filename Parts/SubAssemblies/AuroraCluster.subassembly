@@ -72,6 +72,11 @@
       "Type" : "String",
       "Default" : "db.r3.xlarge",
       "AllowedPattern" : "db.[a-zA-Z]\\d\\.(micro|small|medium|(\\d?x)?large)"
+    },
+    "KmsKey" :{
+      "Description" : "Encryption key for storage",
+      "Type" : ["AWS::KMS::Key"],
+      "Required" : true
     }
   },
   "Conditions" : {
@@ -149,6 +154,9 @@
         "EngineVersion" : {
           "Ref" : "DBVersion"
         },
+        "KmsKeyId" : {
+          "Ref" : "KmsKey"
+        },
         "MasterUsername" : {
           "Ref" : "SAUserName"
         },
@@ -190,11 +198,11 @@
         "AutoMinorVersionUpgrade" : false,
 		"AvailabilityZone": {
 			"Fn::Select" : [
-				0, 
+				0,
 				{
 					"Fn::FindInMap" : [
-						"ConfigMap", 
-						{"Ref" : "AWS::Region"}, 
+						"ConfigMap",
+						{"Ref" : "AWS::Region"},
 						"AZ"
 					]
 				}
@@ -231,6 +239,9 @@
           ]
         },
         "Engine" : "aurora",
+        "KmsKeyId" : {
+          "Ref" : "KmsKey"
+        },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
@@ -246,11 +257,11 @@
         "AutoMinorVersionUpgrade" : false,
 				"AvailabilityZone": {
 			"Fn::Select" : [
-				1, 
+				1,
 				{
 					"Fn::FindInMap" : [
-						"ConfigMap", 
-						{"Ref" : "AWS::Region"}, 
+						"ConfigMap",
+						{"Ref" : "AWS::Region"},
 						"AZ"
 					]
 				}
@@ -287,6 +298,9 @@
           ]
         },
         "Engine" : "aurora",
+        "KmsKeyId" : {
+          "Ref" : "KmsKey"
+        },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
@@ -396,25 +410,25 @@
       }
     },
     "HealthcheckAID":{
-      "Description" : "Healthcheck A ID", 
+      "Description" : "Healthcheck A ID",
       "Value" : {
         "Ref" : "HealthcheckA"
       }
     },
     "HealthcheckBID":{
-      "Description" : "Healthcheck B ID", 
+      "Description" : "Healthcheck B ID",
       "Value" : {
         "Ref" : "HealthcheckB"
       }
     },
     "R53rrPri":{
-      "Description" : "Primary RR", 
+      "Description" : "Primary RR",
       "Value" : {
         "Ref" : "R53RRPrimary"
       }
     },
     "R53rrSec":{
-      "Description" : "Secondary RR", 
+      "Description" : "Secondary RR",
       "Value" : {
         "Ref" : "R53RRSecondary"
       }
