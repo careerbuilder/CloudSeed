@@ -59,7 +59,7 @@
     "SAUserName" : {
       "Description" : "Username of SA user",
       "Type" : "String",
-      "Required" : true
+      "Required" : false
     },
     "Portnum" : {
       "Description" : "Port",
