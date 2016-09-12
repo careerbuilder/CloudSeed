@@ -419,12 +419,12 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       return false;
     }
     var complete = true;
-    for(var param in part.subparts[name][index]){
-      if(!part.subparts[name][index][param].Value || part.subparts[name][index][param].Value.length <1){
-        complete = false;
-        break;
-      }
-    }
+    // for(var param in part.subparts[name][index]){
+    //   if(!part.subparts[name][index][param].Value || part.subparts[name][index][param].Value.length <1){
+    //     complete = false;
+    //     break;
+    //   }
+    // }
     return complete;
   };
 

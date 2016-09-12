@@ -66,8 +66,11 @@
           },
           "CidrIp" : {
             "Type" : "String",
-            "Description" : "Ip range to allow",
-            "Default" : "0.0.0.0/0"
+            "Description" : "Ip range to allow"
+          },
+          "SourceSecurityGroupId" : {
+            "Type" : "String",
+            "Description" : "ID of the source security group"
           }
         }
       },
