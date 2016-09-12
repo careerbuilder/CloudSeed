@@ -155,12 +155,29 @@
           "Ref" : "DBVersion"
         },
         "KmsKeyId" : {
-          "Ref" : "KmsKey"
+          "Fn::If" : ["HasSnapshot", {
+            "Ref" : "AWS::NoValue"
+            }, {
+              "Ref" : "KmsKey"
+            }
+          ]
         },
         "MasterUsername" : {
-          "Ref" : "SAUserName"
+          "Fn::If" : ["HasSnapshot", {
+            "Ref" : "AWS::NoValue"
+            }, {
+              "Ref" : "SAUserName"
+            }
+          ]
         },
-        "MasterUserPassword" : "changemeNOW",
+        "MasterUserPassword" : {
+          "Fn::If" : ["HasSnapshot", {
+            "Ref" : "AWS::NoValue"
+            }, {
+              "changemeNOW"
+            }
+          ]
+        },
         "Port" : {
           "Ref" : "Portnum"
         },
@@ -173,7 +190,7 @@
             }
           ]
         },
-        "StorageEncrypted":{"Fn::If" : ["HasSnapshot", false, true]},
+        "StorageEncrypted":{"Fn::If" : ["HasSnapshot", "Ref" : "AWS::NoValue", true]},
         "Tags" : [{
             "Key" : "Name",
             "Value" : {
