@@ -71,31 +71,6 @@
           }
         }
       },
-      "SecurityGroup|Properties|SecurityGroupIngress" : {
-        "Type" : "List::SecurityGroupIngressRule",
-        "Model" : {
-          "IpProtocol" : {
-            "Type" : "String",
-            "Description" : "Protocol for rule",
-            "Default" : "tcp"
-          },
-          "FromPort" : {
-            "Type" : "Number",
-            "Description" : "Lowest port in range",
-            "Default" : "0"
-          },
-          "ToPort" : {
-            "Type" : "Number",
-            "Description" : "Top port in range",
-            "Default" : "65535"
-          },
-          "SourceSecurityGroupId" : {
-            "Type" : "String",
-            "Description" : "ID of the source security group",
-            "Default" : ""
-          }
-        }
-      },
       "SecurityGroup|Properties|SecurityGroupEgress" : {
         "Type" : "List::SecurityGroupEgressRule",
         "Model" : {
