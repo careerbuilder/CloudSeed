@@ -76,7 +76,7 @@
     "KmsKey" :{
       "Description" : "Encryption key for storage",
       "Type" : ["AWS::KMS::Key"],
-      "Required" : true
+      "Required" : false
     }
   },
   "Conditions" : {
