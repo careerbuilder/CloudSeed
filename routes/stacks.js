@@ -128,15 +128,7 @@ router.post('/build/:name', function(req, res){
       }
       var stack = results;
 
-      // Add in KMS Keys
 
-      if (stack.Region == 'us-east-1'){
-        for (var resource in stack.Template.Resources){
-          if (resource.Type == "AWS::RDS::DBCluster" || resource.Type == "AWS::RDS::DBInstance"){
-            resource.Properties.KmsKeyId = global.config.KmsKeyId;
-          }
-        }
-      }
 
       var cf = new aws.CloudFormation({accessKeyId: auth.accesskey, secretAccessKey: auth.secretkey, region: stack.Region});
       var stackname = stack.Name;
