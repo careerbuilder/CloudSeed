@@ -171,12 +171,9 @@
           ]
         },
         "MasterUserPassword" : {
-          "Fn::If" : ["HasSnapshot", {
+          "Fn::If" : [ "HasSnapshot", {
             "Ref" : "AWS::NoValue"
-            }, {
-              "changemeNOW"
-            }
-          ]
+            }, "changemeNOW" ]
         },
         "Port" : {
           "Ref" : "Portnum"
@@ -190,7 +187,7 @@
             }
           ]
         },
-        "StorageEncrypted":{"Fn::If" : ["HasSnapshot", "Ref" : "AWS::NoValue", true]},
+        "StorageEncrypted":{"Fn::If" : ["HasSnapshot", {"Ref" : "AWS::NoValue"}, true]},
         "Tags" : [{
             "Key" : "Name",
             "Value" : {
