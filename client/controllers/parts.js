@@ -452,7 +452,8 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   };
 
   $scope.checkRequired=function(part, key, index){
-    return (index != part.subparts[key].length-1);
+    //return (index != part.subparts[key].length-1);
+    return false;
   };
 
   $scope.checkRequiredParam=function(part, value){
