@@ -97,12 +97,12 @@
           "CidrIp" : {
             "Type" : "String",
             "Description" : "Ip range to allow",
-            "Default" : {"Ref" : "AWS::NoValue"}
+            "Default" : ""
           },
           "SourceSecurityGroupId" : {
             "Type" : "String",
             "Description" : "ID of the source security group",
-            "Default" : {"Ref" : "AWS::NoValue"}
+            "Default" : ""
           }
         }
       }
