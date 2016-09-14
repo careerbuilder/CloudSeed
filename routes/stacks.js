@@ -130,9 +130,9 @@ router.post('/build/:name', function(req, res){
 
       // Replace CidrIp with SGsource in
 
-      if (stack.Resources){
+      if (stack.Template.Resources){
         console.log("found resources");
-        for (var resource in stack.Resources){
+        for (var resource in stack.Template.Resources){
           console.log("found a resource");
           if (resource.Type == "AWS::EC2::SecurityGroup"){
             console.log("found SG");
