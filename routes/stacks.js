@@ -135,10 +135,12 @@ router.post('/build/:name', function(req, res){
           if (resource.Type == "AWS::EC2::SecurityGroup"){
             if (resource.Properties.SecurityGroupIngress){
               for (var i = 0; i < resource.Properties.SecurityGroupIngress.length; i++){
+                console.log("found model");
                 var model = resource.Properties.SecurityGroupIngress[i];
                 if (model.CidrIp.Value && (model.CidrIp.Value.indexOf("sg-") === 0)){
                   model.SourceSecurityGroupId = model.CidrIp;
                   delete model.CidrIp;
+                  console.log(resource.Properties.SecurityGroupIngress);
                 }
               }
             }
