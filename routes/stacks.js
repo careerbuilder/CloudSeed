@@ -134,6 +134,7 @@ router.post('/build/:name', function(req, res){
         console.log("found resources");
         for (var resource in stack.Template.Resources){
           console.log("found a resource");
+          console.log(resource);
           if (resource.Type == "AWS::EC2::SecurityGroup"){
             console.log("found SG");
             if (resource.Properties.SecurityGroupIngress){
