@@ -254,13 +254,18 @@
         },
         "Engine" : "aurora",
         "KmsKeyId" : {
-          "Ref" : "KmsKey"
+          "Fn::If" : ["HasSnapshot", {
+            "Ref" : "AWS::NoValue"
+            }, {
+              "Ref" : "KmsKey"
+            }
+          ]
         },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
         "PreferredMaintenanceWindow": "Sat:01:00-Sat:01:30",
-        "StorageEncrypted":true,
+        "StorageEncrypted":{"Fn::If" : ["HasSnapshot", {"Ref" : "AWS::NoValue"}, true]},
         "PubliclyAccessible" : false
       }
     },
@@ -313,13 +318,18 @@
         },
         "Engine" : "aurora",
         "KmsKeyId" : {
-          "Ref" : "KmsKey"
+          "Fn::If" : ["HasSnapshot", {
+            "Ref" : "AWS::NoValue"
+            }, {
+              "Ref" : "KmsKey"
+            }
+          ]
         },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
         "PreferredMaintenanceWindow": "Sun:01:00-Sun:01:30",
-        "StorageEncrypted":true,
+        "StorageEncrypted":{"Fn::If" : ["HasSnapshot", {"Ref" : "AWS::NoValue"}, true]},
         "PubliclyAccessible" : false
       }
     },
