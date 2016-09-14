@@ -131,24 +131,15 @@ router.post('/build/:name', function(req, res){
       // Replace CidrIp with SGsource in
 
       if (stack.Template.Resources){
-        console.log("found resources");
         for (var key in stack.Template.Resources){
-          console.log("found a resource");
           var resource = stack.Template.Resources[key];
-          console.log(resource);
           if (resource.Type == "AWS::EC2::SecurityGroup"){
-            console.log("found SG");
             if (resource.Properties.SecurityGroupIngress){
-              console.log("found SGIngress");
               for (var i = 0; i < resource.Properties.SecurityGroupIngress.length; i++){
-                console.log("found model");
                 var model = resource.Properties.SecurityGroupIngress[i];
-                console.log(model);
                 if (model.CidrIp && (model.CidrIp.indexOf("sg-") === 0)){
-                  console.log("found SGsource to replace");
                   model.SourceSecurityGroupId = model.CidrIp;
                   delete model.CidrIp;
-                  console.log(resource.Properties.SecurityGroupIngress);
                 }
               }
             }
