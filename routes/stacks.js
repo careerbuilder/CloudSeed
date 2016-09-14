@@ -144,7 +144,7 @@ router.post('/build/:name', function(req, res){
                 console.log("found model");
                 var model = resource.Properties.SecurityGroupIngress[i];
                 console.log(model);
-                if (model.CidrIp.Value && (model.CidrIp.Value.indexOf("sg-") === 0)){
+                if (model.CidrIp && (model.CidrIp.indexOf("sg-") === 0)){
                   console.log("found SGsource to replace");
                   model.SourceSecurityGroupId = model.CidrIp;
                   delete model.CidrIp;
