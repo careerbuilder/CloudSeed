@@ -419,12 +419,12 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       return false;
     }
     var complete = true;
-    // for(var param in part.subparts[name][index]){
-    //   if(!part.subparts[name][index][param].Value || part.subparts[name][index][param].Value.length <1){
-    //     complete = false;
-    //     break;
-    //   }
-    // }
+    for(var param in part.subparts[name][index]){
+      if(!part.subparts[name][index][param].Value || part.subparts[name][index][param].Value.length <1){
+        complete = false;
+        break;
+      }
+    }
     return complete;
   };
 
@@ -452,8 +452,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
   };
 
   $scope.checkRequired=function(part, key, index){
-    //return (index != part.subparts[key].length-1);
-    return false;
+    return (index != part.subparts[key].length-1);
   };
 
   $scope.checkRequiredParam=function(part, value){
