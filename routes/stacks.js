@@ -128,7 +128,23 @@ router.post('/build/:name', function(req, res){
       }
       var stack = results;
 
+      // Replace CidrIp with SGsource in
 
+      if (stack.Resources){
+        for (var resource in stack.Resources){
+          if (resource.Type == "AWS::EC2::SecurityGroup"){
+            if (resource.Properties.SecurityGroupIngress){
+              for (var i = 0; i < resource.Properties.SecurityGroupIngress.length; i++){
+                var model = resource.Properties.SecurityGroupIngress[i];
+                if (model.CidrIp.Value && (model.CidrIp.Value.indexOf("sg-") === 0)){
+                  model.SourceSecurityGroupId = model.CidrIp;
+                  delete model.CidrIp;
+                }
+              }
+            }
+          }
+        }
+      }
 
       var cf = new aws.CloudFormation({accessKeyId: auth.accesskey, secretAccessKey: auth.secretkey, region: stack.Region});
       var stackname = stack.Name;
