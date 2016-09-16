@@ -411,7 +411,9 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     delete $scope.addedParts[refID];
     $scope.getTypes();
     $scope.countParts();
-    $scope.globalVariables = [];
+    if ($scope.partCount === 0){
+      $scope.globalVariables = [];
+    }
   };
 
   $scope.canAddSubPart=function(part, name, index){
