@@ -253,14 +253,6 @@
           ]
         },
         "Engine" : "aurora",
-        "KmsKeyId" : {
-          "Fn::If" : ["HasSnapshot", {
-            "Ref" : "AWS::NoValue"
-            }, {
-              "Ref" : "KmsKey"
-            }
-          ]
-        },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
@@ -317,14 +309,6 @@
           ]
         },
         "Engine" : "aurora",
-        "KmsKeyId" : {
-          "Fn::If" : ["HasSnapshot", {
-            "Ref" : "AWS::NoValue"
-            }, {
-              "Ref" : "KmsKey"
-            }
-          ]
-        },
         "OptionGroupName" : {
           "Ref" : "OptionGroup"
         },
