@@ -147,6 +147,21 @@ router.post('/build/:name', function(req, res){
         }
       }
 
+      if (stack.Template.Resources){
+        for (var key2 in stack.Template.Resources){
+          if (key2 == "R53RRAlias"){
+            var resource2 = stack.Template.Resources[key2];
+            if (resource2.Type == "AWS::Route53::RecordSet"){
+              if (resource2.Properties.ResourceRecords && resource2.Properties.ResourceRecords == [{"Fn::GetAtt":["DBCluster","Endpoint.Address"]}]){
+                resource2.Properties.ResourceRecords = {"Fn::Join":["",[{"Ref":"RDSName"}, ".cluster-ro-", global.config.AccountString, ".",{ "Ref" : "AWS::Region" },".rds.amazonaws.com"]]};
+              }
+            }
+          }
+        }
+      }
+
+      console.log(stack);
+
       var cf = new aws.CloudFormation({accessKeyId: auth.accesskey, secretAccessKey: auth.secretkey, region: stack.Region});
       var stackname = stack.Name;
       cf.describeStacks({"StackName": stackname}, function(err, data){

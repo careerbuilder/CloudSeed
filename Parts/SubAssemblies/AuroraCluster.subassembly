@@ -210,18 +210,18 @@
       "Properties" : {
         "AllowMajorVersionUpgrade" : false,
         "AutoMinorVersionUpgrade" : false,
-		"AvailabilityZone": {
-			"Fn::Select" : [
-				0,
-				{
-					"Fn::FindInMap" : [
-						"ConfigMap",
-						{"Ref" : "AWS::Region"},
-						"AZ"
-					]
-				}
-			]
-		},
+    		"AvailabilityZone": {
+    			"Fn::Select" : [
+    				0,
+    				{
+    					"Fn::FindInMap" : [
+    						"ConfigMap",
+    						{"Ref" : "AWS::Region"},
+    						"AZ"
+    					]
+    				}
+    			]
+    		},
         "DBClusterIdentifier" : {
           "Ref" : "DBCluster"
         },
@@ -267,17 +267,17 @@
         "AllowMajorVersionUpgrade" : false,
         "AutoMinorVersionUpgrade" : false,
 				"AvailabilityZone": {
-			"Fn::Select" : [
-				1,
-				{
-					"Fn::FindInMap" : [
-						"ConfigMap",
-						{"Ref" : "AWS::Region"},
-						"AZ"
-					]
-				}
-			]
-		},
+    			"Fn::Select" : [
+    				1,
+    				{
+    					"Fn::FindInMap" : [
+    						"ConfigMap",
+    						{"Ref" : "AWS::Region"},
+    						"AZ"
+    					]
+    				}
+    			]
+    		},
         "DBClusterIdentifier" : {
           "Ref" : "DBCluster"
         },
@@ -317,75 +317,21 @@
         "PubliclyAccessible" : false
       }
     },
-    "HealthcheckA":{
-      "Type": "AWS::Route53::HealthCheck",
-      "Properties": {
-        "HealthCheckConfig": {
-          "IPAddress": "52.73.254.249",
-          "Port": "80",
-          "Type": "HTTP",
-          "ResourcePath": {"Fn::Join":["",["/healthcheck/rds/secondary/", {"Ref":"AWS::Region"}, "/", {"Ref":"ANode"}]]},
-          "RequestInterval": "30",
-          "FailureThreshold": "1"
-        },
-        "HealthCheckTags" : [
-          {
-            "Key": "Name",
-            "Value": {"Fn::Join":["",[{"Ref":"ANode"},"-rr"]]}
-          }
-        ]
-      }
-    },
-    "HealthcheckB":{
-      "Type": "AWS::Route53::HealthCheck",
-      "Properties": {
-        "HealthCheckConfig": {
-          "IPAddress": "52.73.254.249",
-          "Port": "80",
-          "Type": "HTTP",
-          "ResourcePath": {"Fn::Join":["",["/healthcheck/rds/secondary/", {"Ref":"AWS::Region"}, "/", {"Ref":"BNode"}]]},
-          "RequestInterval": "30",
-          "FailureThreshold": "1"
-        },
-        "HealthCheckTags" : [
-          {
-            "Key": "Name",
-            "Value": {"Fn::Join":["",[{"Ref":"BNode"},"-rr"]]}
-          }
-        ]
-      }
-    },
-    "R53RRPrimary":{
-      "Type" : "AWS::Route53::RecordSet",
-      "Properties" : {
-        "Failover" : "PRIMARY",
-        "HealthCheckId" : {"Ref":"HealthcheckA"},
-        "HostedZoneId" : "Z2NSUT0O5XSS2J",
-        "Name" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr.cbsitedb.net."]]},
-        "ResourceRecords" : [ {"Fn::GetAtt":["ANode","Endpoint.Address"]} ],
-        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr-Primary"]]},
-        "TTL" : "60",
-        "Type" : "CNAME"
-      }
-    },
-    "R53RRSecondary":{
-      "Type" : "AWS::Route53::RecordSet",
-      "Properties" : {
-        "Failover" : "SECONDARY",
-        "HealthCheckId" : {"Ref":"HealthcheckB"},
-        "HostedZoneId" : "Z2NSUT0O5XSS2J",
-        "Name" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr.cbsitedb.net."]]},
-        "ResourceRecords" : [ {"Fn::GetAtt":["BNode","Endpoint.Address"]} ],
-        "SetIdentifier" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr-Secondary"]]},
-        "TTL" : "60",
-        "Type" : "CNAME"
-      }
-    },
     "R53Alias":{
       "Type" : "AWS::Route53::RecordSet",
       "Properties" : {
         "HostedZoneId" : "Z2NSUT0O5XSS2J",
         "Name" : {"Fn::Join":["",[{"Ref":"RDSName"},".cbsitedb.net."]]},
+        "ResourceRecords":[{"Fn::GetAtt":["DBCluster","Endpoint.Address"]}],
+        "TTL": "300",
+        "Type" : "CNAME"
+      }
+    },
+    "R53RRAlias":{
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "HostedZoneId" : "Z2NSUT0O5XSS2J",
+        "Name" : {"Fn::Join":["",[{"Ref":"RDSName"},"-rr.cbsitedb.net."]]},
         "ResourceRecords":[{"Fn::GetAtt":["DBCluster","Endpoint.Address"]}],
         "TTL": "300",
         "Type" : "CNAME"
