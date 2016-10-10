@@ -363,30 +363,12 @@
         "Ref" : "R53Alias"
       }
     },
-    "HealthcheckAID":{
-      "Description" : "Healthcheck A ID",
+    "R53RRCluster":{
+      "Description" : "Aliased domain of the RR cluster",
       "Value" : {
-        "Ref" : "HealthcheckA"
+        "Ref" : "R53RRAlias"
       }
     },
-    "HealthcheckBID":{
-      "Description" : "Healthcheck B ID",
-      "Value" : {
-        "Ref" : "HealthcheckB"
-      }
-    },
-    "R53rrPri":{
-      "Description" : "Primary RR",
-      "Value" : {
-        "Ref" : "R53RRPrimary"
-      }
-    },
-    "R53rrSec":{
-      "Description" : "Secondary RR",
-      "Value" : {
-        "Ref" : "R53RRSecondary"
-      }
-    }
   },
   "Connections" : {
   }
