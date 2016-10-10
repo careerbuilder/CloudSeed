@@ -1,0 +1,213 @@
+{
+    "Type": "ThreatManager",
+    "Parameters": {
+        "vpcID": {
+            "Type": ["AWS::EC2::VPC::Id"],
+            "Description": "VPC into which Threat Manager will be deployed. (Must have available EIPs)"
+        },
+        "monitoringCIDR": {
+            "Type": "String",
+            "Default": "172.21.0.0/16",
+            "Description": "CIDR netblock to be monitored. (Where agents will be installed)"
+        },
+        "publicSubnet": {
+            "Type": ["AWS::EC2::Subnet::Id"],
+            "Description": "ID of a DMZ subnet, with a default route to an IGW, into which Threat Manager will be deployed."
+        },
+        "instanceType": {
+            "Type": "String",
+            "Description": "EC2 Instance Type Threat Manager will be spun up as.",
+            "Default": "c3.xlarge",
+            "AllowedValues": [
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge"
+            ]
+        },
+        "instanceName": {
+        	"Type":"String",
+        	"Description": "Name of EC2 instance",
+        	"Default": "AlertLogic-ThreatManager-"
+        },
+        "threatManagerAMI": {
+            "Type": ["AWS::EC2::Image::Id"],
+            "Description": "AMI ID for the Threat Manager image shared with your account.",
+            "Default": "ami-73f5b264"
+        }
+    },
+    "Resources": {
+        "sgThreatManager": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Alert Logic Threat Manager Security Group",
+                "VpcId": {
+                    "Ref": "vpcID"
+                },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "204.110.218.96/27",
+                        "FromPort": "22",
+                        "ToPort": "22"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "204.110.219.96/27",
+                        "FromPort": "22",
+                        "ToPort": "22"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "208.71.209.32/27",
+                        "FromPort": "22",
+                        "ToPort": "22"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": {
+                            "Ref": "monitoringCIDR"
+                        },
+                        "FromPort": "7777",
+                        "ToPort": "7777"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": {
+                            "Ref": "monitoringCIDR"
+                        },
+                        "FromPort": "443",
+                        "ToPort": "443"
+                    }
+                ],
+                "SecurityGroupEgress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "204.110.218.96/27",
+                        "FromPort": "443",
+                        "ToPort": "443"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "204.110.219.96/27",
+                        "FromPort": "443",
+                        "ToPort": "443"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "204.110.218.96/27",
+                        "FromPort": "4138",
+                        "ToPort": "4138"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "204.110.219.96/27",
+                        "FromPort": "4138",
+                        "ToPort": "4138"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "208.71.209.32/27",
+                        "FromPort": "443",
+                        "ToPort": "443"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "208.71.209.32/27",
+                        "FromPort": "4138",
+                        "ToPort": "4138"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "185.54.124.0/24",
+                        "FromPort": "4138",
+                        "ToPort": "4138"
+                    },
+                    {
+                        "IpProtocol": "udp",
+                        "CidrIp": "8.8.8.8/32",
+                        "FromPort": "53",
+                        "ToPort": "53"
+                    },
+                    {
+                        "IpProtocol": "udp",
+                        "CidrIp": "8.8.4.4/32",
+                        "FromPort": "53",
+                        "ToPort": "53"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "8.8.8.8/32",
+                        "FromPort": "53",
+                        "ToPort": "53"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "8.8.4.4/32",
+                        "FromPort": "53",
+                        "ToPort": "53"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Reg": "instanceName"
+                    }
+                ]
+            }
+        },
+        "instanceTmAppliance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": {
+                    "Ref": "threatManagerAMI"
+                },
+                "InstanceType": {
+                    "Ref": "instanceType"
+                },
+                "NetworkInterfaces": [
+                    {
+                        "GroupSet": [
+                            {
+                                "Ref": "sgThreatManager"
+                            }
+                        ],
+                        "AssociatePublicIpAddress": "false",
+                        "DeviceIndex": "0",
+                        "DeleteOnTermination": "true",
+                        "SubnetId": {
+                            "Ref": "publicSubnet"
+                        }
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Alert Logic Threat Manager"
+                    }
+                ]
+            },
+            "DependsOn": "sgThreatManager"
+        },
+        "tmcEIP": {
+            "Type": "AWS::EC2::EIP",
+            "Properties": {
+                "InstanceId": {
+                    "Ref": "instanceTmAppliance"
+                },
+                "Domain": "vpc"
+            },
+            "DependsOn": "instanceTmAppliance"
+        }
+    },
+    "Outputs": {
+        "agentSecurityGroupID": {
+            "Value": {
+                "Ref": "sgThreatManager"
+            },
+            "Description": "Copy this Security Group ID into the destination fields of the new egress rules for the Agents' Security Groups."
+        }
+    }
+}
