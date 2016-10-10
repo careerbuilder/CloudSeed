@@ -368,7 +368,7 @@
       "Value" : {
         "Ref" : "R53RRAlias"
       }
-    },
+    }
   },
   "Connections" : {
   }
