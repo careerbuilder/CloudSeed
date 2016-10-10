@@ -1,6 +1,5 @@
 {
-  "Description": "Version 1.0 Creates an admin subnet and the instance of the Rapid7 engine.",
-  "AWSTemplateFormatVersion": "2010-09-09",
+  "Type" : "RapidSevenEngine",
   "Parameters": {
     "RapidSevenCIDR": {
       "Description": "CIDR for Rapid 7",
