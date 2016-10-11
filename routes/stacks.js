@@ -151,20 +151,15 @@ router.post('/build/:name', function(req, res){
         for (var key2 in stack.Template.Resources){
           if (key2.indexOf("R53RRAlias") === 0){
             var resource2 = stack.Template.Resources[key2];
-            console.log('Found RR Alias', resource2);
             if (resource2.Type == "AWS::Route53::RecordSet"){
-              console.log('Found Record Set');
               if (resource2.Properties.ResourceRecords){
                 var name;
                 for (var key3 in stack.Template.Resources){
                   if (key3.indexOf("DBCluster") === 0){
-                    name = stack.Template.Resources[key3].Properties.DatabaseName;
+                    name = key3;
                   }
                 }
-                console.log('Changing Resource Record');
-                resource2.Properties.ResourceRecords = [{"Fn::Join":["",[name, ".cluster-ro-", global.config.AccountString, ".",{ "Ref" : "AWS::Region" },".rds.amazonaws.com"]]}];
-                console.log(resource2.Properties.ResourceRecords);
-                console.log(resource2.Properties.ResourceRecords[0]);
+                resource2.Properties.ResourceRecords = [{"Fn::Join":["",[{"Ref" : name}, ".cluster-ro-", global.config.AccountString, ".",{ "Ref" : "AWS::Region" },".rds.amazonaws.com"]]}];
               }
             }
           }
