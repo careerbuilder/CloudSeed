@@ -155,8 +155,14 @@ router.post('/build/:name', function(req, res){
             if (resource2.Type == "AWS::Route53::RecordSet"){
               console.log('Found Record Set');
               if (resource2.Properties.ResourceRecords){
+                var name;
+                for (var key3 in stack.Template.Resources){
+                  if (key3.indexOf("DBCluster") === 0){
+                    name = stack.Template.Resources[key3].Properties.DatabaseName;
+                  }
+                }
                 console.log('Changing Resource Record');
-                resource2.Properties.ResourceRecords = [{"Fn::Join":["",[{"Ref":"RDSName"}, ".cluster-ro-", global.config.AccountString, ".",{ "Ref" : "AWS::Region" },".rds.amazonaws.com"]]}];
+                resource2.Properties.ResourceRecords = [{"Fn::Join":["",[name, ".cluster-ro-", global.config.AccountString, ".",{ "Ref" : "AWS::Region" },".rds.amazonaws.com"]]}];
                 console.log(resource2.Properties.ResourceRecords);
                 console.log(resource2.Properties.ResourceRecords[0]);
               }
