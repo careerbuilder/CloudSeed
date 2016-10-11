@@ -623,6 +623,7 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
       }
       else{
         toastr.error(data.Error, "Something went wrong...");
+        console.log(data);
         return false;
       }
     }, function(err){
