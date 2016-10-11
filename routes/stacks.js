@@ -154,9 +154,11 @@ router.post('/build/:name', function(req, res){
             console.log('Found RR Alias', resource2);
             if (resource2.Type == "AWS::Route53::RecordSet"){
               console.log('Found Record Set');
-              if (resource2.Properties.ResourceRecords && resource2.Properties.ResourceRecords == [{"Fn::GetAtt":["DBCluster","Endpoint.Address"]}]){
+              if (resource2.Properties.ResourceRecords){
                 console.log('Changing Resource Record');
-                resource2.Properties.ResourceRecords = {"Fn::Join":["",[{"Ref":"RDSName"}, ".cluster-ro-", global.config.AccountString, ".",{ "Ref" : "AWS::Region" },".rds.amazonaws.com"]]};
+                resource2.Properties.ResourceRecords = [{"Fn::Join":["",[{"Ref":"RDSName"}, ".cluster-ro-", global.config.AccountString, ".",{ "Ref" : "AWS::Region" },".rds.amazonaws.com"]]}];
+                console.log(resource2.Properties.ResourceRecords);
+                console.log(resource2.Properties.ResourceRecords[0]);
               }
             }
           }
