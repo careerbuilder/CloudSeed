@@ -189,7 +189,7 @@
                     }
                 ]
             },
-            "DependsOn": "sgThreatManager"
+            "DependsOn": "sgThreatManager1"
         },
         "tmcEIP": {
             "Type": "AWS::EC2::EIP",
@@ -199,7 +199,7 @@
                 },
                 "Domain": "vpc"
             },
-            "DependsOn": "instanceTmAppliance"
+            "DependsOn": "instanceTmAppliance1"
         }
     },
     "Outputs": {
