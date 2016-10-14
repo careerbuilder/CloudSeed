@@ -185,7 +185,7 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "Alert Logic Threat Manager"
+                        "Value": {"Ref":"instanceName"}
                     }
                 ]
             },
