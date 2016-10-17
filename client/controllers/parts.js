@@ -632,6 +632,69 @@ app.controller('PartCtrl', function($q, $http, $scope, $cookies, toastr, authser
     });
   };
 
+  $scope.saveAndBuildTemplate=function(){
+    if($scope.build.Name){
+      $scope.build.Ready = true;
+      $scope.build.Variables = $scope.globalVariables;
+      var template = {};
+      template.Description = ($scope.build.Template || {Description:''}).Description;
+      template.Resources = {};
+      template.Outputs = {};
+      template.Conditions = {};
+      template.Mappings = {};
+      var pieces = JSON.parse(JSON.stringify($scope.addedParts));
+      for(var key in pieces){
+        var piece = pieces[key];
+        $scope.replaceRefs(piece);
+        var part = piece.Definition;
+        for(var mapkey in part.Mappings){
+          template.Mappings[mapkey] = JSON.parse(JSON.stringify(part.Mappings[mapkey]));
+        }
+        for(var condkey in part.Conditions){
+          template.Conditions[condkey] = JSON.parse(JSON.stringify(part.Conditions[condkey]));
+        }
+        for(var reskey in part.Resources){
+          template.Resources[reskey] = JSON.parse(JSON.stringify(part.Resources[reskey]));
+        }
+        for(var outkey in part.Outputs){
+          template.Outputs[outkey] = JSON.parse(JSON.stringify(part.Outputs[outkey]));
+        }
+      }
+      $scope.build.Template = template;
+
+      for (var i = 0; i < $scope.globalVariables.length; i++){
+        var globalObj = $scope.globalVariables[i];
+        var quoteName = globalObj.Name.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+        var re = new RegExp(quoteName, "g");
+        var templateString = angular.toJson($scope.build.Template);
+        templateString = templateString.replace(re, JSON.parse(angular.toJson(globalObj.ID)));
+        $scope.build.Template = JSON.parse(templateString);
+      }
+
+      $scope.build.Parts = JSON.parse(JSON.stringify($scope.addedParts));
+      $http.post('/api/stacks', {build: $scope.build, user: $scope.auth.userinfo().email}).then(function(res){
+        var data = res.data;
+        if(data.Code === 400){
+          toastr.success('Stack Saved', 'Your stack was saved successfully!');
+          $scope.buildTemplate($scope.build.Name);
+        }
+        else if(data.Code === 388){
+          toastr.warning('Stack Saved with Errors', data.Message);
+          console.log(data);
+          $scope.buildTemplate($scope.build.Name);
+        }
+        else{
+          toastr.error(data.Message, data.Error||"");
+          console.log(data);
+        }
+        $scope.refreshStacks();
+      }, function(err){
+        console.log(err);
+        toastr.error('Error building stack');
+      });
+    }
+  };
+
   $scope.discardStack = function(){
     $scope.build ={Region:'us-east-1'};
     $scope.addedParts ={};

@@ -78,11 +78,17 @@
           </div>
           <br />
           <div class="row">
-            <div class="col-xs-9">
+            <div class="col-xs-12">
               <input type="text" class="form-control" ng-model="build.Template.Description" placeholder="Description" name="stackDescription"/>
             </div>
-            <div class="col-xs-3">
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-xs-4 col-xs-offset-2">
               <button class="btn btn-primary btn-block" ng-disabled="toArray(addedParts).length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save</button>
+            </div>
+            <div class="col-xs-4">
+              <button class="btn btn-primary btn-block" ng-disabled="toArray(addedParts).length < 1 || PartsForm.$invalid" ng-click="saveTemplate()" type="button">Save & Build</button>
             </div>
           </div>
           <hr>
