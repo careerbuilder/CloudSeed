@@ -136,9 +136,7 @@
         "BackupRetentionPeriod" : {
           "Ref" : "BackupDays"
         },
-        "DatabaseName" : {
-          "Ref" : "RDSName"
-        },
+        "DatabaseName" : "admin",
         "DBClusterParameterGroupName" : {
           "Fn::If" : ["HasClusterParamGroup", {
               "Ref" : "ClusterParameterGroup"
